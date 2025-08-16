@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoroShop Business - Moderator Panel</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+        }
+        h1 {
+            color: #4a148c;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .password-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .password-form {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .password-form h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .password-form input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        .password-form button {
+            background-color: #7b1fa2;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .password-form button:hover {
+            background-color: #6a1b9a;
+        }
+        .error-message {
+            color: #d32f2f;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+        .add-seller-form {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            background-color: #7b1fa2;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .form-group button:hover {
+            background-color: #6a1b9a;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #7b1fa2;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="passwordScreen" class="password-screen">
+        <div class="password-form">
+            <h2>Введите пароль модератора</h2>
+            <input type="password" id="moderatorPassword" placeholder="Пароль">
+            <button id="submitPassword">Войти</button>
+            <div id="passwordError" class="error-message">Неверный пароль</div>
+        </div>
+    </div>
+
+    <div id="moderatorPanel" class="container" style="display: none;">
+        <h1>Регистрация продавца</h1>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="add-seller-form">
+            <div class="form-group">
+                <label for="sellerEmail">Email</label>
+                <input type="email" id="sellerEmail" placeholder="example@mail.com">
+            </div>
+            <div class="form-group">
+                <label for="sellerPassword">Пароль</label>
+                <input type="password" id="sellerPassword" placeholder="Не менее 6 символов">
+            </div>
+            <div class="form-group">
+                <button id="addSellerBtn">Зарегистрировать продавца</button>
+            </div>
+            <div class="loading" id="addSellerLoading">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB_9kumEubg6w3flpP8_iWy_9btubcCa38",
+            authDomain: "doroshop-cfb16.firebaseapp.com",
+            databaseURL: "https://doroshop-cfb16-default-rtdb.firebaseio.com",
+            projectId: "doroshop-cfb16",
+            storageBucket: "doroshop-cfb16.appspot.com",
+            messagingSenderId: "343457643268",
+            appId: "1:343457643268:web:0687d0ea1137124dafae51"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Moderator password
+        const MODERATOR_PASSWORD = "doriush2sozdatel0companii1dorosfamd1eto2pravda0hamza2boy5";
+
+        // DOM elements
+        const passwordScreen = document.getElementById('passwordScreen');
+        const moderatorPanel = document.getElementById('moderatorPanel');
+        const passwordInput = document.getElementById('moderatorPassword');
+        const submitPasswordBtn = document.getElementById('submitPassword');
+        const passwordError = document.getElementById('passwordError');
+        const addSellerBtn = document.getElementById('addSellerBtn');
+        const sellerEmail = document.getElementById('sellerEmail');
+        const sellerPassword = document.getElementById('sellerPassword');
+        const messageDiv = document.getElementById('message');
+        const addSellerLoading = document.getElementById('addSellerLoading');
+
+        // Check password
+        submitPasswordBtn.addEventListener('click', function() {
+            if (passwordInput.value === MODERATOR_PASSWORD) {
+                passwordScreen.style.display = 'none';
+                moderatorPanel.style.display = 'block';
+            } else {
+                passwordError.style.display = 'block';
+            }
+        });
+
+        // Add seller
+        addSellerBtn.addEventListener('click', function() {
+            const email = sellerEmail.value;
+            const password = sellerPassword.value;
+            
+            if (!email || !password) {
+                showMessage('Заполните все поля', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Пароль должен содержать не менее 6 символов', 'error');
+                return;
+            }
+            
+            addSellerLoading.style.display = 'block';
+            
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    // Send to Telegram
+                    const telegramBotToken = '8317760771:AAFdjqAfWB7hjZoYn98MPm47e1BLNscWyO0';
+                    const chatId = '-1002582478058';
+                    const telegramMessage = `Продавец с email ${email} успешно зарегистрирован!`;
+                    
+                    fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            chat_id: chatId,
+                            text: telegramMessage
+                        })
+                    });
+                    
+                    showMessage('Продавец успешно зарегистрирован', 'success');
+                    sellerEmail.value = '';
+                    sellerPassword.value = '';
+                })
+                .catch((error) => {
+                    showMessage('Ошибка: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    addSellerLoading.style.display = 'none';
+                });
+        });
+
+        // Show message
+        function showMessage(text, type) {
+            messageDiv.textContent = text;
+            messageDiv.className = 'message ' + type;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
