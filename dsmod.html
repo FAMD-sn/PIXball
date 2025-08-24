@@ -4,182 +4,372 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoroShop Business - Moderator Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
+        :root {
+            --primary-color: #7b1fa2;
+            --primary-dark: #6a1b9a;
+            --primary-light: #9c27b0;
+            --accent-color: #e91e63;
+            --text-color: #333;
+            --text-light: #666;
+            --background: #f5f5f5;
+            --card-bg: #ffffff;
+            --error-color: #d32f2f;
+            --success-color: #43a047;
+            --border-radius: 12px;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
+
         .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             padding: 30px;
             width: 90%;
             max-width: 500px;
+            transition: var(--transition);
         }
-        h1 {
-            color: #4a148c;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+
         .password-screen {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 100;
         }
+
         .password-form {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             padding: 30px;
             width: 90%;
             max-width: 400px;
+            animation: slideUp 0.5s ease;
         }
-        .password-form h2 {
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #333;
-        }
-        .password-form input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-            margin-bottom: 20px;
-        }
-        .password-form button {
-            background-color: #7b1fa2;
-            color: white;
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 5px;
-            font-size: 16px;
+            color: var(--text-color);
             font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
         }
-        .password-form button:hover {
-            background-color: #6a1b9a;
-        }
-        .error-message {
-            color: #d32f2f;
-            text-align: center;
-            margin-top: 10px;
-            display: none;
-        }
-        .add-seller-form {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            position: relative;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #555;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
         }
+
+        .form-group i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 14px 14px 14px 40px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
             font-size: 16px;
-            box-sizing: border-box;
+            transition: var(--transition);
         }
-        .form-group button {
-            background-color: #7b1fa2;
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(123, 31, 162, 0.2);
+        }
+
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            left: 14px;
+            top: 14px;
+            color: var(--text-light);
+        }
+
+        button {
+            background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             width: 100%;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: var(--transition);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .form-group button:hover {
-            background-color: #6a1b9a;
+
+        button i {
+            margin-right: 8px;
         }
+
+        button:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-message i {
+            margin-right: 8px;
+        }
+
         .message {
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             margin-bottom: 20px;
             display: none;
+            animation: slideUp 0.5s ease;
         }
+
         .success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid #c8e6c9;
         }
+
         .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background-color: #ffebee;
+            color: var(--error-color);
+            border: 1px solid #ffcdd2;
         }
+
         .loading {
             text-align: center;
             margin: 20px 0;
             display: none;
         }
+
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
-            border-top: 4px solid #7b1fa2;
+            border-top: 4px solid var(--primary-color);
             width: 30px;
             height: 30px;
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            max-width: 120px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-top: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .date-display {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 14px;
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .password-form {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="passwordScreen" class="password-screen">
         <div class="password-form">
-            <h2>Введите пароль модератора</h2>
-            <input type="password" id="moderatorPassword" placeholder="Пароль">
-            <button id="submitPassword">Войти</button>
-            <div id="passwordError" class="error-message">Неверный пароль</div>
+            <div class="logo">
+                <div class="logo-text">DoroShop</div>
+            </div>
+            <h2>Панель модератора</h2>
+            <p class="subtitle">Введите пароль для доступа к панели</p>
+            
+            <div class="form-group">
+                <label for="moderatorPassword"><i class="fas fa-lock"></i> Пароль</label>
+                <div class="input-icon">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="moderatorPassword" placeholder="Введите пароль модератора">
+                    <span class="password-toggle" id="passwordToggle">
+                        <i class="far fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <button id="submitPassword">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+            
+            <div id="passwordError" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Неверный пароль
+            </div>
         </div>
     </div>
 
     <div id="moderatorPanel" class="container" style="display: none;">
+        <div class="logo">
+            <div class="logo-text">DoroShop Business</div>
+        </div>
         <h1>Регистрация продавца</h1>
+        
+        <div class="date-display">
+            <i class="far fa-calendar-alt"></i> <span id="currentDate"></span>
+        </div>
         
         <div id="message" class="message"></div>
         
         <div class="add-seller-form">
             <div class="form-group">
-                <label for="sellerEmail">Email</label>
-                <input type="email" id="sellerEmail" placeholder="example@mail.com">
+                <label for="sellerEmail"><i class="fas fa-envelope"></i> Email</label>
+                <div class="input-icon">
+                    <i class="fas fa-at"></i>
+                    <input type="email" id="sellerEmail" placeholder="example@mail.com">
+                </div>
             </div>
+            
             <div class="form-group">
-                <label for="sellerPassword">Пароль</label>
-                <input type="password" id="sellerPassword" placeholder="Не менее 6 символов">
+                <label for="sellerPassword"><i class="fas fa-lock"></i> Пароль</label>
+                <div class="input-icon">
+                    <i class="fas fa-key"></i>
+                    <input type="password" id="sellerPassword" placeholder="Не менее 6 символов">
+                    <span class="password-toggle" id="sellerPasswordToggle">
+                        <i class="far fa-eye"></i>
+                    </span>
+                </div>
             </div>
+            
             <div class="form-group">
-                <button id="addSellerBtn">Зарегистрировать продавца</button>
+                <button id="addSellerBtn">
+                    <i class="fas fa-user-plus"></i> Зарегистрировать продавца
+                </button>
             </div>
+            
             <div class="loading" id="addSellerLoading">
                 <div class="spinner"></div>
+                <p>Регистрация пользователя...</p>
             </div>
         </div>
     </div>
@@ -215,19 +405,81 @@
         const sellerPassword = document.getElementById('sellerPassword');
         const messageDiv = document.getElementById('message');
         const addSellerLoading = document.getElementById('addSellerLoading');
+        const passwordToggle = document.getElementById('passwordToggle');
+        const sellerPasswordToggle = document.getElementById('sellerPasswordToggle');
+        const currentDateElement = document.getElementById('currentDate');
 
-        // Check password
-        submitPasswordBtn.addEventListener('click', function() {
+        // Display current date
+        function updateDate() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            currentDateElement.textContent = now.toLocaleDateString('ru-RU', options);
+        }
+        
+        updateDate();
+        setInterval(updateDate, 60000); // Update time every minute
+
+        // Password toggle functionality
+        passwordToggle.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                passwordToggle.innerHTML = '<i class="far fa-eye-slash"></i>';
+            } else {
+                passwordInput.type = 'password';
+                passwordToggle.innerHTML = '<i class="far fa-eye"></i>';
+            }
+        });
+
+        sellerPasswordToggle.addEventListener('click', function() {
+            if (sellerPassword.type === 'password') {
+                sellerPassword.type = 'text';
+                sellerPasswordToggle.innerHTML = '<i class="far fa-eye-slash"></i>';
+            } else {
+                sellerPassword.type = 'password';
+                sellerPasswordToggle.innerHTML = '<i class="far fa-eye"></i>';
+            }
+        });
+
+        // Check password on button click and Enter key
+        submitPasswordBtn.addEventListener('click', checkPassword);
+        
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        function checkPassword() {
             if (passwordInput.value === MODERATOR_PASSWORD) {
                 passwordScreen.style.display = 'none';
                 moderatorPanel.style.display = 'block';
             } else {
-                passwordError.style.display = 'block';
+                passwordError.style.display = 'flex';
+                passwordInput.style.borderColor = 'var(--error-color)';
+                setTimeout(() => {
+                    passwordError.style.display = 'none';
+                    passwordInput.style.borderColor = '#e1e1e1';
+                }, 3000);
+            }
+        }
+
+        // Add seller on button click and Enter key in the last field
+        addSellerBtn.addEventListener('click', addSeller);
+        
+        sellerPassword.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addSeller();
             }
         });
 
-        // Add seller
-        addSellerBtn.addEventListener('click', function() {
+        function addSeller() {
             const email = sellerEmail.value;
             const password = sellerPassword.value;
             
@@ -242,13 +494,21 @@
             }
             
             addSellerLoading.style.display = 'block';
+            addSellerBtn.disabled = true;
             
             firebase.auth().createUserWithEmailAndPassword(email, password)
                 .then((userCredential) => {
+                    const user = userCredential.user;
+                    const userId = user.uid;
+                    const currentDate = new Date().toLocaleString('ru-RU');
+                    
                     // Send to Telegram
                     const telegramBotToken = '8317760771:AAFdjqAfWB7hjZoYn98MPm47e1BLNscWyO0';
                     const chatId = '-1002582478058';
-                    const telegramMessage = `Продавец с email ${email} успешно зарегистрирован!`;
+                    const telegramMessage = `🆕 Новый продавец зарегистрирован!
+📅 Дата: ${currentDate}
+📧 Email: ${email}
+🆔 User ID: ${userId}`;
                     
                     fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
                         method: 'POST',
@@ -261,17 +521,18 @@
                         })
                     });
                     
-                    showMessage('Продавец успешно зарегистрирован', 'success');
+                    showMessage('✅ Продавец успешно зарегистрирован! Уведомление отправлено в Telegram.', 'success');
                     sellerEmail.value = '';
                     sellerPassword.value = '';
                 })
                 .catch((error) => {
-                    showMessage('Ошибка: ' + error.message, 'error');
+                    showMessage('❌ Ошибка: ' + error.message, 'error');
                 })
                 .finally(() => {
                     addSellerLoading.style.display = 'none';
+                    addSellerBtn.disabled = false;
                 });
-        });
+        }
 
         // Show message
         function showMessage(text, type) {
@@ -285,4 +546,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
