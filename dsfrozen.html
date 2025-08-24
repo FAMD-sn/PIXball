@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Freeze - Панель администратора DOROShop</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <style>
+    :root {
+      --primary: #5A67D8;
+      --primary-light: #7F8AE6;
+      --primary-dark: #434B87;
+      --secondary: #F6AD55;
+      --background: #1A202C;
+      --surface: #2D3748;
+      --surface-variant: #4A5568;
+      --on-surface: #F7FAFC;
+      --on-surface-variant: #E2E8F0;
+      --border: #4A5568;
+      --red: #EF4444;
+      --green: #10B981;
+      --radius: 8px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--background);
+      color: var(--on-surface);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    h1, h2, h3 {
+      color: var(--primary-light);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: var(--surface-variant);
+      border-radius: var(--radius);
+    }
+
+    .admin-section {
+      display: none; /* Сначала скрыто, показывается после входа */
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--on-surface);
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2);
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-freeze {
+      background: var(--red);
+      color: white;
+    }
+
+    .btn-freeze:hover {
+      background: #DC2626;
+      transform: translateY(-2px);
+    }
+
+    .btn-unfreeze {
+      background: var(--green);
+      color: white;
+      padding: 5px 15px;
+      font-size: 14px;
+    }
+
+    .btn-unfreeze:hover {
+      background: #059669;
+      transform: translateY(-2px);
+    }
+
+    .btn-login {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-login:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-logout {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-logout:hover {
+      background: #D97706;
+      transform: translateY(-2px);
+    }
+
+    .user-list {
+      list-style: none;
+      margin-top: 1rem;
+    }
+
+    .user-item {
+      background: var(--surface);
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--red);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-info {
+      flex: 1;
+    }
+
+    .user-id {
+      font-weight: bold;
+      color: var(--primary-light);
+      margin-bottom: 5px;
+      word-break: break-all;
+    }
+
+    .user-details {
+      font-size: 14px;
+      color: var(--on-surface-variant);
+    }
+
+    .search-container {
+      margin-bottom: 1rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--on-surface);
+      font-size: 16px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--on-surface-variant);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--primary-light);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: var(--radius);
+      color: white;
+      font-weight: 600;
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .notification.success {
+      background: var(--green);
+    }
+
+    .notification.error {
+      background: var(--red);
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .auth-status {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px 15px;
+      background: var(--surface-variant);
+      border-radius: var(--radius);
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .input-group {
+        flex-direction: column;
+      }
+      
+      .user-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .auth-status {
+        position: static;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Панель администратора - Управление заморозкой пользователей</h1>
+    
+    <div class="auth-status" id="authStatus">
+      Не авторизован
+    </div>
+    
+    <!-- Секция входа -->
+    <div class="section" id="loginSection">
+      <h2>Вход в систему</h2>
+      <p>Для управления заморозкой пользователей необходимо войти в систему</p>
+      
+      <div class="input-group">
+        <input type="email" id="adminEmail" placeholder="Email администратора">
+        <input type="password" id="adminPassword" placeholder="Пароль">
+        <button class="btn-login" onclick="adminLogin()">Войти</button>
+      </div>
+      
+      <div class="input-group">
+        <button class="btn-login" onclick="anonymousLogin()">Войти анонимно (тест)</button>
+      </div>
+    </div>
+    
+    <!-- Админские секции (скрыты до входа) -->
+    <div class="section admin-section" id="adminSection">
+      <h2>Заморозить пользователя</h2>
+      <div class="input-group">
+        <input type="text" id="userIdInput" placeholder="Введите userID пользователя">
+        <button class="btn-freeze" onclick="freezeUser()">Заморозить</button>
+      </div>
+      
+      <button class="btn-logout" onclick="logout()" style="margin-top: 1rem;">Выйти из системы</button>
+    </div>
+    
+    <div class="section admin-section" id="frozenSection">
+      <h2>Замороженные пользователи</h2>
+      <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по userID или имени..." onkeyup="searchFrozen()">
+      </div>
+      <ul class="user-list" id="frozenList">
+        <div class="empty-state">
+          <div class="empty-icon">⏳</div>
+          <p>Загрузка списка замороженных пользователей...</p>
+        </div>
+      </ul>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB_9kumEubg6w3flpP8_iWy_9btubcCa38",
+      authDomain: "doroshop-cfb16.firebaseapp.com",
+      databaseURL: "https://doroshop-cfb16-default-rtdb.firebaseio.com",
+      projectId: "doroshop-cfb16",
+      storageBucket: "doroshop-cfb16.appspot.com",
+      messagingSenderId: "343457643268",
+      appId: "1:343457643268:web:0687d0ea1137124dafae51"
+    };
+
+    // Инициализация Firebase
+    let app;
+    try {
+      app = firebase.initializeApp(firebaseConfig);
+    } catch (error) {
+      app = firebase.app();
+    }
+    
+    const db = firebase.database();
+    const auth = firebase.auth();
+
+    // Функция для показа уведомлений
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Вход для администратора
+    async function adminLogin() {
+      const email = document.getElementById('adminEmail').value;
+      const password = document.getElementById('adminPassword').value;
+      
+      if (!email || !password) {
+        showNotification('Введите email и пароль', 'error');
+        return;
+      }
+
+      try {
+        await firebase.auth().signInWithEmailAndPassword(email, password);
+        showNotification('Успешный вход в систему');
+      } catch (error) {
+        console.error('Ошибка входа:', error);
+        showNotification('Ошибка входа: ' + error.message, 'error');
+      }
+    }
+
+    // Анонимный вход (для тестирования)
+    async function anonymousLogin() {
+      try {
+        await firebase.auth().signInAnonymously();
+        showNotification('Анонимный вход выполнен');
+      } catch (error) {
+        console.error('Ошибка анонимного входа:', error);
+        showNotification('Ошибка входа: ' + error.message, 'error');
+      }
+    }
+
+    // Выход из системы
+    async function logout() {
+      try {
+        await firebase.auth().signOut();
+        showNotification('Вы вышли из системы');
+      } catch (error) {
+        console.error('Ошибка выхода:', error);
+        showNotification('Ошибка выхода: ' + error.message, 'error');
+      }
+    }
+
+    // Заморозить пользователя
+    async function freezeUser() {
+      const uid = document.getElementById('userIdInput').value.trim();
+      if (!uid) {
+        showNotification('Введите userID пользователя', 'error');
+        return;
+      }
+
+      try {
+        // Проверяем существование пользователя
+        const userSnapshot = await db.ref(`users/${uid}`).once('value');
+        if (!userSnapshot.exists()) {
+          showNotification('Пользователь с таким ID не найден', 'error');
+          return;
+        }
+
+        const userData = userSnapshot.val();
+        
+        // Проверяем, не заморожен ли уже пользователь
+        if (userData.frozen === true) {
+          showNotification('Пользователь уже заморожен', 'error');
+          return;
+        }
+
+        // Обновляем поле frozen
+        await db.ref(`users/${uid}`).update({ 
+          frozen: true,
+          frozenAt: new Date().toISOString(),
+          frozenBy: auth.currentUser.uid
+        });
+        
+        showNotification('Пользователь успешно заморожен');
+        document.getElementById('userIdInput').value = '';
+        
+        // Обновляем список
+        loadFrozenUsers();
+      } catch (error) {
+        console.error('Ошибка при заморозке пользователя:', error);
+        showNotification('Ошибка при заморозке пользователя: ' + error.message, 'error');
+      }
+    }
+
+    // Разморозить пользователя
+    async function unfreezeUser(uid) {
+      try {
+        await db.ref(`users/${uid}`).update({ 
+          frozen: false,
+          unfrozenAt: new Date().toISOString(),
+          unfrozenBy: auth.currentUser.uid
+        });
+        showNotification('Пользователь успешно разморожен');
+        loadFrozenUsers();
+      } catch (error) {
+        console.error('Ошибка при разморозке пользователя:', error);
+        showNotification('Ошибка при разморозке пользователя: ' + error.message, 'error');
+      }
+    }
+
+    // Загрузить список замороженных пользователей
+    async function loadFrozenUsers() {
+      const frozenList = document.getElementById('frozenList');
+      
+      try {
+        const snapshot = await db.ref('users').once('value');
+        
+        if (!snapshot.exists()) {
+          frozenList.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">❄️</div>
+              <p>Нет замороженных пользователей</p>
+            </div>
+          `;
+          return;
+        }
+        
+        const users = snapshot.val();
+        let frozenUsers = [];
+        
+        for (let uid in users) {
+          const user = users[uid];
+          if (user.frozen === true) {
+            frozenUsers.push({
+              uid: uid,
+              username: user.username || 'Не указано',
+              email: user.email || 'Не указано',
+              frozenAt: user.frozenAt || 'Неизвестно',
+              frozenBy: user.frozenBy || 'Неизвестно'
+            });
+          }
+        }
+        
+        if (frozenUsers.length === 0) {
+          frozenList.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">❄️</div>
+              <p>Нет замороженных пользователей</p>
+            </div>
+          `;
+          return;
+        }
+        
+        let html = '';
+        frozenUsers.forEach(user => {
+          html += `
+            <li class="user-item">
+              <div class="user-info">
+                <div class="user-id">${user.uid}</div>
+                <div class="user-details">
+                  Имя: ${user.username} | Email: ${user.email}
+                  ${user.frozenAt ? `<br>Заморожен: ${new Date(user.frozenAt).toLocaleString()}` : ''}
+                  ${user.frozenBy ? `<br>Заблокировал: ${user.frozenBy}` : ''}
+                </div>
+              </div>
+              <button class="btn-unfreeze" onclick="unfreezeUser('${user.uid}')">Разморозить</button>
+            </li>
+          `;
+        });
+        
+        frozenList.innerHTML = html;
+      } catch (error) {
+        console.error('Ошибка загрузки пользователей:', error);
+        frozenList.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">⚠️</div>
+            <p>Ошибка загрузки данных: ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    // Поиск по замороженным пользователям
+    function searchFrozen() {
+      const filter = document.getElementById('searchInput').value.toLowerCase();
+      const listItems = document.getElementById('frozenList').getElementsByTagName('li');
+      
+      for (let i = 0; i < listItems.length; i++) {
+        const text = listItems[i].textContent || listItems[i].innerText;
+        listItems[i].style.display = text.toLowerCase().includes(filter) ? '' : 'none';
+      }
+    }
+
+    // Обработчик изменения состояния аутентификации
+    auth.onAuthStateChanged((user) => {
+      const authStatus = document.getElementById('authStatus');
+      const loginSection = document.getElementById('loginSection');
+      const adminSection = document.getElementById('adminSection');
+      const frozenSection = document.getElementById('frozenSection');
+      
+      if (user) {
+        // Пользователь вошел в систему
+        authStatus.textContent = `Вошли как: ${user.email || 'Анонимный пользователь'}`;
+        authStatus.style.background = 'var(--green)';
+        loginSection.style.display = 'none';
+        adminSection.style.display = 'block';
+        frozenSection.style.display = 'block';
+        loadFrozenUsers();
+      } else {
+        // Пользователь вышел из системы
+        authStatus.textContent = 'Не авторизован';
+        authStatus.style.background = 'var(--surface-variant)';
+        loginSection.style.display = 'block';
+        adminSection.style.display = 'none';
+        frozenSection.style.display = 'none';
+      }
+    });
+
+    // Загружаем данные при старте
+    document.addEventListener('DOMContentLoaded', function() {
+      // Добавляем обработчик нажатия Enter
+      document.getElementById('userIdInput')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') freezeUser();
+      });
+      
+      document.getElementById('adminPassword')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') adminLogin();
+      });
+    });
+
+    // Делаем функции глобальными
+    window.freezeUser = freezeUser;
+    window.unfreezeUser = unfreezeUser;
+    window.searchFrozen = searchFrozen;
+    window.adminLogin = adminLogin;
+    window.anonymousLogin = anonymousLogin;
+    window.logout = logout;
+  </script>
+</body>
+</html>
