@@ -1,0 +1,2962 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JURA Taxi - Водитель</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mapbox-polyline/1.1.1/polyline.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: { 
+                        jura: '#2ecc71',
+                        juraDark: '#27ae60',
+                        dark: '#1a1a1a'
+                    },
+                    animation: { 
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.3s ease-in-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'bounce-slow': 'bounce 2s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: 0 }, '100%': { opacity: 1 } },
+                        slideUp: { '0%': { transform: 'translateY(100%)' }, '100%': { transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fafc;
+            height: 100dvh;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        
+        .dark body {
+            background-color: #0f172a;
+        }
+        
+        .pt-safe {
+            padding-top: env(safe-area-inset-top, 0px);
+        }
+        
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        
+        .btn-jura {
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .btn-jura:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-jura:hover {
+            background-color: #27ae60;
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 14px;
+            border-left: 6px solid #2ecc71;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.25s;
+        }
+        
+        .dark .order-card {
+            background: #1e293b;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .order-card:active {
+            background: #f0fdf4;
+            transform: translateY(-2px);
+        }
+        
+        .dark .order-card:active {
+            background: #064e3b;
+        }
+        
+        #activeMap, #ordersMap {
+            height: 42%;
+            width: 100%;
+            z-index: 1;
+        }
+        
+        .panel {
+            height: 58%;
+            background: white;
+            border-radius: 28px 28px 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 20;
+            position: relative;
+        }
+        
+        .dark .panel {
+            background: #1e293b;
+        }
+        
+        .receipt-paper {
+            background: white;
+            color: #000;
+            font-family: 'Courier New', monospace;
+            padding: 24px;
+            width: 320px;
+            margin: 0 auto;
+            border-top: 10px solid #2ecc71;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+        
+        .dark .receipt-paper {
+            background: #1e293b;
+            color: white;
+        }
+        
+        .receipt-paper::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(45deg, transparent 33.333%, #fff 33.333%, #fff 66.667%, transparent 66.667%), 
+                        linear-gradient(-45deg, transparent 33.333%, #fff 33.333%, #fff 66.667%, transparent 66.667%);
+            background-size: 20px 40px;
+        }
+        
+        .dark .receipt-paper::after {
+            background: linear-gradient(45deg, transparent 33.333%, #1e293b 33.333%, #1e293b 66.667%, transparent 66.667%), 
+                        linear-gradient(-45deg, transparent 33.333%, #1e293b 33.333%, #1e293b 66.667%, transparent 66.667%);
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 10px;
+            background: #e2e8f0;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #2ecc71;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+        
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+        
+        input[type="checkbox"]:checked {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+        
+        input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .driver-icon {
+            background: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #2ecc71;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .client-icon {
+            background: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #3498db;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        
+        .order-marker {
+            background: white;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #2ecc71;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .order-marker.pets {
+            border-color: #e74c3c;
+        }
+        
+        .order-marker.luggage {
+            border-color: #f39c12;
+        }
+        
+        .order-marker.extra-points {
+            border-color: #9b59b6;
+        }
+        
+        .order-marker.priority {
+            border-color: #e74c3c;
+            animation: pulse-slow 2s infinite;
+        }
+        
+        .spinner {
+            animation: spin 1.2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pulse-new {
+            animation: pulse-new 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        @keyframes pulse-new {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .transition-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .photo-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px dashed #2ecc71;
+            background: #f0fdf4;
+        }
+        
+        .photo-preview-small {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #2ecc71;
+        }
+        
+        .photo-loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .map-popup {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 200px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .dark .map-popup {
+            background: #1e293b;
+        }
+        
+        .edit-order-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            padding: 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+            z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dark .edit-order-panel {
+            background: #1e293b;
+        }
+        
+        .edit-order-panel.visible {
+            transform: translateY(0);
+        }
+        
+        .tariff-image {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+        
+        .large-tariff-image {
+            width: 160px;
+            height: 120px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .trip-meter {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .distance-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .search-result-item {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .search-result-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        .dark .search-result-item {
+            border-bottom-color: #4b5563;
+        }
+        
+        .dark .search-result-item:hover {
+            background-color: #374151;
+        }
+
+        .notification-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            color: #333;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 350px;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-left: 4px solid #2ecc71;
+        }
+
+        .notification-toast.show {
+            transform: translateX(0);
+        }
+
+        .notification-toast.error {
+            border-left-color: #e74c3c;
+        }
+
+        .notification-toast.warning {
+            border-left-color: #f39c12;
+        }
+
+        .notification-toast.info {
+            border-left-color: #3498db;
+        }
+
+        .notification-toast .close-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            margin-left: auto;
+        }
+
+        .cancel-notification {
+            border-left-color: #e74c3c;
+        }
+
+        .cancel-notification .notification-icon {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Аутентификация -->
+    <div id="loginScreen" class="fixed inset-0 bg-white dark:bg-dark z-50 flex flex-col items-center justify-center p-6">
+        <div class="bg-green-100 dark:bg-green-900/30 p-6 rounded-full mb-6 animate-bounce">
+            <img src="logo.png" alt="JURA Taxi" class="w-16 h-16 object-contain">
+        </div>
+        <h1 class="text-3xl font-extrabold mb-2 text-gray-800 dark:text-white">JURA Taxi</h1>
+        <p class="text-gray-500 dark:text-gray-400 mb-8">Вход для водителей</p>
+        
+        <div class="w-full max-w-sm space-y-4">
+            <div class="relative">
+                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <i class="fa-solid fa-envelope"></i>
+                </div>
+                <input type="email" id="email" placeholder="Email" 
+                       class="w-full border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-4 pl-12 text-base outline-none focus:border-jura dark:bg-gray-800 dark:text-white">
+            </div>
+            
+            <div class="relative">
+                <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <input type="password" id="pass" placeholder="Пароль" 
+                       class="w-full border-2 border-gray-200 dark:border-gray-700 rounded-2xl p-4 pl-12 text-base outline-none focus:border-jura dark:bg-gray-800 dark:text-white">
+            </div>
+            
+            <button onclick="doLogin()" class="w-full btn-jura py-4 rounded-2xl shadow-lg shadow-jura/30 text-lg font-bold">
+                <i class="fa-solid fa-sign-in-alt mr-2"></i> Войти
+            </button>
+        </div>
+        
+        <div class="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
+            <p>Техническая поддержка: <a href="tel:+992123456789" class="text-jura font-medium">+992 123 45 67 89</a></p>
+        </div>
+    </div>
+
+    <!-- Панель настроек -->
+    <div id="settingsScreen" class="hidden fixed inset-0 bg-white dark:bg-dark z-50 p-6 overflow-y-auto pb-safe">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-user-gear text-jura"></i> Профиль и статистика
+            </h2>
+            <button onclick="closeSettings()" class="p-2 bg-gray-100 dark:bg-gray-800 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i class="fa-solid fa-xmark text-xl dark:text-white"></i>
+            </button>
+        </div>
+        
+        <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 p-5 rounded-2xl mb-8 border border-green-100 dark:border-gray-700">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">ЗА СЕГОДНЯ</div>
+                    <div class="text-3xl font-black text-jura" id="statMoney">0 с.</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-1">ПОЕЗДОК</div>
+                    <div class="text-3xl font-bold dark:text-white" id="statTrips">0</div>
+                </div>
+            </div>
+            <div class="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+                <i class="fa-solid fa-calendar-day mr-1"></i> Обновлено сегодня
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <div class="text-sm font-bold text-gray-400 uppercase tracking-wider">ДАННЫЕ ВОДИТЕЛЯ</div>
+            
+            <div class="relative">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <input type="text" id="sName" placeholder="Ваше полное имя" 
+                       class="w-full p-4 pl-12 border rounded-2xl dark:bg-gray-800 dark:text-white outline-none focus:border-jura">
+            </div>
+            
+            <div class="relative">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <i class="fa-solid fa-car"></i>
+                </div>
+                <input type="text" id="sCar" placeholder="Марка и модель (Kia Rio)" 
+                       class="w-full p-4 pl-12 border rounded-2xl dark:bg-gray-800 dark:text-white outline-none focus:border-jura">
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="relative">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fa-solid fa-palette"></i>
+                    </div>
+                    <input type="text" id="sColor" placeholder="Цвет" 
+                           class="w-full p-4 pl-12 border rounded-2xl dark:bg-gray-800 dark:text-white outline-none focus:border-jura">
+                </div>
+                
+                <div class="relative">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                    <input type="text" id="sPlate" placeholder="Гос. номер" 
+                           class="w-full p-4 pl-12 border rounded-2xl dark:bg-gray-800 dark:text-white outline-none focus:border-jura">
+                </div>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <i class="fa-solid fa-phone"></i>
+                </div>
+                <input type="tel" id="sPhone" placeholder="Контактный телефон" 
+                       class="w-full p-4 pl-12 border rounded-2xl dark:bg-gray-800 dark:text-white outline-none focus:border-jura">
+            </div>
+            
+            <div class="space-y-2">
+                <div class="text-sm font-bold text-gray-700 dark:text-gray-300">Фото водителя (URL)</div>
+                <div class="flex gap-3 items-center">
+                    <input type="url" id="sPhoto" placeholder="https://example.com/photo.jpg" 
+                           class="flex-1 p-3 border rounded-xl dark:bg-gray-800 dark:text-white outline-none focus:border-jura"
+                           pattern="https?://.+\.(jpg|jpeg|png|gif|webp)" 
+                           title="Введите корректный URL изображения (http:// или https://)">
+                    <button onclick="testPhoto('sPhoto')" class="px-4 py-3 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-xl font-bold">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
+                </div>
+                <div class="text-xs text-gray-500">Вставьте ссылку на ваше фото (рекомендуется 300x300px)</div>
+                <img id="sPhotoPreview" src="" class="photo-preview-small hidden mx-auto mt-2 photo-loading">
+            </div>
+            
+            <div class="flex items-center justify-between mt-6 p-3 bg-gray-50 dark:bg-gray-800 rounded-2xl">
+                <span class="font-bold dark:text-white">Темная тема</span>
+                <input type="checkbox" id="darkToggle" class="w-6 h-6" onchange="toggleDark()">
+            </div>
+            
+            <button onclick="saveSettings()" class="w-full btn-jura py-4 rounded-2xl shadow-lg shadow-jura/30 text-lg font-bold mt-6">
+                <i class="fa-solid fa-floppy-disk mr-2"></i> Сохранить профиль
+            </button>
+        </div>
+    </div>
+
+    <!-- Карта заказов -->
+    <div id="ordersMapScreen" class="hidden h-full flex flex-col">
+        <header class="bg-white dark:bg-gray-800 p-4 shadow-sm flex justify-between items-center z-10 pt-safe">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-jura">
+                    <img src="logo.png" alt="JURA Taxi" class="w-8 h-8 object-contain">
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight dark:text-white">Карта заказов</h1>
+                    <div class="text-xs text-gray-500 dark:text-gray-400">Выберите заказ на карте</div>
+                </div>
+            </div>
+            <button onclick="openSettings()" class="p-2.5 bg-gray-50 dark:bg-gray-700 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-600 transition-smooth">
+                <i class="fa-solid fa-gear text-xl dark:text-white"></i>
+            </button>
+        </header>
+        
+        <div id="ordersMap"></div>
+        
+        <div class="panel">
+            <div class="p-5 border-b dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold text-lg dark:text-white">Доступные заказы</h2>
+                    <div class="flex items-center gap-2">
+                        <button onclick="switchToListView()" class="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                            <i class="fa-solid fa-list"></i>
+                        </button>
+                        <button onclick="refreshOrders()" class="p-2 bg-jura text-white rounded-lg">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="ordersLegend" class="flex flex-wrap gap-2 mb-4">
+                    <div class="flex items-center gap-1 text-xs">
+                        <div class="w-3 h-3 rounded-full bg-jura"></div>
+                        <span>Новый</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-xs">
+                        <div class="w-3 h-3 rounded-full bg-e74c3c"></div>
+                        <span>С животными</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-xs">
+                        <div class="w-3 h-3 rounded-full bg-f39c12"></div>
+                        <span>С багажом</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-xs">
+                        <div class="w-3 h-3 rounded-full bg-9b59b6"></div>
+                        <span>Доп. точки</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="selectedOrderDetails" class="hidden flex-1 overflow-y-auto p-5">
+                <!-- Детали выбранного заказа будут здесь -->
+            </div>
+            
+            <div id="noOrderSelected" class="flex-1 flex flex-col items-center justify-center p-5 text-gray-400">
+                <i class="fa-solid fa-map-marker text-4xl mb-4"></i>
+                <div class="text-center">
+                    <div class="font-medium mb-1">Выберите заказ на карте</div>
+                    <div class="text-sm">Нажмите на маркер, чтобы увидеть детали</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Активный заказ -->
+    <div id="activeScreen" class="hidden fixed inset-0 z-40 bg-gray-100 dark:bg-gray-900 flex flex-col">
+        <div id="activeMap"></div>
+        
+        <div class="panel">
+            <div class="bg-gray-50 dark:bg-gray-800 p-5 border-b dark:border-gray-700">
+                <div class="flex justify-between items-end mb-3">
+                    <div>
+                        <div class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">СЧЕТЧИК</div>
+                        <div class="text-5xl font-black text-jura tracking-tighter leading-none trip-meter">
+                            <span id="meterPrice">0.00</span>
+                            <span class="text-lg text-gray-400 font-medium ml-1">с.</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-mono font-bold dark:text-white trip-meter" id="tripTimer">00:00</div>
+                        <div class="text-sm font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-lg inline-block mt-1" id="speedDisplay">
+                            <i class="fa-solid fa-gauge-high mr-1"></i> <span id="speedValue">0</span> км/ч
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mb-3">
+                    <div class="distance-badge">
+                        <i class="fa-solid fa-road mr-1"></i> <span id="distanceDisplay">0.0 км</span>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        <span id="waitTimeDisplay">Ожидание: 0:00</span>
+                    </div>
+                </div>
+
+                <div id="rideControls" class="hidden flex gap-3">
+                    <button onclick="toggleWait(false)" id="btnDrive" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-white shadow-sm border-2 border-jura text-black transition-all active:scale-95">
+                        <i class="fa-solid fa-car mr-1"></i> В ПУТИ
+                    </button>
+                    <button onclick="toggleWait(true)" id="btnWait" class="flex-1 py-3.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-400 border-2 border-transparent transition-all active:scale-95">
+                        <i class="fa-solid fa-clock mr-1"></i> ОЖИДАНИЕ
+                    </button>
+                </div>
+                
+                <div id="trafficBadge" class="hidden text-center text-xs font-bold text-orange-600 mt-3 bg-orange-50 dark:bg-orange-900/30 py-2 rounded-lg">
+                    <i class="fa-solid fa-traffic-light mr-1"></i> ПРОБКА (+1 с/мин)
+                </div>
+                <div id="waitBadge" class="hidden text-center text-xs font-bold text-red-600 mt-3 bg-red-50 dark:bg-red-900/30 py-2 rounded-lg">
+                    <i class="fa-solid fa-hourglass-half mr-1"></i> ОЖИДАНИЕ КЛИЕНТА (+0.5 с/мин)
+                </div>
+                <div id="drivingBadge" class="hidden text-center text-xs font-bold text-green-600 mt-3 bg-green-50 dark:bg-green-900/30 py-2 rounded-lg">
+                    <i class="fa-solid fa-road mr-1"></i> В ПУТИ (+0.2 с/мин)
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-xs font-bold text-gray-400 uppercase bg-gray-200 dark:bg-gray-700 px-3 py-1.5 rounded-full" id="tariffNameDisplay">
+                        ТАРИФ
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openEditOrderPanel()" class="flex items-center gap-2 bg-yellow-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg active:scale-95 transition-all">
+                            <i class="fa-solid fa-pen"></i> Изменить
+                        </button>
+                        <button onclick="openNav()" class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg active:scale-95 transition-all">
+                            <i class="fa-solid fa-map-location-dot"></i> НАВИГАЦИЯ
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="orderChips" class="flex flex-wrap gap-2 mb-4"></div>
+                
+                <div id="specialInfo" class="hidden space-y-3 mb-4"></div>
+                
+                <div id="activePoints" class="space-y-4 mb-5 pl-3 border-l-2 border-gray-200 dark:border-gray-700 ml-2"></div>
+                
+                <div class="flex items-center justify-between bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border dark:border-gray-700">
+                    <div>
+                        <div class="text-xs text-gray-400 font-bold uppercase mb-1">КЛИЕНТ</div>
+                        <a id="clientPhoneLink" href="#" class="text-lg font-bold text-gray-800 dark:text-white tracking-wide">
+                            <i class="fa-solid fa-phone mr-2 text-jura"></i> ...
+                        </a>
+                        <div class="text-xs text-gray-500 mt-1 flex items-center">
+                            <i class="fa-solid fa-location-dot text-green-500 mr-1"></i>
+                            <span id="clientLocationStatus">Местоположение обновляется...</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <a id="clientCallBtn" href="#" class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center text-jura shadow hover:scale-105 transition-smooth">
+                            <i class="fa-solid fa-phone text-lg"></i>
+                        </a>
+                        <button onclick="openRouteToClient()" class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-500 shadow hover:scale-105 transition-smooth">
+                            <i class="fa-solid fa-route text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="tariffImageContainer" class="mt-6 text-center">
+                    <div id="currentTariffImage" class="large-tariff-image"></div>
+                    <div class="text-xs text-gray-500 mt-2">Тариф: <span id="currentTariffName"></span></div>
+                </div>
+            </div>
+
+            <div class="p-5 bg-white dark:bg-gray-800 border-t dark:border-gray-700">
+                <button id="mainActionBtn" onclick="nextOrderState()" class="w-full py-4 text-xl font-bold text-white rounded-2xl shadow-lg transition-all active:scale-95 flex justify-center items-center gap-2">
+                    ...
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Панель редактирования заказа -->
+    <div id="editOrderPanel" class="edit-order-panel">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold dark:text-white flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-jura"></i> Изменить заказ
+            </h2>
+            <button onclick="closeEditOrderPanel()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                <i class="fa-solid fa-xmark text-xl dark:text-white"></i>
+            </button>
+        </div>
+        
+        <div class="space-y-4 mb-6">
+            <div>
+                <div class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Добавить точку маршрута:</div>
+                <div class="relative mb-2">
+                    <div class="flex items-center bg-gray-50 dark:bg-gray-800 rounded-xl px-4 py-3 border-2 border-transparent focus-within:border-jura transition-colors">
+                        <i class="fa-solid fa-magnifying-glass text-gray-400 w-5 h-5"></i>
+                        <input type="text" id="driverEditAddrInput" placeholder="Адрес новой точки" 
+                               class="w-full bg-transparent p-2 pl-3 outline-none text-base dark:text-white placeholder-gray-500" autocomplete="off">
+                        <i id="driverEditSearchLoader" class="fa-solid fa-spinner text-jura animate-spin hidden w-5 h-5"></i>
+                    </div>
+                    <div id="driverEditSearchResults" class="hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-800 shadow-2xl rounded-2xl mt-2 z-50 max-h-60 overflow-y-auto border dark:border-gray-700"></div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="driverAddPoint()" class="flex-1 px-4 bg-jura text-white rounded-xl font-bold hover:bg-juraDark py-3">
+                        <i class="fa-solid fa-plus mr-2"></i> Добавить
+                    </button>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border dark:border-gray-700">
+                    <div class="text-xs text-gray-500 mb-1">Багаж</div>
+                    <select id="driverEditLuggage" onchange="updateDriverEditedPrice()" class="w-full bg-transparent text-sm font-bold outline-none dark:text-white">
+                        <option value="0">Без багажа</option>
+                        <option value="3">Мал (+3с)</option>
+                        <option value="5">Бол (+5с)</option>
+                        <option value="6">Огромный (+6с)</option>
+                    </select>
+                </div>
+                
+                <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border dark:border-gray-700">
+                    <div class="text-xs text-gray-500 mb-1">Животные</div>
+                    <label class="flex items-center justify-between">
+                        <span class="text-sm font-bold">Питомцы (+5с)</span>
+                        <input type="checkbox" id="driverEditPets" class="w-5 h-5" onchange="updateDriverEditedPrice()">
+                    </label>
+                </div>
+            </div>
+            
+            <div class="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border dark:border-gray-700">
+                <div class="text-xs text-gray-500 mb-1">Причина изменений</div>
+                <input type="text" id="driverEditReason" placeholder="Почему вносите изменения?" 
+                       class="w-full bg-transparent outline-none text-sm dark:text-white">
+            </div>
+        </div>
+        
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-4 rounded-xl border border-yellow-200 dark:border-yellow-800 mb-6">
+            <div class="flex items-center gap-2 mb-2">
+                <i class="fa-solid fa-exclamation-triangle text-yellow-500"></i>
+                <div class="font-bold text-yellow-800 dark:text-yellow-300">Новая цена для клиента</div>
+            </div>
+            <div class="text-3xl font-black text-jura text-center"><span id="driverEditedPrice">0.00</span> с.</div>
+            <div class="text-xs text-yellow-600 dark:text-yellow-400 text-center mt-2">
+                Клиент получит уведомление об изменении цены
+            </div>
+        </div>
+        
+        <button onclick="saveDriverOrderChanges()" class="w-full bg-jura hover:bg-juraDark text-white py-4 text-lg rounded-2xl shadow-lg shadow-jura/30 font-bold flex justify-center items-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> Сохранить изменения
+        </button>
+    </div>
+
+    <!-- Чек -->
+    <div id="receiptModal" class="hidden fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="receipt-paper transform scale-100 animate-fade-in">
+            <div class="text-center font-bold text-xl mb-4 border-b-2 border-black dark:border-gray-600 pb-2 flex items-center justify-center gap-2">
+                <img src="logo.png" alt="JURA Taxi" class="w-6 h-6">
+                <span>ДЕТАЛЬНЫЙ ЧЕК</span>
+            </div>
+            <div class="text-xs mb-4 text-center text-gray-500 dark:text-gray-400" id="rcptDate">...</div>
+            
+            <div class="space-y-1 text-sm border-b-2 border-dashed border-gray-300 dark:border-gray-700 pb-4 mb-4 font-mono">
+                <div class="flex justify-between"><span>Тариф:</span><span id="rcptTariff">...</span></div>
+                <div class="flex justify-between"><span>Время:</span><span id="rcptTime">...</span></div>
+                <div class="flex justify-between"><span>Расстояние:</span><span id="rcptDist">...</span></div>
+                <div class="flex justify-between"><span>Ожидание:</span><span id="rcptWait">...</span></div>
+                <div class="flex justify-between"><span>Пробки:</span><span id="rcptTraffic">...</span></div>
+                <div class="flex justify-between"><span>В пути:</span><span id="rcptDriving">...</span></div>
+                <div class="flex justify-between"><span>Доп. услуги:</span><span id="rcptAddons">...</span></div>
+                <div class="flex justify-between"><span>Чаевые:</span><span id="rcptTip">...</span></div>
+            </div>
+            
+            <div class="flex justify-between text-2xl font-black mb-6">
+                <span>ИТОГО:</span><span id="rcptTotal" class="text-jura">0.00 с.</span>
+            </div>
+            
+            <div class="text-center text-xs text-gray-500 dark:text-gray-400 mb-4">
+                <i class="fa-solid fa-handshake mr-1"></i> Спасибо за поездку!
+            </div>
+            <button onclick="closeReceipt()" class="w-full bg-black dark:bg-gray-800 text-white py-3.5 font-bold rounded-xl hover:bg-gray-800 dark:hover:bg-gray-700 transition-all">
+                <i class="fa-solid fa-check mr-2"></i> ЗАКРЫТЬ
+            </button>
+        </div>
+    </div>
+
+    <!-- Уведомления -->
+    <div id="notificationContainer"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getFirestore, collection, query, where, onSnapshot, doc, updateDoc, getDoc, serverTimestamp, runTransaction, setDoc, getDocs, Timestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqtMRcJA5gurig6CzzyNQ8ni2-uCnLJ5I",
+            authDomain: "jura-ff5cb.firebaseapp.com",
+            projectId: "jura-ff5cb",
+            storageBucket: "jura-ff5cb.appspot.com",
+            messagingSenderId: "614549502826",
+            appId: "1:614549502826:web:dbfe3a690a523f5e9ec313"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const PRICES = {
+            START: 10.0,
+            WAIT_MANUAL: 0.50,
+            WAIT_TRAFFIC: 1.00,
+            DRIVING: 0.20,
+            KM_CITY: 2.5,
+            ADDON_PETS: 5,
+            ADDON_SIGN: 5,
+            ADDON_LUGGAGE_SMALL: 3,
+            ADDON_LUGGAGE_MEDIUM: 5,
+            ADDON_LUGGAGE_LARGE: 6
+        };
+
+        // Глобальные переменные
+        let currentUser, driverData = {}, currentOrderId, orderStatus, orderUnsub, ordersUnsub, ordersMapUnsub;
+        let activeMap, ordersMap, driverMarker, clientMarker, routeLayer, currentPoints = [];
+        let rawPrice = 0, fixedPrice = 0, tip = 0, totalDist = 0;
+        let lastPos = null, isWaitingMode = false, currentSpeed = 0;
+        let startTime = 0, meterInterval = null, wakeLock = null;
+        let watchId = null, gpsThrottleTimer = null;
+        let waitMinutes = 0, trafficMinutes = 0, distanceKm = 0, drivingMinutes = 0;
+        let waitTimer = null, trafficTimer = null, drivingTimer = null;
+        let restoreAttempted = false;
+        let hasActiveOrder = false;
+        let orderMarkers = [];
+        let selectedOrderId = null;
+        let listeners = [];
+        let isDrivingMode = false;
+        let serverTimerInterval = null;
+        let waitStartTime = null;
+        let clientLocation = null;
+        let driverEditSearchController = null;
+        let lastProcessedHistoryLength = 0;
+        let notificationDebounceTimer = null;
+        let activeOrderData = null;
+        
+        const ORDER_TYPES = {
+            STANDARD: 'standard',
+            WITH_PETS: 'pets',
+            WITH_LUGGAGE: 'luggage',
+            WITH_EXTRA_POINTS: 'extra-points',
+            PRIORITY: 'priority'
+        };
+
+        // Утилиты для уведомлений
+        function showNotification(message, type = 'info', duration = 5000) {
+            const container = document.getElementById('notificationContainer');
+            const notificationId = 'notification-' + Date.now();
+            
+            // Закрываем предыдущее уведомление с таким же сообщением
+            if (notificationDebounceTimer) {
+                clearTimeout(notificationDebounceTimer);
+            }
+            
+            const existingNotifications = container.querySelectorAll('.notification-toast');
+            existingNotifications.forEach(notif => {
+                if (notif.querySelector('.notification-message').textContent === message) {
+                    container.removeChild(notif);
+                }
+            });
+            
+            const notification = document.createElement('div');
+            notification.id = notificationId;
+            notification.className = `notification-toast ${type}`;
+            notification.innerHTML = `
+                <div class="notification-icon">
+                    <i class="fa-solid fa-${type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+                </div>
+                <div class="notification-message flex-1">${message}</div>
+                <button class="close-btn" onclick="closeNotification('${notificationId}')">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Анимация появления
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Автоматическое закрытие
+            notificationDebounceTimer = setTimeout(() => {
+                closeNotification(notificationId);
+            }, duration);
+            
+            return notificationId;
+        }
+        
+        window.closeNotification = function(notificationId) {
+            const notification = document.getElementById(notificationId);
+            if (notification) {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+        };
+
+        window.onload = () => {
+            if(localStorage.getItem('jura_dark_dr') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+            
+            loadStats();
+            
+            onAuthStateChanged(auth, (user) => {
+                if(user) { 
+                    currentUser = user; 
+                    checkProfile(); 
+                } else {
+                    document.getElementById('loginScreen').classList.remove('hidden');
+                }
+            });
+        };
+
+        function addListener(unsub) {
+            listeners.push(unsub);
+        }
+
+        function cleanupListeners() {
+            listeners.forEach(unsub => {
+                if (unsub && typeof unsub === 'function') {
+                    unsub();
+                }
+            });
+            listeners = [];
+        }
+
+        window.testPhoto = (inputId) => {
+            const url = document.getElementById(inputId).value.trim();
+            if(!url) return;
+            
+            if(!url.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i)) {
+                showNotification("Пожалуйста, введите корректный URL изображения", 'error');
+                return;
+            }
+            
+            const previewId = inputId === 'sPhoto' ? 'sPhotoPreview' : 'sCarPhotoPreview';
+            const preview = document.getElementById(previewId);
+            preview.src = url;
+            preview.classList.remove('hidden', 'photo-loading');
+            
+            const img = new Image();
+            img.onload = () => {
+                preview.classList.remove('photo-loading');
+            };
+            img.onerror = () => {
+                showNotification("Не удалось загрузить фото. Проверьте ссылку и CORS политику сервера.", 'error');
+                preview.classList.add('hidden');
+            };
+            img.src = url;
+        };
+
+        window.doLogin = () => {
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('pass').value;
+            
+            if(!email || !password) {
+                showNotification("Введите email и пароль", 'warning');
+                return;
+            }
+            
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    checkProfile();
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    showNotification("Ошибка входа: " + (error.message || "Неверный email или пароль"), 'error');
+                });
+        };
+
+        async function requestWakeLock() {
+            try {
+                if('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => {
+                        console.log('Wake Lock был отключен');
+                    });
+                }
+            } catch (err) {
+                console.log("Wake Lock error:", err);
+            }
+        }
+
+        function releaseWakeLock() {
+            if(wakeLock) {
+                wakeLock.release().then(() => {
+                    wakeLock = null;
+                });
+            }
+        }
+
+        async function checkProfile() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            const name = localStorage.getItem('dr_name');
+            
+            if(name) {
+                driverData = {
+                    name,
+                    car: localStorage.getItem('dr_car') || '',
+                    color: localStorage.getItem('dr_color') || '',
+                    plate: localStorage.getItem('dr_plate') || '',
+                    phone: localStorage.getItem('dr_phone') || '',
+                    photo: localStorage.getItem('dr_photo') || ''
+                };
+                
+                await updateDriverProfile();
+                showOrdersMap();
+                startGPS();
+                requestWakeLock();
+                restoreActiveOrder();
+            } else {
+                openSettings();
+            }
+        }
+
+        function showOrdersMap() {
+            document.getElementById('ordersMapScreen').classList.remove('hidden');
+            initOrdersMap();
+            listenOrdersOnMap();
+            setupDriverEditSearch();
+        }
+
+        function initOrdersMap() {
+            if (ordersMap) {
+                ordersMap.remove();
+            }
+            
+            ordersMap = L.map('ordersMap', { 
+                zoomControl: false,
+                zoomSnap: 0.5,
+                zoomDelta: 0.5
+            }).setView([38.5598, 68.7870], 13);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap, © CartoDB'
+            }).addTo(ordersMap);
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        ordersMap.setView(latlng, 14);
+                        
+                        const driverMapIcon = L.divIcon({
+                            html: `
+                                <div class="driver-icon">
+                                    <i class="fa-solid fa-taxi text-jura text-2xl"></i>
+                                </div>`,
+                            iconSize: [48, 48],
+                            className: 'driver-marker'
+                        });
+                        
+                        L.marker([latlng.lat, latlng.lng], { icon: driverMapIcon }).addTo(ordersMap)
+                            .bindPopup('<b>Ваше местоположение</b>');
+                    },
+                    error => {
+                        console.log('Geolocation error:', error);
+                    }
+                );
+            }
+        }
+
+        function listenOrdersOnMap() {
+            if (ordersMapUnsub) {
+                ordersMapUnsub();
+            }
+            
+            const q = query(collection(db, 'orders'), where('status', '==', 'pending'));
+            
+            ordersMapUnsub = onSnapshot(q, (snapshot) => {
+                orderMarkers.forEach(marker => ordersMap.removeLayer(marker));
+                orderMarkers = [];
+                
+                if (snapshot.empty) {
+                    const noOrdersDiv = document.getElementById('noOrderSelected');
+                    noOrdersDiv.classList.remove('hidden');
+                    document.getElementById('selectedOrderDetails').classList.add('hidden');
+                    return;
+                }
+                
+                snapshot.forEach((docSnap) => {
+                    const order = docSnap.data();
+                    
+                    const orderAge = Date.now() - (order.createdAt?.toMillis() || Date.now());
+                    if (orderAge > 3600000) {
+                        return;
+                    }
+                    
+                    const pickupPoint = order.points[0];
+                    if (!pickupPoint) return;
+                    
+                    const orderType = getOrderType(order);
+                    const marker = createOrderMarker(pickupPoint, orderType, order, docSnap.id);
+                    
+                    marker.addTo(ordersMap);
+                    orderMarkers.push(marker);
+                });
+                
+                if (navigator.vibrate && orderMarkers.length > 0) {
+                    navigator.vibrate(100);
+                }
+                
+            }, (error) => {
+                console.error("Orders map listener error:", error);
+            });
+            
+            addListener(ordersMapUnsub);
+        }
+
+        function getOrderType(order) {
+            if (order.tip > 10) return ORDER_TYPES.PRIORITY;
+            if (order.options?.pets) return ORDER_TYPES.WITH_PETS;
+            if (order.options?.luggage > 0) return ORDER_TYPES.WITH_LUGGAGE;
+            if (order.points?.length > 2) return ORDER_TYPES.WITH_EXTRA_POINTS;
+            return ORDER_TYPES.STANDARD;
+        }
+
+        function createOrderMarker(point, orderType, order, orderId) {
+            let className = 'order-marker';
+            let iconColor = '#2ecc71';
+            let iconSymbol = 'fa-user';
+            
+            switch (orderType) {
+                case ORDER_TYPES.WITH_PETS:
+                    className += ' pets';
+                    iconColor = '#e74c3c';
+                    iconSymbol = 'fa-paw';
+                    break;
+                case ORDER_TYPES.WITH_LUGGAGE:
+                    className += ' luggage';
+                    iconColor = '#f39c12';
+                    iconSymbol = 'fa-suitcase';
+                    break;
+                case ORDER_TYPES.WITH_EXTRA_POINTS:
+                    className += ' extra-points';
+                    iconColor = '#9b59b6';
+                    iconSymbol = 'fa-map-marker-alt';
+                    break;
+                case ORDER_TYPES.PRIORITY:
+                    className += ' priority';
+                    iconColor = '#e74c3c';
+                    iconSymbol = 'fa-bolt';
+                    break;
+            }
+            
+            const icon = L.divIcon({
+                html: `
+                    <div class="${className}" style="border-color: ${iconColor}">
+                        <i class="fa-solid ${iconSymbol}" style="color: ${iconColor}"></i>
+                    </div>`,
+                iconSize: [44, 44],
+                className: 'order-marker-icon'
+            });
+            
+            const marker = L.marker([point.lat, point.lng], { icon: icon });
+            
+            marker.on('click', () => {
+                showOrderDetails(order, orderId);
+                selectedOrderId = orderId;
+                
+                const bounds = ordersMap.getBounds();
+                if (!bounds.contains(marker.getLatLng())) {
+                    ordersMap.panTo(marker.getLatLng());
+                }
+            });
+            
+            return marker;
+        }
+
+        function showOrderDetails(order, orderId) {
+            const detailsDiv = document.getElementById('selectedOrderDetails');
+            const noOrderDiv = document.getElementById('noOrderSelected');
+            
+            detailsDiv.classList.remove('hidden');
+            noOrderDiv.classList.add('hidden');
+            
+            const addrA = order.points[0]?.address?.split(',')[0] || 'Точка А';
+            const addrB = order.points[order.points.length - 1]?.address?.split(',')[0] || 'Точка Б';
+            
+            let specialTags = '';
+            if (order.options?.pets) specialTags += '<span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-xs font-bold mr-1"><i class="fa-solid fa-paw mr-1"></i>Животные</span>';
+            if (order.options?.luggage > 0) specialTags += `<span class="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs font-bold mr-1"><i class="fa-solid fa-suitcase mr-1"></i>Багаж</span>`;
+            if (order.points?.length > 2) specialTags += '<span class="bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs font-bold mr-1"><i class="fa-solid fa-map-marker-alt mr-1"></i>Доп. точки</span>';
+            if (order.tip > 0) specialTags += `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold"><i class="fa-solid fa-bolt mr-1"></i>+${order.tip}с</span>`;
+            
+            const distance = calculateDistance(
+                order.points[0]?.lat || 38.56,
+                order.points[0]?.lng || 68.79,
+                lastPos?.lat || 38.56,
+                lastPos?.lng || 68.79
+            );
+            
+            // Расчет примерной цены
+            let estimatedPrice = PRICES.START;
+            if (distance > 4) {
+                estimatedPrice += (distance - 4) * PRICES.KM_CITY;
+            }
+            
+            // Учет тарифа
+            estimatedPrice = estimatedPrice * (order.tariff?.mult || 1.0);
+            
+            // Дополнительные услуги
+            if (order.options?.pets) estimatedPrice += PRICES.ADDON_PETS;
+            if (order.options?.luggage > 0) estimatedPrice += parseInt(order.options.luggage);
+            if (order.tip > 0) estimatedPrice += order.tip;
+            
+            estimatedPrice = Math.max(estimatedPrice, PRICES.START);
+            
+            detailsDiv.innerHTML = `
+                <div class="space-y-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="font-bold text-lg dark:text-white mb-1">Заказ #${orderId.substring(0, 8)}</h3>
+                            <div class="flex flex-wrap gap-1 mb-2">${specialTags}</div>
+                        </div>
+                        <div class="text-2xl font-black text-jura">${estimatedPrice.toFixed(2)} с.</div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex gap-2 items-center">
+                            <div class="w-3 h-3 rounded-full bg-black"></div>
+                            <div class="text-sm dark:text-gray-300 truncate">${addrA}</div>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <div class="w-3 h-3 rounded-full bg-jura"></div>
+                            <div class="text-sm dark:text-gray-300 truncate">${addrB}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
+                            <div class="text-gray-500 text-xs">Расстояние до вас</div>
+                            <div class="font-bold dark:text-white">${distance.toFixed(1)} км</div>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800 p-3 rounded-xl">
+                            <div class="text-gray-500 text-xs">Тариф</div>
+                            <div class="font-bold dark:text-white">${order.tariff?.id || 'стандарт'}</div>
+                        </div>
+                    </div>
+                    
+                    ${order.options?.comment ? `
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl">
+                            <div class="text-xs text-gray-500 mb-1">Комментарий клиента</div>
+                            <div class="text-sm dark:text-gray-300">${order.options.comment}</div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="flex gap-3">
+                        <button onclick="acceptOrderFromMap('${orderId}')" class="flex-1 btn-jura py-3 rounded-xl font-bold text-lg shadow-md">
+                            <i class="fa-solid fa-check mr-2"></i> Принять
+                        </button>
+                        <button onclick="deselectOrder()" class="px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-bold">
+                            <i class="fa-solid fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        window.deselectOrder = () => {
+            selectedOrderId = null;
+            document.getElementById('selectedOrderDetails').classList.add('hidden');
+            document.getElementById('noOrderSelected').classList.remove('hidden');
+        };
+
+        window.acceptOrderFromMap = async (orderId) => {
+            await accept(orderId);
+        };
+
+        window.accept = async (orderId) => {
+            if(hasActiveOrder) {
+                showNotification("У вас уже есть активный заказ. Завершите его перед принятием нового.", 'warning');
+                return;
+            }
+            
+            const profile = await getDriverProfile();
+            if(!profile || !profile.name || !profile.car || !profile.phone) {
+                showNotification("Заполните профиль водителя в настройках", 'warning');
+                openSettings();
+                return;
+            }
+            
+            try {
+                const orderRef = doc(db, 'orders', orderId);
+                
+                await runTransaction(db, async (transaction) => {
+                    const orderSnap = await transaction.get(orderRef);
+                    
+                    if(!orderSnap.exists()) {
+                        throw new Error("Заказ не найден");
+                    }
+                    
+                    const orderData = orderSnap.data();
+                    if(orderData.status !== 'pending') {
+                        throw new Error("Заказ уже занят или отменен");
+                    }
+                    
+                    if(orderData.driverId && orderData.driverId !== currentUser.uid) {
+                        throw new Error("Заказ уже принят другим водителем");
+                    }
+                    
+                    transaction.update(orderRef, {
+                        status: 'accepted',
+                        driverId: currentUser.uid,
+                        driverName: profile.name,
+                        driverCar: profile.car,
+                        driverColor: profile.color || "",
+                        driverPlate: profile.plate || "",
+                        driverPhone: profile.phone,
+                        driverPhoto: profile.photo || "",
+                        acceptedAt: serverTimestamp()
+                    });
+                });
+                
+                currentOrderId = orderId;
+                hasActiveOrder = true;
+                await startActiveMode(orderId);
+                
+                showNotification("Заказ успешно принят!", 'success');
+                
+            } catch(error) {
+                console.error("Accept order error:", error);
+                showNotification("Ошибка принятия заказа: " + (error.message || "Заказ уже занят"), 'error');
+            }
+        };
+
+        async function getDriverProfile() {
+            if(!currentUser) return null;
+            
+            try {
+                const driverRef = doc(db, 'drivers', currentUser.uid);
+                const driverSnap = await getDoc(driverRef);
+                
+                if(driverSnap.exists()) {
+                    return driverSnap.data();
+                }
+                return null;
+            } catch(error) {
+                console.error("Error getting driver profile:", error);
+                return null;
+            }
+        }
+
+        async function updateDriverProfile() {
+            if(!currentUser) return;
+            
+            try {
+                const driverRef = doc(db, 'drivers', currentUser.uid);
+                await setDoc(driverRef, {
+                    ...driverData,
+                    userId: currentUser.uid,
+                    updatedAt: serverTimestamp(),
+                    isOnline: true
+                }, { merge: true });
+            } catch(error) {
+                console.error("Error updating driver profile:", error);
+            }
+        }
+
+        async function restoreActiveOrder() {
+            if (restoreAttempted || !currentUser) return;
+            restoreAttempted = true;
+            
+            try {
+                const q = query(
+                    collection(db, 'orders'),
+                    where('driverId', '==', currentUser.uid),
+                    where('status', 'in', ['accepted', 'arrived', 'waiting', 'in_progress'])
+                );
+                const snapshot = await getDocs(q);
+                
+                if (!snapshot.empty) {
+                    const orderDoc = snapshot.docs[0];
+                    currentOrderId = orderDoc.id;
+                    const orderData = orderDoc.data();
+                    activeOrderData = orderData;
+                    
+                    document.getElementById('ordersMapScreen').classList.add('hidden');
+                    document.getElementById('activeScreen').classList.remove('hidden');
+                    
+                    orderStatus = orderData.status;
+                    currentPoints = orderData.points || [];
+                    hasActiveOrder = true;
+                    
+                    await initializeActiveOrder(currentOrderId, orderData);
+                }
+            } catch (error) {
+                console.error("Restore error:", error);
+                restoreAttempted = false;
+            }
+        }
+
+        function loadStats() {
+            const today = new Date().toDateString();
+            const stats = JSON.parse(localStorage.getItem('jura_stats') || '{}');
+            
+            if(stats.date !== today) {
+                document.getElementById('statMoney').innerText = "0 с.";
+                document.getElementById('statTrips').innerText = "0";
+            } else {
+                document.getElementById('statMoney').innerText = (stats.money || 0).toFixed(1) + " с.";
+                document.getElementById('statTrips').innerText = stats.trips || 0;
+            }
+        }
+
+        window.openSettings = () => {
+            document.getElementById('settingsScreen').classList.remove('hidden');
+            document.getElementById('sName').value = localStorage.getItem('dr_name') || '';
+            document.getElementById('sCar').value = localStorage.getItem('dr_car') || '';
+            document.getElementById('sColor').value = localStorage.getItem('dr_color') || '';
+            document.getElementById('sPlate').value = localStorage.getItem('dr_plate') || '';
+            document.getElementById('sPhone').value = localStorage.getItem('dr_phone') || '';
+            document.getElementById('sPhoto').value = localStorage.getItem('dr_photo') || '';
+            document.getElementById('darkToggle').checked = document.documentElement.classList.contains('dark');
+            
+            if(localStorage.getItem('dr_photo')) {
+                document.getElementById('sPhotoPreview').src = localStorage.getItem('dr_photo');
+                document.getElementById('sPhotoPreview').classList.remove('hidden');
+            }
+            
+            loadStats();
+        };
+
+        window.closeSettings = () => {
+            document.getElementById('settingsScreen').classList.add('hidden');
+        };
+
+        window.saveSettings = async () => {
+            const name = document.getElementById('sName').value.trim();
+            if(!name) {
+                showNotification("Введите ваше имя", 'warning');
+                return;
+            }
+            
+            const photoUrl = document.getElementById('sPhoto').value.trim();
+            
+            if(photoUrl && !photoUrl.match(/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/i)) {
+                showNotification("Некорректный URL фото водителя. Должен быть ссылкой на изображение.", 'error');
+                return;
+            }
+            
+            localStorage.setItem('dr_name', name);
+            localStorage.setItem('dr_car', document.getElementById('sCar').value);
+            localStorage.setItem('dr_color', document.getElementById('sColor').value);
+            localStorage.setItem('dr_plate', document.getElementById('sPlate').value);
+            localStorage.setItem('dr_phone', document.getElementById('sPhone').value);
+            localStorage.setItem('dr_photo', photoUrl);
+            
+            driverData = {
+                name,
+                car: document.getElementById('sCar').value,
+                color: document.getElementById('sColor').value,
+                plate: document.getElementById('sPlate').value,
+                phone: document.getElementById('sPhone').value,
+                photo: photoUrl
+            };
+            
+            await updateDriverProfile();
+            closeSettings();
+            checkProfile();
+            showNotification("Профиль успешно сохранен", 'success');
+        };
+
+        window.toggleDark = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('jura_dark_dr', document.documentElement.classList.contains('dark'));
+        };
+
+        window.switchToListView = () => {
+            showNotification("В этой версии используется только карта заказов.", 'info');
+        };
+
+        window.refreshOrders = () => {
+            listenOrdersOnMap();
+            showNotification("Список заказов обновлен", 'success');
+        };
+
+        async function startActiveMode(orderId) {
+            if(ordersMapUnsub) {
+                ordersMapUnsub();
+                ordersMapUnsub = null;
+            }
+            
+            document.getElementById('ordersMapScreen').classList.add('hidden');
+            document.getElementById('activeScreen').classList.remove('hidden');
+            
+            const orderSnap = await getDoc(doc(db, 'orders', orderId));
+            const orderData = orderSnap.data();
+            
+            if(!orderData) {
+                showNotification("Ошибка загрузки данных заказа", 'error');
+                resetApp();
+                return;
+            }
+            
+            await initializeActiveOrder(orderId, orderData);
+        }
+
+        async function initializeActiveOrder(orderId, orderData) {
+            currentOrderId = orderId;
+            orderStatus = orderData.status;
+            currentPoints = orderData.points || [];
+            clientLocation = orderData.clientLocation || null;
+            activeOrderData = orderData;
+            
+            // Восстанавливаем данные с сервера
+            waitMinutes = orderData.waitTime || 0;
+            trafficMinutes = orderData.trafficTime || 0;
+            distanceKm = orderData.distance || 0;
+            drivingMinutes = orderData.drivingTime || 0;
+            
+            fixedPrice = PRICES.START;
+            tip = orderData.tip || 0;
+            
+            // Базовые надбавки
+            if(orderData.options?.pets) fixedPrice += PRICES.ADDON_PETS;
+            if(orderData.options?.signboard) fixedPrice += PRICES.ADDON_SIGN;
+            if(orderData.options?.luggage > 0) fixedPrice += parseInt(orderData.options.luggage);
+            
+            // Кондиционер
+            if(orderData.options?.ac) {
+                fixedPrice = fixedPrice * 1.1;
+            }
+            
+            // Расстояние
+            if(distanceKm > 4) {
+                fixedPrice += (distanceKm - 4) * PRICES.KM_CITY;
+            }
+            
+            // Дополнительные точки
+            if(currentPoints.length > 2) {
+                fixedPrice += (currentPoints.length - 2) * 3;
+            }
+            
+            document.getElementById('tariffNameDisplay').innerText = orderData.tariff.id.toUpperCase();
+            
+            const chips = document.getElementById('orderChips');
+            chips.innerHTML = '';
+            
+            if(orderData.tariff.type === 'delivery') {
+                chips.innerHTML += '<span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-box mr-1"></i> Доставка</span>';
+            }
+            
+            if(orderData.options?.luggage > 0) {
+                chips.innerHTML += `<span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-suitcase mr-1"></i> Багаж</span>`;
+            }
+            
+            if(orderData.options?.ac) {
+                chips.innerHTML += '<span class="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-snowflake mr-1"></i> Кондиционер</span>';
+            }
+            
+            if(orderData.options?.buyList) {
+                chips.innerHTML += '<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-basket-shopping mr-1"></i> Закуп</span>';
+            }
+            
+            if(tip > 0) {
+                chips.innerHTML += `<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold"><i class="fa-solid fa-bolt mr-1"></i> +${tip}с чаевые</span>`;
+            }
+            
+            const info = document.getElementById('specialInfo');
+            info.innerHTML = '';
+            
+            if(orderData.options?.signboard && orderData.options?.signboardText) {
+                info.innerHTML += `
+                    <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl border border-purple-100 dark:border-purple-800 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-sign text-purple-500 mt-0.5"></i>
+                            <div>
+                                <div class="font-bold text-purple-700 dark:text-purple-300">Табличка:</div>
+                                <div class="text-gray-700 dark:text-gray-300 mt-1">${orderData.options.signboardText}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            if(orderData.options?.buyList) {
+                info.innerHTML += `
+                    <div class="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-xl border border-purple-100 dark:border-purple-800 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-basket-shopping text-purple-500 mt-0.5"></i>
+                            <div>
+                                <div class="font-bold text-purple-700 dark:text-purple-300">Список покупок:</div>
+                                <div class="text-gray-700 dark:text-gray-300 mt-1">${orderData.options.buyList}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            if(orderData.options?.comment) {
+                info.innerHTML += `
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 p-3 rounded-xl border border-yellow-100 dark:border-yellow-800 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-comment text-yellow-500 mt-0.5"></i>
+                            <div>
+                                <div class="font-bold text-yellow-700 dark:text-yellow-300">Комментарий:</div>
+                                <div class="text-gray-700 dark:text-gray-300 mt-1">${orderData.options.comment}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            if(orderData.options?.meetingPlace) {
+                info.innerHTML += `
+                    <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-xl border border-blue-100 dark:border-blue-800 text-sm">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-map-marker-alt text-blue-500 mt-0.5"></i>
+                            <div>
+                                <div class="font-bold text-blue-700 dark:text-blue-300">Место встречи:</div>
+                                <div class="text-gray-700 dark:text-gray-300 mt-1">${orderData.options.meetingPlace}</div>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+            
+            info.className = info.innerHTML ? "space-y-3 mb-4" : "hidden";
+            
+            const pointsDiv = document.getElementById('activePoints');
+            pointsDiv.innerHTML = orderData.points.map((point, index) => `
+                <div class="flex gap-3 items-start relative">
+                    <div class="w-8 h-8 rounded-full ${index === 0 ? 'bg-black' : index === orderData.points.length-1 ? 'bg-jura' : 'bg-blue-500'} text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow border-2 border-white">
+                        ${index + 1}
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-medium dark:text-white text-sm leading-tight">${point.address || 'Точка ' + (index + 1)}</div>
+                    </div>
+                    <button onclick="openRouteToPointDriver(${point.lat}, ${point.lng})" class="text-blue-500 hover:text-blue-700 p-1">
+                        <i class="fa-solid fa-route text-sm"></i>
+                    </button>
+                </div>
+            `).join('');
+            
+            document.getElementById('clientPhoneLink').href = `tel:${orderData.clientPhone}`;
+            document.getElementById('clientPhoneLink').innerHTML = `<i class="fa-solid fa-phone mr-2 text-jura"></i> ${orderData.clientPhone}`;
+            document.getElementById('clientCallBtn').href = `tel:${orderData.clientPhone}`;
+            
+            document.getElementById('rideControls').classList.add('hidden');
+            
+            setupActiveMap(orderData.points);
+            resetMeter();
+            updateBtnState();
+            updateTariffImage(orderData.tariff.id);
+            
+            // Обновляем UI данными с сервера
+            document.getElementById('distanceDisplay').textContent = distanceKm.toFixed(1) + ' км';
+            updateWaitTimeDisplay();
+            
+            // Обновляем статус местоположения клиента
+            updateClientLocationStatus();
+            
+            if(orderStatus === 'in_progress' || orderStatus === 'waiting') {
+                startTime = orderData.timers?.tripStart?.toMillis() || Date.now();
+                document.getElementById('rideControls').classList.remove('hidden');
+                
+                if(orderStatus === 'waiting') {
+                    toggleWait(true);
+                } else {
+                    toggleWait(false);
+                }
+                
+                // Запускаем серверный таймер
+                startServerTimer();
+                startMeter();
+                
+                // Обновляем таймер
+                updateTripTimer();
+                if (orderStatus === 'waiting') {
+                    waitStartTime = orderData.timers?.waitStart?.toMillis() || Date.now();
+                }
+            }
+            
+            lastProcessedHistoryLength = orderData.history?.length || 0;
+            
+            orderUnsub = onSnapshot(doc(db, 'orders', currentOrderId), (snap) => {
+                const order = snap.data();
+                if(!order) {
+                    console.error("Order not found");
+                    resetApp();
+                    return;
+                }
+                
+                orderStatus = order.status;
+                activeOrderData = order;
+                
+                if(order.status === 'cancelled') {
+                    const cancelReason = order.cancelReason || "Не указана";
+                    const cancelledBy = order.cancelledBy || "клиентом";
+                    showNotification(`Заказ отменен ${cancelledBy}. Причина: ${cancelReason}`, 'warning', 10000);
+                    resetApp();
+                }
+                
+                if(order.clientLocation) {
+                    clientLocation = order.clientLocation;
+                    updateClientOnMap(order.clientLocation);
+                    updateClientLocationStatus();
+                }
+                
+                // Обработка истории изменений с защитой от дублирования
+                if(order.history && order.history.length > lastProcessedHistoryLength) {
+                    const newChanges = order.history.slice(lastProcessedHistoryLength);
+                    
+                    newChanges.forEach(change => {
+                        if (change.changedBy === 'client' && change.timestamp?.toMillis() > Date.now() - 60000) {
+                            // Дебаунс уведомлений от клиента
+                            if (notificationDebounceTimer) {
+                                clearTimeout(notificationDebounceTimer);
+                            }
+                            
+                            notificationDebounceTimer = setTimeout(() => {
+                                showNotification(
+                                    `Клиент изменил заказ: ${change.description}` + 
+                                    (order.currentPrice ? `\nНовая цена: ${order.currentPrice.toFixed(2)} сомони` : ''),
+                                    'info',
+                                    8000
+                                );
+                            }, 1000);
+                        }
+                    });
+                    
+                    lastProcessedHistoryLength = order.history.length;
+                }
+                
+                // Обновляем маршрут при изменениях
+                if (order.points && JSON.stringify(currentPoints) !== JSON.stringify(order.points)) {
+                    currentPoints = order.points;
+                    const pointsDiv = document.getElementById('activePoints');
+                    pointsDiv.innerHTML = currentPoints.map((point, index) => `
+                        <div class="flex gap-3 items-start relative">
+                            <div class="w-8 h-8 rounded-full ${index === 0 ? 'bg-black' : index === currentPoints.length-1 ? 'bg-jura' : 'bg-blue-500'} text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow border-2 border-white">
+                                ${index + 1}
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium dark:text-white text-sm leading-tight">${point.address || 'Точка ' + (index + 1)}</div>
+                            </div>
+                            <button onclick="openRouteToPointDriver(${point.lat}, ${point.lng})" class="text-blue-500 hover:text-blue-700 p-1">
+                                <i class="fa-solid fa-route text-sm"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                    
+                    setupActiveMap(currentPoints);
+                }
+                
+                // Обновляем данные с сервера
+                if(order.distance !== undefined) {
+                    distanceKm = order.distance;
+                    document.getElementById('distanceDisplay').textContent = distanceKm.toFixed(1) + ' км';
+                }
+                
+                if(order.waitTime !== undefined) {
+                    waitMinutes = order.waitTime;
+                    updateWaitTimeDisplay();
+                }
+                
+                if(order.trafficTime !== undefined) {
+                    trafficMinutes = order.trafficTime;
+                }
+                
+                if(order.drivingTime !== undefined) {
+                    drivingMinutes = order.drivingTime;
+                }
+                
+                // Обновляем цену с сервера
+                if(order.currentPrice) {
+                    rawPrice = order.currentPrice - fixedPrice - tip;
+                    updateMeterUI();
+                }
+                
+                updateBtnState();
+                
+            }, (error) => {
+                console.error("Order subscription error:", error);
+                if(error.code === 'permission-denied') {
+                    showNotification("Ошибка доступа к заказу", 'error');
+                    resetApp();
+                }
+            });
+            
+            addListener(orderUnsub);
+        }
+
+        function updateClientLocationStatus() {
+            const statusElement = document.getElementById('clientLocationStatus');
+            if (!statusElement) return;
+            
+            if (clientLocation) {
+                const updateTime = clientLocation.updatedAt?.toMillis() || Date.now();
+                const timeDiff = Date.now() - updateTime;
+                
+                if (timeDiff < 30000) { // Менее 30 секунд
+                    statusElement.innerHTML = '<i class="fa-solid fa-circle-check text-green-500 mr-1"></i> Местоположение обновлено только что';
+                    statusElement.className = 'text-xs text-green-600 mt-1 flex items-center';
+                } else if (timeDiff < 60000) { // Менее 1 минуты
+                    statusElement.innerHTML = '<i class="fa-solid fa-clock text-yellow-500 mr-1"></i> Местоположение обновлено недавно';
+                    statusElement.className = 'text-xs text-yellow-600 mt-1 flex items-center';
+                } else {
+                    statusElement.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500 mr-1"></i> Местоположение устарело';
+                    statusElement.className = 'text-xs text-red-600 mt-1 flex items-center';
+                }
+            } else {
+                statusElement.innerHTML = '<i class="fa-solid fa-circle-question text-gray-500 mr-1"></i> Местоположение не определено';
+                statusElement.className = 'text-xs text-gray-600 mt-1 flex items-center';
+            }
+        }
+
+        window.openRouteToClient = () => {
+            if (!clientLocation || !lastPos) {
+                showNotification("Не удалось определить местоположение клиента", 'error');
+                return;
+            }
+            
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let mapsUrl;
+            
+            if (/android/i.test(userAgent)) {
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lastPos.lat},${lastPos.lng}&destination=${clientLocation.lat},${clientLocation.lng}&travelmode=driving`;
+            } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                mapsUrl = `https://maps.apple.com/?saddr=${lastPos.lat},${lastPos.lng}&daddr=${clientLocation.lat},${clientLocation.lng}&dirflg=d`;
+            } else {
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lastPos.lat},${lastPos.lng}&destination=${clientLocation.lat},${clientLocation.lng}&travelmode=driving`;
+            }
+            
+            window.open(mapsUrl, '_blank');
+        };
+
+        window.openRouteToPointDriver = (lat, lng) => {
+            if (!lastPos) {
+                showNotification("Не удалось определить ваше местоположение", 'error');
+                return;
+            }
+            
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let mapsUrl;
+            
+            if (/android/i.test(userAgent)) {
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lastPos.lat},${lastPos.lng}&destination=${lat},${lng}&travelmode=driving`;
+            } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                mapsUrl = `https://maps.apple.com/?saddr=${lastPos.lat},${lastPos.lng}&daddr=${lat},${lng}&dirflg=d`;
+            } else {
+                mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lastPos.lat},${lastPos.lng}&destination=${lat},${lng}&travelmode=driving`;
+            }
+            
+            window.open(mapsUrl, '_blank');
+        };
+
+        function updateTariffImage(tariffId) {
+            const imageElement = document.getElementById('currentTariffImage');
+            const nameElement = document.getElementById('currentTariffName');
+            
+            let imageSrc = 'tarif/standard.png';
+            let name = 'Стандарт';
+            
+            switch(tariffId) {
+                case 'standart':
+                    imageSrc = 'tarif/standard.png';
+                    name = 'Стандарт';
+                    break;
+                case 'comfort':
+                    imageSrc = 'tarif/comfort.png';
+                    name = 'Комфорт';
+                    break;
+                case 'minivan':
+                    imageSrc = 'tarif/miniven.png';
+                    name = 'Минивэн';
+                    break;
+                case 'delivery':
+                case 'buy_and_deliver':
+                    imageSrc = 'tarif/moped.png';
+                    name = tariffId === 'delivery' ? 'Доставка' : 'Купим и доставим';
+                    break;
+            }
+            
+            if(imageElement) imageElement.src = imageSrc;
+            if(nameElement) nameElement.textContent = name;
+        }
+
+        function setupActiveMap(points) {
+            if(!activeMap) {
+                activeMap = L.map('activeMap', { zoomControl: false }).setView([38.5598, 68.7870], 14);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap, © CartoDB'
+                }).addTo(activeMap);
+            }
+            
+            activeMap.eachLayer(layer => {
+                if(layer instanceof L.Marker || layer instanceof L.Polyline) {
+                    activeMap.removeLayer(layer);
+                }
+            });
+            
+            points.forEach((point, index) => {
+                const markerIcon = L.divIcon({
+                    html: `
+                        <div class="w-10 h-10 ${index === 0 ? 'bg-black' : index === points.length-1 ? 'bg-jura' : 'bg-blue-500'} text-white rounded-full flex items-center justify-center font-bold text-sm border-2 border-white shadow-lg">
+                            ${index + 1}
+                        </div>`,
+                    iconSize: [40, 40],
+                    className: 'route-marker'
+                });
+                
+                const marker = L.marker([point.lat, point.lng], { icon: markerIcon }).addTo(activeMap);
+                
+                const popupContent = `
+                    <div class="map-popup">
+                        <div class="font-bold mb-1">Точка ${index + 1}</div>
+                        <div class="text-sm mb-2">${point.address || 'Точка маршрута'}</div>
+                        <button onclick="window.openRouteToPointDriver(${point.lat}, ${point.lng})" 
+                                class="w-full bg-jura text-white py-2 rounded-lg text-sm font-bold hover:bg-juraDark transition-colors">
+                            <i class="fa-solid fa-route mr-1"></i> Маршрут
+                        </button>
+                    </div>`;
+                
+                marker.bindPopup(popupContent);
+            });
+            
+            if(points.length > 1) {
+                const coordsStr = points.map(p => `${p.lng},${p.lat}`).join(';');
+                
+                fetch(`https://router.project-osrm.org/route/v1/driving/${coordsStr}?overview=full&geometries=polyline`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.routes && data.routes[0]) {
+                            const decoded = polyline.decode(data.routes[0].geometry);
+                            routeLayer = L.polyline(decoded, {
+                                color: '#2ecc71',
+                                weight: 5,
+                                opacity: 0.8,
+                                lineCap: 'round',
+                                lineJoin: 'round'
+                            }).addTo(activeMap);
+                            
+                            activeMap.fitBounds(routeLayer.getBounds(), { 
+                                padding: [30, 30],
+                                maxZoom: 16
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Routing error:", error);
+                    });
+            } else if(points.length === 1) {
+                activeMap.setView([points[0].lat, points[0].lng], 15);
+            }
+        }
+
+        function updateClientOnMap(location) {
+            if (!activeMap) return;
+            
+            if (!clientMarker) {
+                const clientIcon = L.divIcon({
+                    html: `
+                        <div class="client-icon">
+                            <i class="fa-solid fa-user text-blue-500"></i>
+                        </div>`,
+                    iconSize: [36, 36],
+                    className: 'client-marker'
+                });
+                clientMarker = L.marker([location.lat, location.lng], { icon: clientIcon }).addTo(activeMap);
+                
+                const popupContent = `
+                    <div class="map-popup">
+                        <div class="font-bold mb-1">Клиент</div>
+                        <div class="text-sm mb-2">Текущее местоположение</div>
+                        <button onclick="window.openRouteToClient()" 
+                                class="w-full bg-blue-500 text-white py-2 rounded-lg text-sm font-bold hover:bg-blue-600 transition-colors">
+                            <i class="fa-solid fa-route mr-1"></i> Маршрут к клиенту
+                        </button>
+                    </div>`;
+                
+                clientMarker.bindPopup(popupContent);
+            } else {
+                clientMarker.setLatLng([location.lat, location.lng]);
+            }
+        }
+
+        function updateWaitTimeDisplay() {
+            const minutes = Math.floor(waitMinutes);
+            const seconds = Math.floor((waitMinutes - minutes) * 60);
+            document.getElementById('waitTimeDisplay').textContent = 
+                `Ожидание: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        async function startServerTimer() {
+            if (serverTimerInterval) {
+                clearInterval(serverTimerInterval);
+            }
+            
+            serverTimerInterval = setInterval(async () => {
+                if (!currentOrderId) return;
+                
+                try {
+                    const updateData = {
+                        updatedAt: serverTimestamp()
+                    };
+                    
+                    if (isWaitingMode && waitStartTime) {
+                        const waitTime = (Date.now() - waitStartTime) / 60000;
+                        updateData.waitTime = waitMinutes + waitTime;
+                    }
+                    
+                    if (distanceKm > 0) {
+                        updateData.distance = distanceKm;
+                    }
+                    
+                    if (startTime) {
+                        const drivingTime = (Date.now() - startTime) / 60000;
+                        updateData.drivingTime = drivingMinutes + drivingTime;
+                    }
+                    
+                    await updateDoc(doc(db, 'orders', currentOrderId), updateData);
+                    
+                } catch (error) {
+                    console.error('Error updating server timer:', error);
+                }
+            }, 30000);
+        }
+
+        window.toggleWait = async (wait) => {
+            isWaitingMode = wait;
+            const btnDrive = document.getElementById('btnDrive');
+            const btnWait = document.getElementById('btnWait');
+            const waitBadge = document.getElementById('waitBadge');
+            const trafficBadge = document.getElementById('trafficBadge');
+            const drivingBadge = document.getElementById('drivingBadge');
+            
+            if(wait) {
+                btnWait.className = "flex-1 py-3.5 rounded-xl font-bold text-sm bg-red-500 text-white shadow transform scale-105 transition-all";
+                btnDrive.className = "flex-1 py-3.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-400 opacity-50";
+                waitBadge.classList.remove('hidden');
+                trafficBadge.classList.add('hidden');
+                drivingBadge.classList.add('hidden');
+                isDrivingMode = false;
+                
+                waitStartTime = Date.now();
+                
+                await updateDoc(doc(db, 'orders', currentOrderId), { 
+                    status: 'waiting',
+                    waitMode: true,
+                    'timers.waitStart': serverTimestamp()
+                });
+                
+                showNotification("Режим ожидания включен (+0.5 с/мин)", 'info');
+            } else {
+                btnWait.className = "flex-1 py-3.5 rounded-xl font-bold text-sm bg-gray-100 text-gray-400 border-2 border-transparent";
+                btnDrive.className = "flex-1 py-3.5 rounded-xl font-bold text-sm bg-white shadow border-2 border-jura text-black transform scale-105 transition-all";
+                waitBadge.classList.add('hidden');
+                
+                if(waitStartTime) {
+                    const waitTime = (Date.now() - waitStartTime) / 60000;
+                    waitMinutes += waitTime;
+                    waitStartTime = null;
+                }
+                
+                if(currentSpeed > 10 && !isDrivingMode) {
+                    isDrivingMode = true;
+                    drivingBadge.classList.remove('hidden');
+                }
+                
+                await updateDoc(doc(db, 'orders', currentOrderId), { 
+                    status: 'in_progress',
+                    waitMode: false,
+                    'timers.waitEnd': serverTimestamp()
+                });
+                
+                showNotification("Режим ожидания выключен", 'info');
+            }
+        };
+
+        window.nextOrderState = async () => {
+            const orderRef = doc(db, 'orders', currentOrderId);
+            
+            if(orderStatus === 'accepted') {
+                if(!confirm("Вы прибыли на точку подачи?")) return;
+                
+                orderStatus = 'arrived';
+                await updateDoc(orderRef, { 
+                    status: 'arrived',
+                    arrivedAt: serverTimestamp(),
+                    'timers.tripStart': serverTimestamp()
+                });
+                
+                showNotification("Статус изменен: Машина подана", 'success');
+                
+            } else if(orderStatus === 'arrived') {
+                orderStatus = 'in_progress';
+                startTime = Date.now();
+                
+                await updateDoc(orderRef, { 
+                    status: 'in_progress',
+                    'timers.tripStart': serverTimestamp()
+                });
+                
+                document.getElementById('rideControls').classList.remove('hidden');
+                toggleWait(false);
+                startMeter();
+                startServerTimer();
+                
+                showNotification("Поездка началась!", 'success');
+                
+            } else if(orderStatus === 'in_progress' || orderStatus === 'waiting') {
+                const total = calculateTotal();
+                if(!confirm(`Завершить поездку?\n\nИтоговая сумма: ${total} с.`)) return;
+                
+                stopMeter();
+                stopServerTimer();
+                const finalPrice = parseFloat(total);
+                
+                const breakdown = {
+                    waitMinutes: waitMinutes.toFixed(2),
+                    trafficMinutes: trafficMinutes.toFixed(2),
+                    drivingMinutes: drivingMinutes.toFixed(2),
+                    distanceKm: distanceKm.toFixed(2),
+                    basePrice: fixedPrice,
+                    waitPrice: (waitMinutes * PRICES.WAIT_MANUAL).toFixed(2),
+                    trafficPrice: (trafficMinutes * PRICES.WAIT_TRAFFIC).toFixed(2),
+                    drivingPrice: (drivingMinutes * PRICES.DRIVING).toFixed(2),
+                    distancePrice: (distanceKm > 4 ? (distanceKm - 4) * PRICES.KM_CITY : 0).toFixed(2)
+                };
+                
+                await updateDoc(orderRef, { 
+                    status: 'completed',
+                    finalPrice: finalPrice,
+                    completedAt: serverTimestamp(),
+                    driverEarnings: finalPrice * 0.8,
+                    breakdown: breakdown,
+                    distance: distanceKm,
+                    waitTime: waitMinutes,
+                    trafficTime: trafficMinutes,
+                    drivingTime: drivingMinutes
+                });
+                
+                saveLocalStats(finalPrice);
+                showReceipt(finalPrice, breakdown);
+                
+                showNotification("Поездка завершена!", 'success');
+            }
+            
+            updateBtnState();
+        };
+
+        function startMeter() {
+            meterInterval = setInterval(() => {
+                const now = Date.now();
+                const elapsed = Math.floor((now - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                
+                document.getElementById('tripTimer').innerText = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if(isWaitingMode) {
+                    rawPrice += (PRICES.WAIT_MANUAL / 60);
+                } else {
+                    if(currentSpeed < 10) {
+                        rawPrice += (PRICES.WAIT_TRAFFIC / 60);
+                        trafficMinutes += 1/60;
+                        document.getElementById('trafficBadge').classList.remove('hidden');
+                        document.getElementById('drivingBadge').classList.add('hidden');
+                        
+                        if(drivingTimer) {
+                            clearInterval(drivingTimer);
+                            drivingTimer = null;
+                            isDrivingMode = false;
+                        }
+                    } else {
+                        document.getElementById('trafficBadge').classList.add('hidden');
+                        if(!isDrivingMode) {
+                            isDrivingMode = true;
+                            if(!drivingTimer) {
+                                drivingTimer = setInterval(() => {
+                                    drivingMinutes += 1/60;
+                                    rawPrice += (PRICES.DRIVING / 60);
+                                }, 1000);
+                            }
+                            document.getElementById('drivingBadge').classList.remove('hidden');
+                        }
+                    }
+                }
+                
+                updateMeterUI();
+                
+                if(elapsed % 5 === 0) {
+                    updateDoc(doc(db, 'orders', currentOrderId), { 
+                        currentPrice: calculateTotal()
+                    });
+                }
+            }, 1000);
+        }
+
+        function stopMeter() {
+            if(meterInterval) {
+                clearInterval(meterInterval);
+                meterInterval = null;
+            }
+            
+            if(waitTimer) {
+                clearInterval(waitTimer);
+                waitTimer = null;
+            }
+            
+            if(trafficTimer) {
+                clearInterval(trafficTimer);
+                trafficTimer = null;
+            }
+            
+            if(drivingTimer) {
+                clearInterval(drivingTimer);
+                drivingTimer = null;
+                isDrivingMode = false;
+            }
+        }
+
+        function stopServerTimer() {
+            if (serverTimerInterval) {
+                clearInterval(serverTimerInterval);
+                serverTimerInterval = null;
+            }
+        }
+
+        function resetMeter() {
+            rawPrice = 0;
+            totalDist = 0;
+            isWaitingMode = false;
+            waitMinutes = 0;
+            trafficMinutes = 0;
+            drivingMinutes = 0;
+            distanceKm = 0;
+            waitStartTime = null;
+            
+            document.getElementById('meterPrice').innerText = calculateTotal();
+            document.getElementById('tripTimer').innerText = "00:00";
+            document.getElementById('speedValue').textContent = "0";
+            document.getElementById('distanceDisplay').textContent = "0.0 км";
+            document.getElementById('waitTimeDisplay').textContent = "Ожидание: 0:00";
+            
+            document.getElementById('trafficBadge').classList.add('hidden');
+            document.getElementById('waitBadge').classList.add('hidden');
+            document.getElementById('drivingBadge').classList.add('hidden');
+        }
+
+        function calculateTotal() {
+            let total = fixedPrice + tip + rawPrice;
+            
+            if(distanceKm > 4) {
+                total += (distanceKm - 4) * PRICES.KM_CITY;
+            }
+            
+            return total.toFixed(2);
+        }
+
+        function updateMeterUI() {
+            document.getElementById('meterPrice').innerText = calculateTotal();
+            
+            if(orderStatus === 'in_progress' || orderStatus === 'waiting') {
+                document.getElementById('mainActionBtn').innerText = `ЗАВЕРШИТЬ (${calculateTotal()} с.)`;
+            }
+            
+            updateWaitTimeDisplay();
+        }
+
+        function updateTripTimer() {
+            if (!startTime) return;
+            
+            const now = Date.now();
+            const elapsed = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            
+            document.getElementById('tripTimer').innerText = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateBtnState() {
+            const btn = document.getElementById('mainActionBtn');
+            btn.className = "w-full py-4 text-xl font-bold text-white rounded-2xl shadow-lg transition-all flex justify-center items-center gap-2";
+            
+            if(orderStatus === 'accepted') {
+                btn.style.background = '#f59e0b';
+                btn.innerHTML = '<i class="fa-solid fa-check-to-slot mr-2"></i> Я НА МЕСТЕ';
+            } else if(orderStatus === 'arrived') {
+                btn.style.background = '#2ecc71';
+                btn.innerHTML = '<i class="fa-solid fa-play mr-2"></i> ПОЕХАЛИ (СТАРТ)';
+            } else if(orderStatus === 'in_progress' || orderStatus === 'waiting') {
+                btn.style.background = '#ef4444';
+                btn.innerHTML = `<i class="fa-solid fa-flag-checkered mr-2"></i> ЗАВЕРШИТЬ`;
+            }
+        }
+
+        function saveLocalStats(amount) {
+            const today = new Date().toDateString();
+            let stats = JSON.parse(localStorage.getItem('jura_stats') || '{}');
+            
+            if(stats.date !== today) {
+                stats = { date: today, money: 0, trips: 0 };
+            }
+            
+            stats.money += parseFloat(amount);
+            stats.trips += 1;
+            
+            localStorage.setItem('jura_stats', JSON.stringify(stats));
+            loadStats();
+        }
+
+        function showReceipt(total, breakdown) {
+            document.getElementById('receiptModal').classList.remove('hidden');
+            document.getElementById('rcptDate').innerText = new Date().toLocaleString('ru-RU', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            document.getElementById('rcptTariff').innerText = document.getElementById('tariffNameDisplay').innerText;
+            document.getElementById('rcptTime').innerText = document.getElementById('tripTimer').innerText;
+            
+            const distancePrice = distanceKm > 4 ? (distanceKm - 4) * PRICES.KM_CITY : 0;
+            document.getElementById('rcptDist').innerText = distanceKm.toFixed(2) + " км (" + distancePrice.toFixed(2) + " с.)";
+            
+            const waitPrice = waitMinutes * PRICES.WAIT_MANUAL;
+            document.getElementById('rcptWait').innerText = waitMinutes.toFixed(2) + " мин (" + waitPrice.toFixed(2) + " с.)";
+            
+            const trafficPrice = trafficMinutes * PRICES.WAIT_TRAFFIC;
+            document.getElementById('rcptTraffic').innerText = trafficMinutes.toFixed(2) + " мин (" + trafficPrice.toFixed(2) + " с.)";
+            
+            const drivingPrice = drivingMinutes * PRICES.DRIVING;
+            document.getElementById('rcptDriving').innerText = drivingMinutes.toFixed(2) + " мин (" + drivingPrice.toFixed(2) + " с.)";
+            
+            const addonsPrice = fixedPrice - PRICES.START - distancePrice;
+            document.getElementById('rcptAddons').innerText = addonsPrice.toFixed(2) + " с.";
+            
+            document.getElementById('rcptTip').innerText = tip > 0 ? tip.toFixed(2) + " с." : "0 с.";
+            
+            document.getElementById('rcptTotal').innerText = total + " с.";
+        }
+
+        window.closeReceipt = () => {
+            document.getElementById('receiptModal').classList.add('hidden');
+            resetApp();
+        };
+
+        function startGPS() {
+            if(!navigator.geolocation) {
+                console.log("Geolocation not supported");
+                return;
+            }
+            
+            if(watchId) {
+                navigator.geolocation.clearWatch(watchId);
+            }
+            
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const { latitude, longitude, speed } = position.coords;
+                    
+                    currentSpeed = (speed || 0) * 3.6;
+                    document.getElementById('speedValue').textContent = Math.round(currentSpeed);
+                    
+                    if(currentOrderId && orderStatus && orderStatus !== 'completed') {
+                        if(gpsThrottleTimer) {
+                            clearTimeout(gpsThrottleTimer);
+                        }
+                        
+                        gpsThrottleTimer = setTimeout(() => {
+                            updateDoc(doc(db, 'orders', currentOrderId), { 
+                                driverLocation: { 
+                                    lat: latitude, 
+                                    lng: longitude,
+                                    speed: currentSpeed,
+                                    updatedAt: serverTimestamp()
+                                }
+                            });
+                            
+                            updateDriverProfileLocation(latitude, longitude);
+                        }, 3000);
+                    }
+                    
+                    if(activeMap) {
+                        if(!driverMarker) {
+                            const driverIcon = L.divIcon({
+                                html: `
+                                    <div class="driver-icon">
+                                        <i class="fa-solid fa-taxi text-jura text-2xl"></i>
+                                    </div>`,
+                                iconSize: [48, 48],
+                                className: 'driver-marker'
+                            });
+                            
+                            driverMarker = L.marker([latitude, longitude], { icon: driverIcon }).addTo(activeMap);
+                        } else {
+                            driverMarker.setLatLng([latitude, longitude]);
+                        }
+                    }
+                    
+                    if(orderStatus === 'in_progress' && lastPos && !isWaitingMode) {
+                        const distance = calculateDistance(
+                            lastPos.lat, lastPos.lng,
+                            latitude, longitude
+                        );
+                        
+                        if(distance > 0.02) {
+                            totalDist += distance;
+                            distanceKm += distance;
+                            document.getElementById('distanceDisplay').textContent = distanceKm.toFixed(1) + ' км';
+                        }
+                    }
+                    
+                    lastPos = { lat: latitude, lng: longitude };
+                    
+                },
+                (error) => {
+                    console.error("GPS error:", error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 15000
+                }
+            );
+        }
+
+        async function updateDriverProfileLocation(lat, lng) {
+            if(!currentUser) return;
+            
+            try {
+                const driverRef = doc(db, 'drivers', currentUser.uid);
+                await updateDoc(driverRef, {
+                    currentLocation: {
+                        lat: lat,
+                        lng: lng,
+                        updatedAt: serverTimestamp()
+                    }
+                });
+            } catch(error) {
+                console.error("Error updating driver location:", error);
+            }
+        }
+
+        function stopGPS() {
+            if(watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            
+            if(gpsThrottleTimer) {
+                clearTimeout(gpsThrottleTimer);
+                gpsThrottleTimer = null;
+            }
+        }
+
+        window.openNav = () => {
+            if(!currentPoints || currentPoints.length === 0) {
+                showNotification("Нет точек маршрута", 'warning');
+                return;
+            }
+            
+            let target;
+            
+            if(orderStatus === 'accepted') {
+                target = currentPoints[0];
+            } else if(orderStatus === 'in_progress') {
+                target = currentPoints[currentPoints.length - 1];
+            } else {
+                target = currentPoints[0];
+            }
+            
+            if(target) {
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${target.lat},${target.lng}`, '_blank');
+            }
+        };
+
+        window.openEditOrderPanel = () => {
+            document.getElementById('editOrderPanel').classList.add('visible');
+            updateDriverEditedPrice();
+        };
+
+        window.closeEditOrderPanel = () => {
+            document.getElementById('editOrderPanel').classList.remove('visible');
+            document.getElementById('driverEditSearchResults').classList.add('hidden');
+        };
+
+        function setupDriverEditSearch() {
+            const inp = document.getElementById('driverEditAddrInput');
+            let timer;
+            
+            function handleSearchInput(e) {
+                clearTimeout(timer);
+                
+                if(driverEditSearchController) {
+                    driverEditSearchController.abort();
+                }
+                driverEditSearchController = new AbortController();
+                
+                if(e.target.value.length < 2) {
+                    document.getElementById('driverEditSearchResults').classList.add('hidden');
+                    return;
+                }
+                
+                document.getElementById('driverEditSearchLoader').classList.remove('hidden');
+                
+                timer = setTimeout(async () => {
+                    try {
+                        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(e.target.value)}&addressdetails=1&limit=6&countrycodes=tj&bounded=1&viewbox=68.5,38.3,69.1,38.8`, {
+                            signal: driverEditSearchController.signal
+                        });
+                        const data = await res.json();
+                        const div = document.getElementById('driverEditSearchResults');
+                        div.innerHTML = '';
+                        document.getElementById('driverEditSearchLoader').classList.add('hidden');
+                        
+                        if(data.length === 0) {
+                            div.innerHTML = `<div class="p-4 text-center text-gray-500">Ничего не найдено</div>`;
+                            div.classList.remove('hidden');
+                            return;
+                        }
+                        
+                        data.forEach(it => {
+                            let display = it.display_name || "";
+                            if(display.length > 60) display = display.substring(0, 60) + '...';
+                            
+                            const item = document.createElement('div');
+                            item.className = 'search-result-item dark:text-white';
+                            item.innerHTML = `
+                                <div class="flex items-start gap-3">
+                                    <i class="fa-solid fa-map-marker-alt text-gray-400 mt-0.5"></i>
+                                    <div class="flex-1">
+                                        <div class="font-semibold">${escapeHtml(display.split(',')[0])}</div>
+                                        <div class="text-xs text-gray-500 truncate">${escapeHtml(display)}</div>
+                                    </div>
+                                </div>`;
+                            
+                            item.addEventListener('click', () => {
+                                document.getElementById('driverEditAddrInput').value = it.display_name;
+                                document.getElementById('driverEditSearchResults').classList.add('hidden');
+                            });
+                            
+                            div.appendChild(item);
+                        });
+                        
+                        div.classList.remove('hidden');
+                    } catch(e) {
+                        if(e.name !== 'AbortError') {
+                            console.error("Driver edit search error:", e);
+                            document.getElementById('driverEditSearchLoader').classList.add('hidden');
+                        }
+                    }
+                }, 600);
+            }
+            
+            function handleSearchClickOutside(e) {
+                if(!e.target.closest('#driverEditSearchResults') && !e.target.closest('#driverEditAddrInput')) {
+                    document.getElementById('driverEditSearchResults').classList.add('hidden');
+                }
+            }
+            
+            inp.addEventListener('input', handleSearchInput);
+            document.addEventListener('click', handleSearchClickOutside);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.updateDriverEditedPrice = () => {
+            const luggageValue = parseInt(document.getElementById('driverEditLuggage')?.value || 0);
+            const petsValue = document.getElementById('driverEditPets')?.checked ? PRICES.ADDON_PETS : 0;
+            
+            let base = fixedPrice;
+            
+            base = PRICES.START;
+            base += luggageValue + petsValue;
+            
+            if(distanceKm > 4) {
+                base += (distanceKm - 4) * PRICES.KM_CITY;
+            }
+            
+            if(currentPoints.length > 2) {
+                base += (currentPoints.length - 2) * 3;
+            }
+            
+            if(document.querySelector('.bg-cyan-100')) {
+                base = base * 1.1;
+            }
+            
+            const realPrice = Math.round(base * 100) / 100;
+            document.getElementById('driverEditedPrice').innerText = realPrice.toFixed(2);
+            
+            return realPrice;
+        };
+
+        window.driverAddPoint = async () => {
+            const input = document.getElementById('driverEditAddrInput');
+            const address = input.value.trim();
+            const reason = document.getElementById('driverEditReason').value.trim();
+            
+            if (!address) {
+                showNotification('Введите адрес', 'warning');
+                return;
+            }
+            
+            if (!reason) {
+                showNotification('Укажите причину добавления точки', 'warning');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&countrycodes=tj`);
+                const data = await res.json();
+                
+                if (data.length === 0) {
+                    showNotification('Адрес не найден', 'error');
+                    return;
+                }
+                
+                const point = data[0];
+                const newPoint = {
+                    lat: parseFloat(point.lat),
+                    lng: parseFloat(point.lon),
+                    address: point.display_name,
+                    type: 'intermediate'
+                };
+                
+                const orderRef = doc(db, 'orders', currentOrderId);
+                const orderSnap = await getDoc(orderRef);
+                const order = orderSnap.data();
+                
+                const historyEntry = {
+                    timestamp: Timestamp.now(),
+                    changedBy: 'driver',
+                    field: 'points',
+                    action: 'added',
+                    description: `Водитель добавил точку: ${point.display_name.substring(0, 30)}...`,
+                    reason: reason,
+                    oldValue: order.points,
+                    newValue: [...order.points, newPoint]
+                };
+                
+                const updateData = {
+                    points: [...order.points, newPoint],
+                    currentPrice: (order.currentPrice || order.estPrice || PRICES.START) + 3,
+                    updatedAt: serverTimestamp(),
+                    history: [...(order.history || []), historyEntry]
+                };
+                
+                await updateDoc(orderRef, updateData);
+                
+                input.value = '';
+                document.getElementById('driverEditSearchResults').classList.add('hidden');
+                showNotification('Точка добавлена. Клиент получит уведомление.', 'success');
+                
+                currentPoints = [...order.points, newPoint];
+                const pointsDiv = document.getElementById('activePoints');
+                pointsDiv.innerHTML = currentPoints.map((point, index) => `
+                    <div class="flex gap-3 items-start relative">
+                        <div class="w-8 h-8 rounded-full ${index === 0 ? 'bg-black' : index === currentPoints.length-1 ? 'bg-jura' : 'bg-blue-500'} text-white flex items-center justify-center font-bold text-xs shrink-0 z-10 shadow border-2 border-white">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium dark:text-white text-sm leading-tight">${point.address || 'Точка ' + (index + 1)}</div>
+                        </div>
+                        <button onclick="openRouteToPointDriver(${point.lat}, ${point.lng})" class="text-blue-500 hover:text-blue-700 p-1">
+                            <i class="fa-solid fa-route text-sm"></i>
+                        </button>
+                    </div>
+                `).join('');
+                
+                setupActiveMap(currentPoints);
+                
+            } catch (error) {
+                console.error('Error adding point:', error);
+                showNotification('Ошибка при добавлении точки: ' + error.message, 'error');
+            }
+        };
+
+        window.saveDriverOrderChanges = async () => {
+            if (!currentOrderId) {
+                showNotification('Нет активного заказа', 'warning');
+                return;
+            }
+            
+            try {
+                const luggageValue = parseInt(document.getElementById('driverEditLuggage')?.value || '0');
+                const petsValue = document.getElementById('driverEditPets')?.checked || false;
+                const reason = document.getElementById('driverEditReason')?.value?.trim() || '';
+                
+                if (!reason) {
+                    showNotification('Укажите причину изменений', 'warning');
+                    return;
+                }
+                
+                const orderRef = doc(db, 'orders', currentOrderId);
+                const orderSnap = await getDoc(orderRef);
+                
+                if (!orderSnap.exists()) {
+                    showNotification('Заказ не найден', 'error');
+                    resetApp();
+                    return;
+                }
+                
+                const order = orderSnap.data();
+                const changes = [];
+                const updateData = {};
+                
+                const currentLuggage = order.options?.luggage || 0;
+                const currentPets = order.options?.pets || false;
+                
+                if (luggageValue !== currentLuggage) {
+                    changes.push({
+                        timestamp: Timestamp.now(),
+                        changedBy: 'driver',
+                        field: 'options.luggage',
+                        action: 'changed',
+                        description: `Водитель изменил багаж: ${currentLuggage} → ${luggageValue} сомони`,
+                        reason: reason,
+                        oldValue: currentLuggage,
+                        newValue: luggageValue
+                    });
+                    updateData['options.luggage'] = luggageValue;
+                }
+                
+                if (petsValue !== currentPets) {
+                    changes.push({
+                        timestamp: Timestamp.now(),
+                        changedBy: 'driver',
+                        field: 'options.pets',
+                        action: petsValue ? 'added' : 'removed',
+                        description: petsValue ? 'Водитель добавил животных' : 'Водитель убрал животных',
+                        reason: reason,
+                        oldValue: currentPets,
+                        newValue: petsValue
+                    });
+                    updateData['options.pets'] = petsValue;
+                }
+                
+                if (changes.length === 0) {
+                    showNotification('Нет изменений для сохранения', 'info');
+                    return;
+                }
+                
+                let newPrice = order.currentPrice || order.estPrice || PRICES.START;
+                
+                changes.forEach(change => {
+                    if (change.field === 'options.luggage') {
+                        newPrice += (change.newValue - change.oldValue);
+                    } else if (change.field === 'options.pets') {
+                        if (change.newValue && !change.oldValue) {
+                            newPrice += PRICES.ADDON_PETS;
+                        } else if (!change.newValue && change.oldValue) {
+                            newPrice -= PRICES.ADDON_PETS;
+                        }
+                    }
+                });
+                
+                if (order.options?.ac) {
+                    newPrice = newPrice * 1.1;
+                }
+                
+                if (order.tip) {
+                    newPrice += order.tip;
+                }
+                
+                updateData.currentPrice = Math.max(newPrice, PRICES.START);
+                updateData.updatedAt = serverTimestamp();
+                
+                const currentHistory = order.history || [];
+                const updatedHistory = [...currentHistory, ...changes];
+                
+                if (updatedHistory.length !== currentHistory.length) {
+                    updateData.history = updatedHistory;
+                }
+                
+                await updateDoc(orderRef, updateData);
+                
+                showNotification('Изменения сохранены! Клиент получит уведомление.', 'success');
+                closeEditOrderPanel();
+                
+                document.getElementById('meterPrice').innerText = newPrice.toFixed(2);
+                
+            } catch (error) {
+                console.error('Error saving driver changes:', error);
+                showNotification('Ошибка при сохранении изменений: ' + error.message, 'error');
+            }
+        };
+
+        function resetApp() {
+            cleanupListeners();
+            
+            if (orderUnsub) {
+                orderUnsub();
+                orderUnsub = null;
+            }
+            
+            if (ordersMapUnsub) {
+                ordersMapUnsub();
+                ordersMapUnsub = null;
+            }
+            
+            stopMeter();
+            stopServerTimer();
+            stopGPS();
+            releaseWakeLock();
+            
+            currentOrderId = null;
+            orderStatus = null;
+            currentPoints = [];
+            rawPrice = 0;
+            fixedPrice = 0;
+            tip = 0;
+            totalDist = 0;
+            distanceKm = 0;
+            waitMinutes = 0;
+            trafficMinutes = 0;
+            drivingMinutes = 0;
+            isWaitingMode = false;
+            isDrivingMode = false;
+            hasActiveOrder = false;
+            restoreAttempted = false;
+            selectedOrderId = null;
+            waitStartTime = null;
+            clientLocation = null;
+            activeOrderData = null;
+            lastProcessedHistoryLength = 0;
+            
+            if(driverMarker) {
+                if (activeMap) activeMap.removeLayer(driverMarker);
+                driverMarker = null;
+            }
+            
+            if(clientMarker) {
+                if (activeMap) activeMap.removeLayer(clientMarker);
+                clientMarker = null;
+            }
+            
+            if(routeLayer) {
+                if (activeMap) activeMap.removeLayer(routeLayer);
+                routeLayer = null;
+            }
+            
+            document.getElementById('activeScreen').classList.add('hidden');
+            document.getElementById('editOrderPanel').classList.remove('visible');
+            document.getElementById('ordersMapScreen').classList.remove('hidden');
+            
+            setTimeout(() => {
+                initOrdersMap();
+                listenOrdersOnMap();
+                startGPS();
+                requestWakeLock();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
