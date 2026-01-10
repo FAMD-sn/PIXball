@@ -36,6 +36,17 @@
     </script>
 
     <style>
+        
+        /* Глобальное исправление для всех панелей */
+[id$="Panel"] {
+    overflow: hidden !important;
+}
+
+[id$="Panel"] > div:last-child {
+    overflow-y: auto !important;
+    max-height: calc(100% - 60px) !important;
+}
+
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         
         * {
@@ -435,149 +446,175 @@
         .point-route-btn:hover {
             background: #27ae60;
         }
-
-        .notification-toast {
+        
+        /* Chat Styles */
+        .chat-container {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: white;
-            color: #333;
-            padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 10000;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .dark .chat-container {
+            background: #1e293b;
+        }
+        
+        .chat-container.visible {
+            transform: translateY(0);
+        }
+        
+        .chat-header {
+            background: white;
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        
+        .dark .chat-header {
+            background: #1e293b;
+            border-bottom-color: #4b5563;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            max-width: 350px;
-            transform: translateX(120%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-left: 4px solid #2ecc71;
+            -webkit-overflow-scrolling: touch;
         }
-
-        .notification-toast.show {
-            transform: translateX(0);
+        
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            word-wrap: break-word;
         }
-
-        .notification-toast.error {
-            border-left-color: #e74c3c;
-        }
-
-        .notification-toast.warning {
-            border-left-color: #f39c12;
-        }
-
-        .notification-toast.info {
-            border-left-color: #3498db;
-        }
-
-        .notification-toast .close-btn {
-            background: none;
-            border: none;
-            color: #666;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 0;
+        
+        .message-sent {
+            background: #2ecc71;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
             margin-left: auto;
         }
-
-        .cancel-order-btn {
-            background: linear-gradient(135deg, #ff6b6b 0%, #e74c3c 100%);
+        
+        .message-received {
+            background: #e5e7eb;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            margin-right: auto;
+        }
+        
+        .dark .message-received {
+            background: #4b5563;
+            color: #f3f4f6;
+        }
+        
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        .message-sent .message-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .message-received .message-time {
+            color: #6b7280;
+        }
+        
+        .chat-input-container {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+            flex-shrink: 0;
+        }
+        
+        .dark .chat-input-container {
+            background: #1e293b;
+            border-top-color: #4b5563;
+        }
+        
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .chat-input {
+            flex: 1;
+            border: 2px solid #e5e7eb;
+            border-radius: 24px;
+            padding: 12px 16px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        .dark .chat-input {
+            background: #374151;
+            border-color: #4b5563;
+            color: white;
+        }
+        
+        .chat-input:focus {
+            border-color: #2ecc71;
+        }
+        
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #2ecc71;
             color: white;
             border: none;
-            border-radius: 12px;
-            padding: 12px 24px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .cancel-order-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
-        }
-
-        .cancel-order-btn:active {
-            transform: translateY(0);
-        }
-
-        .cancel-confirm-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            z-index: 10001;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            display: none;
-        }
-
-        .cancel-confirm-modal.active {
-            display: block;
-        }
-
-        .dark .cancel-confirm-modal {
-            background: #1e293b;
-            color: white;
-        }
-
-        .cancel-reason-select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-
-        .dark .cancel-reason-select {
-            background: #2d3748;
-            border-color: #4a5568;
-            color: white;
-        }
-
-        .cancel-modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .cancel-modal-buttons button {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background-color 0.2s;
         }
-
-        .cancel-confirm-btn {
+        
+        .chat-send-btn:hover {
+            background: #27ae60;
+        }
+        
+        .chat-send-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .chat-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
             background: #e74c3c;
             color: white;
-            border: none;
-        }
-
-        .cancel-cancel-btn {
-            background: #e2e8f0;
-            color: #333;
-            border: none;
-        }
-
-        .dark .cancel-cancel-btn {
-            background: #4a5568;
-            color: white;
+            font-size: 10px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -585,7 +622,7 @@
     <!-- Аутентификация -->
     <div id="authScreen" class="absolute inset-0 bg-white dark:bg-dark z-[3000] flex flex-col items-center justify-center p-6">
         <div class="w-28 h-28 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mb-8 animate-bounce">
-            <img src="logo.png" alt="JURA Taxi" class="w-20 h-20 object-contain">
+            <i class="fa-solid fa-taxi text-5xl text-jura"></i>
         </div>
         <h1 class="text-4xl font-extrabold mb-2 text-gray-800 dark:text-white">JURA Taxi</h1>
         <p class="text-gray-500 dark:text-gray-400 mb-8 text-center">Быстрые и безопасные поездки</p>
@@ -628,6 +665,10 @@
                 </button>
                 <button id="detailsBtn" onclick="openDetails()" class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg p-3.5 rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95 relative hidden">
                     <i class="fa-solid fa-info-circle text-gray-700 dark:text-white w-5 h-5"></i>
+                </button>
+                <button id="chatBtn" onclick="openChat()" class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-lg p-3.5 rounded-2xl shadow-lg transition-all hover:scale-105 active:scale-95 relative hidden">
+                    <i class="fa-solid fa-comment-dots text-gray-700 dark:text-white w-5 h-5"></i>
+                    <span id="chatBadge" class="chat-badge hidden">0</span>
                 </button>
             </div>
             <div class="flex flex-col items-end gap-2 pointer-events-auto">
@@ -903,13 +944,6 @@
                         <i class="fa-solid fa-xmark mr-1"></i> ОТМЕНИТЬ
                     </button>
                 </div>
-
-                <!-- Кнопка отмены во время активной поездки -->
-                <div id="activeRideCancelSection" class="hidden mt-4">
-                    <button onclick="openCancelOrderModal()" class="cancel-order-btn w-full">
-                        <i class="fa-solid fa-ban"></i> Отменить поездку
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -1006,13 +1040,10 @@
         </div>
 
         <!-- Чек -->
-        <div id="receiptPanel" class="h-auto p-6 pb-10 flex flex-col">
-            <div class="w-14 h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mx-auto mb-6"></div>
-            
-            <div class="receipt-body w-full mb-6 flex-1 overflow-y-auto">
+        <div id="receiptPanel" class="h-auto p-6 flex flex-col items-center justify-center">
+            <div class="receipt-body w-full max-w-sm mb-6">
                 <div class="text-center font-bold text-2xl mb-4 flex items-center justify-center gap-2">
-                    <img src="logo.png" alt="JURA Taxi" class="w-8 h-8">
-                    <span>ДЕТАЛЬНЫЙ ЧЕК JURA</span>
+                    <i class="fa-solid fa-taxi text-jura"></i> ДЕТАЛЬНЫЙ ЧЕК JURA
                 </div>
                 
                 <div class="flex justify-between border-b pb-2 mb-2 text-sm">
@@ -1051,12 +1082,9 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="mt-4">
-                <button onclick="closeReceipt()" class="w-full bg-jura hover:bg-juraDark text-white py-4 font-bold rounded-xl shadow-lg shadow-jura/30 active:scale-95 transition-all">
-                    <i class="fa-solid fa-check mr-2"></i> Закрыть чек
-                </button>
-            </div>
+            <button onclick="closeReceipt()" class="w-full bg-black text-white py-4 font-bold rounded-xl shadow-lg hover:bg-gray-800 active:scale-95 transition-all">
+                <i class="fa-solid fa-check mr-2"></i> Закрыть
+            </button>
         </div>
         
         <!-- Модальное окно деталей -->
@@ -1121,44 +1149,42 @@
                 <i class="fa-solid fa-check mr-2"></i> Закрыть
             </button>
         </div>
-
-        <!-- Модальное окно подтверждения отмены -->
-        <div id="cancelConfirmModal" class="cancel-confirm-modal">
-            <div class="mb-4">
-                <div class="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-2xl"></i>
+        
+        <!-- Чат -->
+        <div id="chatContainer" class="chat-container">
+            <div class="chat-header">
+                <button onclick="closeChat()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <i class="fa-solid fa-arrow-left text-xl dark:text-white"></i>
+                </button>
+                <div class="flex-1 text-center">
+                    <h2 class="font-bold text-lg dark:text-white">Чат с водителем</h2>
+                    <div class="text-xs text-gray-500 dark:text-gray-400" id="chatOrderStatus"></div>
                 </div>
-                <h3 class="text-xl font-bold dark:text-white mb-2">Отменить поездку?</h3>
-                <p class="text-gray-600 dark:text-gray-400">Это действие нельзя отменить. Водитель получит уведомление об отмене.</p>
+                <div class="w-10"></div>
             </div>
             
-            <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Причина отмены</label>
-                <select id="cancelReason" class="cancel-reason-select">
-                    <option value="Передумал">Передумал</option>
-                    <option value="Жду слишком долго">Жду слишком долго</option>
-                    <option value="Нашёл другую машину">Нашёл другую машину</option>
-                    <option value="Изменились планы">Изменились планы</option>
-                    <option value="Другое">Другое</option>
-                </select>
+            <div id="chatMessages" class="chat-messages">
+                <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    <i class="fa-solid fa-comments text-4xl mb-4"></i>
+                    <div class="font-medium">Начните общение</div>
+                    <div class="text-sm mt-1">Напишите сообщение водителю</div>
+                </div>
             </div>
             
-            <div class="cancel-modal-buttons">
-                <button onclick="closeCancelModal()" class="cancel-cancel-btn">
-                    Нет, оставить
-                </button>
-                <button onclick="confirmCancelOrder()" class="cancel-confirm-btn">
-                    Да, отменить
-                </button>
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input type="text" id="chatMessageInput" placeholder="Введите сообщение..." 
+                           class="chat-input" autocomplete="off"
+                           onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                    <button id="chatSendBtn" onclick="sendChatMessage()" class="chat-send-btn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="modalOverlay" onclick="closeDetails()"></div>
-    <div class="modal-overlay" id="cancelModalOverlay" onclick="closeCancelModal()"></div>
-
-    <!-- Уведомления -->
-    <div id="notificationContainer"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
@@ -1176,7 +1202,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Глобальные переменные
         let map, userPhone, activeOrderId, orderUnsub, restoreAttempted = false;
         let waypoints = [], markers = [], routeLayer = null, driverMarker = null, clientMarker = null, driverRouteLayer = null;
         let currentTariff = { id: 'standart', mult: 1.0, type: 'passenger' };
@@ -1197,9 +1222,8 @@
         let serverSideTimer = null;
         let serverTimerUpdateInterval = null;
         let orderStatus = null;
-        let lastNotificationId = null;
-        let notificationDebounceTimer = null;
-        let activeOrderData = null;
+        let chatUnsub = null;
+        let unreadMessagesCount = 0;
         
         const PRICES = {
             START: 10.0,
@@ -1212,63 +1236,6 @@
             ADDON_LUGGAGE_SMALL: 3,
             ADDON_LUGGAGE_MEDIUM: 5,
             ADDON_LUGGAGE_LARGE: 6
-        };
-        
-        // Утилиты для уведомлений
-        function showNotification(message, type = 'info', duration = 5000) {
-            const container = document.getElementById('notificationContainer');
-            const notificationId = 'notification-' + Date.now();
-            
-            // Закрываем предыдущее уведомление с таким же сообщением
-            if (notificationDebounceTimer) {
-                clearTimeout(notificationDebounceTimer);
-            }
-            
-            const existingNotifications = container.querySelectorAll('.notification-toast');
-            existingNotifications.forEach(notif => {
-                if (notif.querySelector('.notification-message').textContent === message) {
-                    container.removeChild(notif);
-                }
-            });
-            
-            const notification = document.createElement('div');
-            notification.id = notificationId;
-            notification.className = `notification-toast ${type}`;
-            notification.innerHTML = `
-                <div class="notification-icon">
-                    <i class="fa-solid fa-${type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
-                </div>
-                <div class="notification-message flex-1">${message}</div>
-                <button class="close-btn" onclick="closeNotification('${notificationId}')">
-                    <i class="fa-solid fa-times"></i>
-                </button>
-            `;
-            
-            container.appendChild(notification);
-            
-            // Анимация появления
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            // Автоматическое закрытие
-            notificationDebounceTimer = setTimeout(() => {
-                closeNotification(notificationId);
-            }, duration);
-            
-            lastNotificationId = notificationId;
-        }
-        
-        window.closeNotification = function(notificationId) {
-            const notification = document.getElementById(notificationId);
-            if (notification) {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        notification.parentNode.removeChild(notification);
-                    }
-                }, 300);
-            }
         };
         
         window.onload = () => {
@@ -1289,7 +1256,7 @@
             const phone = phoneInput.value.trim();
             
             if(!phone.match(/^\+992[0-9]{9}$/)) {
-                showNotification('Введите корректный номер телефона в формате +992XXXXXXXXX', 'error');
+                alert('Введите корректный номер телефона в формате +992XXXXXXXXX');
                 phoneInput.focus();
                 return;
             }
@@ -1347,7 +1314,6 @@
                     activeOrderId = orderDoc.id;
                     const orderData = orderDoc.data();
                     orderStatus = orderData.status;
-                    activeOrderData = orderData;
                     
                     if (!mapInitialized) {
                         initMap();
@@ -1375,15 +1341,11 @@
                         if (orderData.status === 'in_progress' || orderData.status === 'waiting') {
                             startTripTimerFromServer(orderData);
                         }
-                        
-                        // Показываем кнопку отмены для активной поездки
-                        if (orderData.status === 'in_progress' || orderData.status === 'waiting') {
-                            document.getElementById('activeRideCancelSection').classList.remove('hidden');
-                        }
                     }
                     
                     document.getElementById('editOrderBtn').classList.remove('hidden');
                     document.getElementById('detailsBtn').classList.remove('hidden');
+                    document.getElementById('chatBtn').classList.remove('hidden');
                 }
             } catch (error) {
                 console.error("Restore error:", error);
@@ -1550,7 +1512,7 @@
 
         async function addWaypoint(latlng, name = null) {
             if(waypoints.length >= 6) {
-                showNotification("Максимум 6 точек маршрута", 'warning');
+                alert("Максимум 6 точек маршрута");
                 return;
             }
             
@@ -1621,6 +1583,7 @@
                 const marker = L.marker([pt.lat, pt.lng], { icon: markerIcon }).addTo(map);
                 markers.push(marker);
                 
+                // Добавляем всплывающее окно с кнопкой маршрута
                 const popupContent = `
                     <div class="map-popup">
                         <div class="font-bold mb-1">Точка ${label}</div>
@@ -1664,18 +1627,23 @@
 
         window.openRouteToPoint = (lat, lng) => {
             if (!lastPosition) {
-                showNotification("Не удалось определить ваше местоположение", 'error');
+                alert("Не удалось определить ваше местоположение");
                 return;
             }
             
+            // Проверяем, доступны ли нативные карты
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
             let mapsUrl;
             
+            // Определяем, мобильное ли устройство
             if (/android/i.test(userAgent)) {
+                // Android - используем Google Maps
                 mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lastPosition.lat},${lastPosition.lng}&destination=${lat},${lng}&travelmode=driving`;
             } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                // iOS - пробуем Apple Maps, затем Google Maps
                 mapsUrl = `https://maps.apple.com/?saddr=${lastPosition.lat},${lastPosition.lng}&daddr=${lat},${lng}&dirflg=d`;
             } else {
+                // Desktop - Google Maps
                 mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${lastPosition.lat},${lastPosition.lng}&destination=${lat},${lng}&travelmode=driving`;
             }
             
@@ -1829,9 +1797,11 @@
                 }
             }
             
+            // Удаляем старые слушатели
             inp.removeEventListener('input', handleSearchInput);
             document.removeEventListener('click', handleSearchClickOutside);
             
+            // Добавляем новые слушатели
             inp.addEventListener('input', handleSearchInput);
             document.addEventListener('click', handleSearchClickOutside);
         }
@@ -1910,9 +1880,11 @@
                 }
             }
             
+            // Удаляем старые слушатели
             inp.removeEventListener('input', handleSearchInput);
             document.removeEventListener('click', handleSearchClickOutside);
             
+            // Добавляем новые слушатели
             inp.addEventListener('input', handleSearchInput);
             document.addEventListener('click', handleSearchClickOutside);
         }
@@ -1999,12 +1971,15 @@
             
             let price = calculateBasePrice(distance);
             
+            // Применяем множитель тарифа
             price = price * currentTariff.mult;
             
+            // Добавляем стоимость дополнительных точек
             if(waypoints.length > 2) {
                 price += (waypoints.length - 2) * 3;
             }
             
+            // Минимальная цена
             price = Math.max(price, 10);
             
             document.getElementById('preliminaryPriceValue').textContent = price.toFixed(2);
@@ -2028,10 +2003,12 @@
         window.updatePrice = () => {
             let base = PRICES.START * currentTariff.mult;
             
+            // Дополнительные точки
             if(waypoints.length > 2) {
                 base += (waypoints.length - 2) * 3;
             }
             
+            // Дополнительные услуги
             if(document.getElementById('optPets')?.checked) base += PRICES.ADDON_PETS;
             if(document.getElementById('optSign')?.checked) base += PRICES.ADDON_SIGN;
             
@@ -2041,10 +2018,12 @@
             const tipValue = parseInt(document.getElementById('tipVal')?.innerText || 0);
             base += tipValue;
             
+            // Кондиционер
             if(document.getElementById('optAC')?.checked) {
                 base = base * 1.1;
             }
             
+            // Расстояние (если есть маршрут)
             if(waypoints.length >= 2) {
                 const startPoint = waypoints[0];
                 const endPoint = waypoints[waypoints.length - 1];
@@ -2067,6 +2046,7 @@
         window.updateEditedPrice = () => {
             let base = PRICES.START * currentTariff.mult;
             
+            // Дополнительные услуги
             const luggageValue = parseInt(document.getElementById('editLuggage')?.value || 0);
             const petsValue = document.getElementById('editPets')?.checked ? PRICES.ADDON_PETS : 0;
             
@@ -2080,19 +2060,19 @@
 
         window.createOrder = async () => {
             if(waypoints.length < 2) {
-                showNotification("Для заказа нужно минимум 2 точки маршрута", 'warning');
+                alert("Для заказа нужно минимум 2 точки маршрута");
                 return;
             }
             
             if(!userPhone) {
-                showNotification("Ошибка авторизации. Пожалуйста, войдите заново.", 'error');
+                alert("Ошибка авторизации. Пожалуйста, войдите заново.");
                 window.location.reload();
                 return;
             }
             
             const estPrice = updatePrice();
             if(estPrice <= 0) {
-                showNotification("Некорректная цена заказа", 'error');
+                alert("Некорректная цена заказа");
                 return;
             }
             
@@ -2141,18 +2121,18 @@
             try {
                 const ref = await addDoc(collection(db, 'orders'), orderData);
                 activeOrderId = ref.id;
-                activeOrderData = orderData;
                 
                 document.getElementById('bookingPanel').style.transform = "translateY(150%)";
                 document.getElementById('activeOrderPanel').classList.add('panel-visible');
                 document.getElementById('editOrderBtn').classList.remove('hidden');
                 document.getElementById('detailsBtn').classList.remove('hidden');
+                document.getElementById('chatBtn').classList.remove('hidden');
                 
                 subscribeToOrder(activeOrderId);
                 
             } catch(error) {
                 console.error("Order creation error:", error);
-                showNotification("Ошибка при создании заказа. Пожалуйста, попробуйте еще раз.", 'error');
+                alert("Ошибка при создании заказа. Пожалуйста, попробуйте еще раз.");
             }
         };
 
@@ -2160,9 +2140,6 @@
             if(orderUnsub) {
                 orderUnsub();
             }
-            
-            let lastProcessedHistoryLength = 0;
-            let lastProcessedVersion = 0;
             
             orderUnsub = onSnapshot(doc(db, 'orders', orderId), (snap) => {
                 const order = snap.data();
@@ -2173,18 +2150,17 @@
                 }
                 
                 orderStatus = order.status;
-                activeOrderData = order;
                 
                 if(order.status === 'pending') {
                     document.getElementById('statusSearching').classList.remove('hidden');
                     document.getElementById('statusActive').classList.add('hidden');
-                    document.getElementById('activeRideCancelSection').classList.add('hidden');
                 } else {
                     document.getElementById('statusSearching').classList.add('hidden');
                     document.getElementById('statusActive').classList.remove('hidden');
                     updateOrderUI(order);
                     updateTariffImage(order.tariff.id);
                     
+                    // Обновляем время и расстояние
                     if(order.timers?.tripStart) {
                         updateTripTimer(order.timers.tripStart.toDate());
                     }
@@ -2194,17 +2170,11 @@
                         document.getElementById('distanceClient').textContent = totalDistance.toFixed(1) + ' км';
                     }
                     
+                    // Обновляем маршрут при изменениях
                     if (order.points && JSON.stringify(waypoints) !== JSON.stringify(order.points)) {
                         waypoints = order.points;
                         updateMarkers();
                         buildRoute();
-                    }
-                    
-                    // Показываем кнопку отмены для активной поездки
-                    if (order.status === 'in_progress' || order.status === 'waiting') {
-                        document.getElementById('activeRideCancelSection').classList.remove('hidden');
-                    } else {
-                        document.getElementById('activeRideCancelSection').classList.add('hidden');
                     }
                 }
                 
@@ -2215,50 +2185,258 @@
                 }
                 
                 if(order.status === 'cancelled') {
-                    if (order.cancelledBy !== 'client') {
-                        showNotification("Водитель отменил заказ", 'warning');
-                    }
+                    alert("Заказ отменен");
                     resetApp();
-                }
-                
-                // Обработка истории изменений с защитой от дублирования
-                if(order.history && order.history.length > lastProcessedHistoryLength) {
-                    const newChanges = order.history.slice(lastProcessedHistoryLength);
-                    
-                    newChanges.forEach(change => {
-                        if (change.changedBy === 'driver' && change.timestamp?.toMillis() > Date.now() - 60000) {
-                            // Дебаунс уведомлений от водителя
-                            if (notificationDebounceTimer) {
-                                clearTimeout(notificationDebounceTimer);
-                            }
-                            
-                            notificationDebounceTimer = setTimeout(() => {
-                                showNotification(
-                                    `Водитель изменил заказ: ${change.description}` + 
-                                    (change.reason ? `\nПричина: ${change.reason}` : '') +
-                                    (order.currentPrice ? `\nНовая цена: ${order.currentPrice.toFixed(2)} сомони` : ''),
-                                    'info',
-                                    8000
-                                );
-                            }, 1000);
-                        }
-                    });
-                    
-                    lastProcessedHistoryLength = order.history.length;
                 }
                 
                 checkForChanges(order);
                 
+                // Подписываемся на чат, если заказ активен
+                if (order.status !== 'pending' && order.status !== 'cancelled' && order.status !== 'completed') {
+                    subscribeToChat(orderId);
+                } else {
+                    stopChat();
+                }
+                
             }, (error) => {
                 console.error("Order subscription error:", error);
                 if(error.code === 'permission-denied') {
-                    showNotification("Ошибка доступа к заказу. Возможно, он был удален.", 'error');
+                    alert("Ошибка доступа к заказу. Возможно, он был удален.");
                     resetApp();
                 }
             });
             
             addListener(orderUnsub);
         }
+
+        function subscribeToChat(orderId) {
+            if (chatUnsub) {
+                chatUnsub();
+            }
+            
+            const chatRef = collection(db, 'orders', orderId, 'chat');
+            chatUnsub = onSnapshot(chatRef, (snapshot) => {
+                const messages = [];
+                let newUnreadCount = 0;
+                
+                snapshot.forEach((doc) => {
+                    const message = doc.data();
+                    message.id = doc.id;
+                    messages.push(message);
+                    
+                    // Считаем непрочитанные сообщения от водителя
+                    if (message.sender === 'driver' && !message.read) {
+                        newUnreadCount++;
+                    }
+                });
+                
+                // Сортируем по времени
+                messages.sort((a, b) => a.createdAt?.toMillis() - b.createdAt?.toMillis());
+                
+                // Обновляем бейдж
+                if (newUnreadCount !== unreadMessagesCount) {
+                    unreadMessagesCount = newUnreadCount;
+                    updateChatBadge();
+                }
+                
+                // Если чат открыт, обновляем сообщения и помечаем как прочитанные
+                if (document.getElementById('chatContainer').classList.contains('visible')) {
+                    displayChatMessages(messages);
+                    
+                    // Помечаем сообщения как прочитанные
+                    markMessagesAsRead(messages);
+                }
+                
+            }, (error) => {
+                console.error("Chat subscription error:", error);
+            });
+            
+            addListener(chatUnsub);
+        }
+
+        function stopChat() {
+            if (chatUnsub) {
+                chatUnsub();
+                chatUnsub = null;
+            }
+            unreadMessagesCount = 0;
+            updateChatBadge();
+        }
+
+        function updateChatBadge() {
+            const badge = document.getElementById('chatBadge');
+            if (unreadMessagesCount > 0) {
+                badge.textContent = unreadMessagesCount > 99 ? '99+' : unreadMessagesCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        function displayChatMessages(messages) {
+            const container = document.getElementById('chatMessages');
+            
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+                        <i class="fa-solid fa-comments text-4xl mb-4"></i>
+                        <div class="font-medium">Начните общение</div>
+                        <div class="text-sm mt-1">Напишите сообщение водителю</div>
+                    </div>`;
+                return;
+            }
+            
+            container.innerHTML = messages.map(msg => {
+                const isClient = msg.sender === 'client';
+                const time = msg.createdAt?.toDate() || new Date();
+                const timeStr = time.toLocaleTimeString('ru-RU', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+                
+                return `
+                    <div class="message ${isClient ? 'message-sent' : 'message-received'}">
+                        <div class="message-text">${escapeHtml(msg.text)}</div>
+                        <div class="message-time">${timeStr}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Автопрокрутка вниз
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function markMessagesAsRead(messages) {
+            const unreadDriverMessages = messages.filter(msg => 
+                msg.sender === 'driver' && !msg.read
+            );
+            
+            if (unreadDriverMessages.length === 0) return;
+            
+            const batch = writeBatch(db);
+            
+            unreadDriverMessages.forEach(msg => {
+                const msgRef = doc(db, 'orders', activeOrderId, 'chat', msg.id);
+                batch.update(msgRef, { read: true });
+            });
+            
+            try {
+                await batch.commit();
+                unreadMessagesCount = 0;
+                updateChatBadge();
+            } catch (error) {
+                console.error("Error marking messages as read:", error);
+            }
+        }
+
+        window.openChat = () => {
+            document.getElementById('chatContainer').classList.add('visible');
+            document.getElementById('chatOrderStatus').textContent = getOrderStatusText();
+            loadChatMessages();
+            
+            // Помечаем все сообщения как прочитанные
+            if (activeOrderId) {
+                markAllMessagesAsRead();
+            }
+        };
+
+        window.closeChat = () => {
+            document.getElementById('chatContainer').classList.remove('visible');
+        };
+
+        function getOrderStatusText() {
+            switch(orderStatus) {
+                case 'accepted': return 'Водитель принял заказ';
+                case 'arrived': return 'Машина подана';
+                case 'waiting': return 'Водитель ждет вас';
+                case 'in_progress': return 'В пути';
+                default: return 'Заказ активен';
+            }
+        }
+
+        async function loadChatMessages() {
+            if (!activeOrderId) return;
+            
+            try {
+                const chatRef = collection(db, 'orders', activeOrderId, 'chat');
+                const q = query(chatRef);
+                const snapshot = await getDocs(q);
+                
+                const messages = [];
+                snapshot.forEach((doc) => {
+                    const message = doc.data();
+                    message.id = doc.id;
+                    messages.push(message);
+                });
+                
+                messages.sort((a, b) => a.createdAt?.toMillis() - b.createdAt?.toMillis());
+                displayChatMessages(messages);
+                
+            } catch (error) {
+                console.error("Error loading chat messages:", error);
+            }
+        }
+
+        async function markAllMessagesAsRead() {
+            if (!activeOrderId) return;
+            
+            try {
+                const chatRef = collection(db, 'orders', activeOrderId, 'chat');
+                const q = query(chatRef, where('sender', '==', 'driver'), where('read', '==', false));
+                const snapshot = await getDocs(q);
+                
+                const batch = writeBatch(db);
+                snapshot.forEach((doc) => {
+                    batch.update(doc.ref, { read: true });
+                });
+                
+                if (snapshot.size > 0) {
+                    await batch.commit();
+                    unreadMessagesCount = 0;
+                    updateChatBadge();
+                }
+                
+            } catch (error) {
+                console.error("Error marking all messages as read:", error);
+            }
+        }
+
+        window.sendChatMessage = async () => {
+            const input = document.getElementById('chatMessageInput');
+            const messageText = input.value.trim();
+            
+            if (!messageText) {
+                return;
+            }
+            
+            if (!activeOrderId) {
+                alert('Нет активного заказа');
+                return;
+            }
+            
+            // Блокируем отправку, если заказ завершен
+            if (orderStatus === 'completed' || orderStatus === 'cancelled') {
+                alert('Чат недоступен для завершенного заказа');
+                return;
+            }
+            
+            const message = {
+                sender: 'client',
+                text: messageText,
+                createdAt: serverTimestamp(),
+                read: false
+            };
+            
+            try {
+                await addDoc(collection(db, 'orders', activeOrderId, 'chat'), message);
+                input.value = '';
+                input.focus();
+                
+            } catch (error) {
+                console.error("Error sending message:", error);
+                alert('Ошибка отправки сообщения');
+            }
+        };
 
         function checkForChanges(order) {
             if (!order.history || order.history.length === 0) return;
@@ -2273,6 +2451,34 @@
                 const badge = document.getElementById('orderChangesBadge');
                 badge.classList.remove('hidden');
                 badge.textContent = recentChanges.length;
+                
+                const lastChange = recentChanges[recentChanges.length - 1];
+                if (lastChange.changedBy === 'driver') {
+                    showNotification(`Водитель изменил заказ. Новая цена: ${order.currentPrice.toFixed(2)} сомони`);
+                }
+            }
+        }
+
+        function showNotification(message) {
+            if (Notification.permission === 'granted') {
+                new Notification('JURA Taxi', {
+                    body: message,
+                    icon: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png'
+                });
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('JURA Taxi', {
+                            body: message,
+                            icon: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png'
+                        });
+                    }
+                });
+            }
+            
+            // Fallback для браузеров без поддержки Notification
+            if (!('Notification' in window)) {
+                alert(message);
             }
         }
 
@@ -2367,10 +2573,12 @@
             if (order.timers?.tripStart) {
                 tripStartTime = order.timers.tripStart.toDate();
                 
+                // Запускаем локальный таймер
                 tripTimerInterval = setInterval(() => {
                     updateTripTimer(tripStartTime);
                 }, 1000);
                 
+                // Периодически синхронизируем с сервером
                 serverTimerUpdateInterval = setInterval(async () => {
                     if (activeOrderId) {
                         try {
@@ -2385,7 +2593,7 @@
                             console.error('Error updating timer:', error);
                         }
                     }
-                }, 30000);
+                }, 30000); // Каждые 30 секунд
             }
         }
 
@@ -2476,67 +2684,27 @@
             }
         }
 
-        window.openCancelOrderModal = function() {
-            document.getElementById('cancelConfirmModal').classList.add('active');
-            document.getElementById('cancelModalOverlay').classList.add('active');
-        };
-
-        window.closeCancelModal = function() {
-            document.getElementById('cancelConfirmModal').classList.remove('active');
-            document.getElementById('cancelModalOverlay').classList.remove('active');
-        };
-
-        window.confirmCancelOrder = async function() {
-            const reason = document.getElementById('cancelReason').value;
-            await cancelOrder(reason);
-        };
-
-        window.cancelOrder = async (reason = "Передумал") => {
-            if(!activeOrderId) {
-                showNotification("Нет активного заказа для отмены", 'warning');
-                return;
-            }
-            
-            if (orderStatus === 'in_progress' || orderStatus === 'waiting') {
-                // Для активной поездки требуется подтверждение через модальное окно
-                openCancelOrderModal();
-                return;
-            }
-            
+        window.cancelOrder = async () => {
             if(!confirm("Вы уверены, что хотите отменить заказ?")) return;
             
-            try {
-                const historyEntry = {
-                    timestamp: Timestamp.now(),
-                    changedBy: 'client',
-                    field: 'status',
-                    action: 'cancelled',
-                    description: `Клиент отменил заказ. Причина: ${reason}`,
-                    reason: reason
-                };
-                
-                await updateDoc(doc(db, 'orders', activeOrderId), { 
-                    status: 'cancelled',
-                    cancelledAt: serverTimestamp(),
-                    cancelledBy: 'client',
-                    cancelReason: reason,
-                    history: [...(activeOrderData?.history || []), historyEntry]
-                });
-                
-                showNotification("Заказ успешно отменен", 'info');
-                
-            } catch(error) {
-                console.error("Cancel order error:", error);
-                showNotification("Ошибка при отмене заказа", 'error');
+            if(activeOrderId) {
+                try {
+                    await updateDoc(doc(db, 'orders', activeOrderId), { 
+                        status: 'cancelled',
+                        cancelledAt: serverTimestamp()
+                    });
+                } catch(error) {
+                    console.error("Cancel order error:", error);
+                }
             }
             
-            closeCancelModal();
             resetApp();
         };
 
         function resetApp() {
             cleanupListeners();
             stopTripTimer();
+            stopChat();
             
             if (orderUnsub) {
                 orderUnsub();
@@ -2562,7 +2730,6 @@
             waitingTime = 0;
             trafficTime = 0;
             drivingTime = 0;
-            activeOrderData = null;
             
             if(driverMarker) {
                 map.removeLayer(driverMarker);
@@ -2578,16 +2745,16 @@
             document.getElementById('activeOrderPanel').classList.remove('panel-visible');
             document.getElementById('editOrderPanel').classList.remove('panel-visible');
             document.getElementById('detailsModal').classList.remove('panel-visible');
+            document.getElementById('chatContainer').classList.remove('visible');
             document.getElementById('modalOverlay').classList.remove('active');
-            document.getElementById('cancelModalOverlay').classList.remove('active');
-            document.getElementById('cancelConfirmModal').classList.remove('active');
             document.getElementById('editOrderBtn').classList.add('hidden');
             document.getElementById('detailsBtn').classList.add('hidden');
+            document.getElementById('chatBtn').classList.add('hidden');
             document.getElementById('statusSearching').classList.remove('hidden');
             document.getElementById('statusActive').classList.add('hidden');
-            document.getElementById('activeRideCancelSection').classList.add('hidden');
             document.getElementById('orderChangesBadge').classList.add('hidden');
             
+            // Сбрасываем маршрут
             waypoints = [];
             updateMarkers();
             
@@ -2730,7 +2897,7 @@
             const address = input.value.trim();
             
             if (!address) {
-                showNotification('Введите адрес', 'warning');
+                alert('Введите адрес');
                 return;
             }
             
@@ -2739,7 +2906,7 @@
                 const data = await res.json();
                 
                 if (data.length === 0) {
-                    showNotification('Адрес не найден', 'error');
+                    alert('Адрес не найден');
                     return;
                 }
                 
@@ -2760,7 +2927,7 @@
                     changedBy: 'client',
                     field: 'points',
                     action: 'added',
-                    description: `Клиент добавил точку: ${point.display_name.substring(0, 30)}...`,
+                    description: `Добавлена точка: ${point.display_name.substring(0, 30)}...`,
                     oldValue: order.points.length,
                     newValue: order.points.length + 1
                 };
@@ -2776,15 +2943,16 @@
                 
                 input.value = '';
                 document.getElementById('editSearchResults').classList.add('hidden');
-                showNotification('Точка добавлена. Водитель будет уведомлен.', 'success');
+                alert('Точка добавлена. Водитель будет уведомлен.');
                 
+                // Обновляем маршрут на карте
                 waypoints = [...order.points, newPoint];
                 updateMarkers();
                 buildRoute();
                 
             } catch (error) {
                 console.error('Error adding point:', error);
-                showNotification('Ошибка при добавлении точки: ' + error.message, 'error');
+                alert('Ошибка при добавлении точки: ' + error.message);
             }
         };
 
@@ -2801,7 +2969,7 @@
                 const orderSnap = await getDoc(orderRef);
                 
                 if (!orderSnap.exists()) {
-                    showNotification('Заказ не найден', 'error');
+                    alert('Заказ не найден');
                     return;
                 }
                 
@@ -2820,7 +2988,7 @@
                         changedBy: 'client',
                         field: 'options.luggage',
                         action: 'changed',
-                        description: `Клиент изменил багаж: ${currentLuggage} → ${luggageValue} сомони`,
+                        description: `Багаж изменен: ${currentLuggage} → ${luggageValue} сомони`,
                         oldValue: currentLuggage,
                         newValue: luggageValue
                     });
@@ -2833,7 +3001,7 @@
                         changedBy: 'client',
                         field: 'options.pets',
                         action: petsValue ? 'added' : 'removed',
-                        description: petsValue ? 'Клиент добавил животных' : 'Клиент убрал животных',
+                        description: petsValue ? 'Добавлены животные' : 'Убраны животные',
                         oldValue: currentPets,
                         newValue: petsValue
                     });
@@ -2846,7 +3014,7 @@
                         changedBy: 'client',
                         field: 'options.meetingPlace',
                         action: 'updated',
-                        description: 'Клиент обновил место встречи',
+                        description: 'Обновлено место встречи',
                         oldValue: currentMeetingPlace,
                         newValue: meetingPlaceValue
                     });
@@ -2859,7 +3027,7 @@
                         changedBy: 'client',
                         field: 'options.comment',
                         action: 'updated',
-                        description: 'Клиент обновил комментарий',
+                        description: 'Обновлен комментарий',
                         oldValue: currentComment,
                         newValue: commentValue
                     });
@@ -2868,7 +3036,7 @@
                 }
                 
                 if (changes.length === 0) {
-                    showNotification('Нет изменений для сохранения', 'info');
+                    alert('Нет изменений для сохранения');
                     return;
                 }
                 
@@ -2902,12 +3070,12 @@
                 
                 await updateDoc(orderRef, updateData);
                 
-                showNotification('Изменения сохранены! Водитель будет уведомлен.', 'success');
+                alert('Изменения сохранены! Водитель будет уведомлен.');
                 closeEditOrder();
                 
             } catch (error) {
                 console.error('Error saving changes:', error);
-                showNotification('Ошибка при сохранении изменений: ' + error.message, 'error');
+                alert('Ошибка при сохранении изменений: ' + error.message);
             }
         };
 
@@ -2940,12 +3108,14 @@
             const breakdown = document.getElementById('priceBreakdown');
             breakdown.innerHTML = '';
             
+            // Базовая цена
             breakdown.innerHTML += `
                 <div class="flex justify-between">
                     <span>Стартовый тариф:</span>
                     <span>10.00 с.</span>
                 </div>`;
             
+            // Расстояние
             if(order.distance && order.distance > 4) {
                 const distancePrice = (order.distance - 4) * PRICES.PER_KM;
                 breakdown.innerHTML += `
@@ -2955,6 +3125,7 @@
                     </div>`;
             }
             
+            // Дополнительные точки
             if(order.points && order.points.length > 2) {
                 const extraPoints = order.points.length - 2;
                 breakdown.innerHTML += `
@@ -2964,6 +3135,7 @@
                     </div>`;
             }
             
+            // Время ожидания
             if(order.waitTime && order.waitTime > 0) {
                 breakdown.innerHTML += `
                     <div class="flex justify-between">
@@ -2972,6 +3144,7 @@
                     </div>`;
             }
             
+            // Время в пробках
             if(order.trafficTime && order.trafficTime > 0) {
                 breakdown.innerHTML += `
                     <div class="flex justify-between">
@@ -2980,6 +3153,7 @@
                     </div>`;
             }
             
+            // Время в пути
             if(order.drivingTime && order.drivingTime > 0) {
                 breakdown.innerHTML += `
                     <div class="flex justify-between">
@@ -2988,6 +3162,7 @@
                     </div>`;
             }
             
+            // Дополнительные услуги
             if(order.options) {
                 if(order.options.pets) {
                     breakdown.innerHTML += `
@@ -3023,6 +3198,7 @@
                 }
             }
             
+            // Чаевые
             if(order.tip && order.tip > 0) {
                 breakdown.innerHTML += `
                     <div class="flex justify-between text-green-600 font-bold">
@@ -3031,6 +3207,7 @@
                     </div>`;
             }
             
+            // Итог
             const total = order.finalPrice || order.estPrice || 0;
             document.getElementById('rTotal').innerText = total.toFixed(2) + " с.";
             
@@ -3040,7 +3217,6 @@
 
         window.closeReceipt = () => {
             document.getElementById('receiptPanel').classList.remove('panel-visible');
-            resetApp();
         };
     </script>
 </body>
