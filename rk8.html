@@ -8,7 +8,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
 
     <style>
         :root {
@@ -37,8 +37,8 @@
             --radius-xl: 40px;
             --transition-smooth: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             --transition-bounce: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(255, 255, 255, 0.25);
         }
 
         * {
@@ -87,18 +87,6 @@
             background: var(--primary-dark);
         }
 
-        /* Smooth Page Transitions */
-        .page-transition {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: var(--transition-smooth);
-        }
-
-        .page-transition.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
         /* --- Header --- */
         header {
             position: fixed;
@@ -106,21 +94,21 @@
             left: 0;
             right: 0;
             background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border-bottom: 1px solid var(--glass-border);
             z-index: 1000;
-            padding: 1.2rem 0;
+            padding: 1rem 0;
             transition: var(--transition-smooth);
         }
 
         header.scrolled {
-            padding: 0.8rem 0;
+            padding: 0.7rem 0;
             box-shadow: var(--shadow-md);
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem;
         }
@@ -147,9 +135,9 @@
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--bg-gradient);
+            width: 50px;
+            height: 50px;
+            background: url('https://i.imgur.com/placeholder.png') center/contain no-repeat;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -158,11 +146,19 @@
             font-size: 1.2rem;
         }
 
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
         /* Navigation */
         .nav-menu {
             display: flex;
             gap: 2.5rem;
             list-style: none;
+            align-items: center;
         }
 
         .nav-link {
@@ -205,6 +201,7 @@
             color: var(--text-main);
             cursor: pointer;
             transition: var(--transition-smooth);
+            z-index: 1001;
         }
 
         /* --- Hero Section --- */
@@ -220,6 +217,7 @@
                 url('https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
+            padding-top: 80px;
         }
 
         .hero-content {
@@ -301,7 +299,7 @@
 
         /* --- Category Filter --- */
         .category-section {
-            padding: 5rem 0;
+            padding: 6rem 0;
             background: var(--surface-dark);
         }
 
@@ -376,6 +374,7 @@
             padding: 2rem 0;
             background: var(--surface);
             margin-top: 2rem;
+            border-radius: var(--radius-lg);
         }
 
         .search-container {
@@ -495,8 +494,8 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
             z-index: 2000;
             display: flex;
             align-items: center;
@@ -523,6 +522,7 @@
             transform: translateY(50px) scale(0.95);
             opacity: 0;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s;
+            box-shadow: var(--shadow-xl);
         }
 
         .service-modal.active .modal-content {
@@ -544,6 +544,9 @@
             font-size: 1.2rem;
             z-index: 10;
             transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-close:hover {
@@ -597,6 +600,95 @@
         .feature-item i {
             color: var(--accent);
             font-size: 1.2rem;
+        }
+
+        /* --- About Modal --- */
+        .about-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+            padding: 2rem;
+        }
+
+        .about-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .about-modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(50px) scale(0.95);
+            opacity: 0;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .about-modal.active .about-modal-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .about-header {
+            text-align: center;
+            padding: 3rem 3rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .about-logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 50%;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .about-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .about-body {
+            padding: 3rem;
+        }
+
+        .about-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        .about-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
         }
 
         /* --- Features Section --- */
@@ -659,6 +751,7 @@
             aspect-ratio: 16/9;
             box-shadow: var(--shadow-md);
             transition: var(--transition-bounce);
+            cursor: pointer;
         }
 
         .portfolio-item:hover {
@@ -666,16 +759,53 @@
             box-shadow: var(--shadow-xl);
         }
 
-        .portfolio-item img, .portfolio-item iframe {
+        .portfolio-slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .portfolio-slider .swiper-slide {
+            width: 100%;
+            height: 100%;
+        }
+
+        .portfolio-slider .swiper-slide img,
+        .portfolio-slider .swiper-slide iframe {
             width: 100%;
             height: 100%;
             object-fit: cover;
             border: none;
-            transition: transform 0.5s ease;
         }
 
-        .portfolio-item:hover img {
-            transform: scale(1.1);
+        .portfolio-slider .swiper-button-next,
+        .portfolio-slider .swiper-button-prev {
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: var(--transition-smooth);
+        }
+
+        .portfolio-slider .swiper-button-next:hover,
+        .portfolio-slider .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .portfolio-slider .swiper-button-next:after,
+        .portfolio-slider .swiper-button-prev:after {
+            font-size: 1.2rem;
+        }
+
+        .portfolio-slider .swiper-pagination-bullet {
+            background: white;
+            opacity: 0.5;
+        }
+
+        .portfolio-slider .swiper-pagination-bullet-active {
+            background: var(--primary);
+            opacity: 1;
         }
 
         .portfolio-overlay {
@@ -689,11 +819,93 @@
             opacity: 0;
             transform: translateY(20px);
             transition: var(--transition-smooth);
+            z-index: 2;
         }
 
         .portfolio-item:hover .portfolio-overlay {
             opacity: 1;
             transform: translateY(0);
+        }
+
+        /* Portfolio Modal */
+        .portfolio-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s;
+            padding: 2rem;
+        }
+
+        .portfolio-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .portfolio-modal-content {
+            background: transparent;
+            max-width: 1200px;
+            width: 100%;
+            height: 80vh;
+            position: relative;
+            transform: translateY(50px) scale(0.95);
+            opacity: 0;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s;
+        }
+
+        .portfolio-modal.active .portfolio-modal-content {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .portfolio-modal-slider {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .portfolio-modal-slider .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        .portfolio-modal-slider .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .portfolio-modal-slider .swiper-slide iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .portfolio-modal-slider .swiper-button-next,
+        .portfolio-modal-slider .swiper-button-prev {
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: var(--transition-smooth);
+        }
+
+        .portfolio-modal-slider .swiper-button-next:hover,
+        .portfolio-modal-slider .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.8);
         }
 
         /* --- Reviews Section --- */
@@ -899,21 +1111,24 @@
         @media (max-width: 768px) {
             .nav-menu {
                 position: fixed;
-                top: 80px;
+                top: 0;
                 left: 0;
                 right: 0;
+                bottom: 0;
                 background: white;
                 flex-direction: column;
-                padding: 2rem;
+                padding: 6rem 2rem 2rem;
                 box-shadow: var(--shadow-lg);
-                transform: translateY(-100%);
+                transform: translateX(-100%);
                 opacity: 0;
                 visibility: hidden;
                 transition: var(--transition-smooth);
+                z-index: 999;
+                justify-content: flex-start;
             }
 
             .nav-menu.active {
-                transform: translateY(0);
+                transform: translateX(0);
                 opacity: 1;
                 visibility: visible;
             }
@@ -944,6 +1159,10 @@
             .reviews-container {
                 grid-template-columns: 1fr;
             }
+            
+            .about-body {
+                padding: 2rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -972,6 +1191,14 @@
             .search-input {
                 min-width: 100%;
             }
+            
+            .portfolio-modal {
+                padding: 1rem;
+            }
+            
+            .portfolio-modal-content {
+                height: 60vh;
+            }
         }
     </style>
 </head>
@@ -982,9 +1209,8 @@
             <div class="nav-wrapper">
                 <a href="#" class="logo">
                     <div class="logo-icon">
-                        <i class="fas fa-home"></i>
+                        <!-- Логотип будет загружен из Firebase -->
                     </div>
-                    ROSTKOR
                 </a>
                 
                 <button class="mobile-menu-btn">
@@ -996,6 +1222,7 @@
                     <li><a href="#portfolio" class="nav-link">Работы</a></li>
                     <li><a href="#reviews" class="nav-link">Отзывы</a></li>
                     <li><a href="#contacts" class="nav-link">Контакты</a></li>
+                    <li><a href="#" class="nav-link" id="about-link">О нас</a></li>
                 </ul>
             </div>
         </div>
@@ -1005,7 +1232,7 @@
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h1>ROSTKOR — строительство, ремонт, дизайн и клининг под ключ</h1>
+                <h1>Строительство, ремонт, дизайн и клининг под ключ</h1>
                 <p>Мы выполняем полный комплекс услуг. Работаем качественно, точно в срок и с гарантией результата.</p>
                 <div class="hero-tagline">
                     <i class="fas fa-shield-alt"></i>
@@ -1022,7 +1249,7 @@
     <!-- Features Section -->
     <section class="features-section">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Почему выбирают ROSTKOR</h2>
+            <h2 class="section-title" style="color: white;">Почему выбирают нас</h2>
             
             <div class="features-grid">
                 <div class="feature-card">
@@ -1133,17 +1360,92 @@
         </div>
     </div>
 
+    <!-- About Modal -->
+    <div class="about-modal" id="aboutModal">
+        <div class="about-modal-content">
+            <button class="modal-close" id="aboutModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="about-header">
+                <div class="about-logo" id="aboutLogo">
+                    <!-- Логотип будет загружен -->
+                </div>
+                <h2>О компании ROSTKOR</h2>
+                <p>Ваш надежный партнер в строительстве и ремонте</p>
+            </div>
+            
+            <div class="about-body">
+                <div class="about-description">
+                    <p>Компания ROSTKOR — ведущий поставщик комплексных услуг в сфере строительства, ремонта, дизайна интерьеров и клининга в Таджикистане. Мы работаем с 2010 года и за это время успешно реализовали более 500 проектов различной сложности.</p>
+                    
+                    <p>Наша миссия — создавать комфортное и безопасное пространство для жизни и работы наших клиентов. Мы сочетаем современные технологии, качественные материалы и профессиональный подход к каждому проекту.</p>
+                    
+                    <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-main);">Наши принципы:</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: var(--primary); margin-top: 5px;"></i>
+                            <span>Качество — превыше всего</span>
+                        </li>
+                        <li style="margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: var(--primary); margin-top: 5px;"></i>
+                            <span>Соблюдение сроков и бюджетов</span>
+                        </li>
+                        <li style="margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: var(--primary); margin-top: 5px;"></i>
+                            <span>Индивидуальный подход к каждому клиенту</span>
+                        </li>
+                        <li style="margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 10px;">
+                            <i class="fas fa-check-circle" style="color: var(--primary); margin-top: 5px;"></i>
+                            <span>Прозрачность на всех этапах работы</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--text-main);">Контакты</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Душанбе, Айни 9. Голубой экран</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <a href="tel:+992975577755" style="color: var(--text-main); text-decoration: none;">(+992) 97 557 7755</a>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <a href="mailto:info@rostkor.tj" style="color: var(--text-main); text-decoration: none;">info@rostkor.tj</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div class="portfolio-modal" id="portfolioModal">
+        <div class="portfolio-modal-content">
+            <button class="modal-close" id="portfolioModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="portfolio-modal-slider swiper">
+                <div class="swiper-wrapper" id="portfolioModalSlides">
+                    <!-- Slides will be added dynamically -->
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer id="contacts">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-col">
-                    <a href="#" class="logo" style="margin-bottom: 1.5rem; color: white;">
-                        <div class="logo-icon">
-                            <i class="fas fa-home"></i>
-                        </div>
-                        ROSTKOR
-                    </a>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;">
+                        <div class="logo-icon" style="width: 60px; height: 60px;"></div>
+                    </div>
                     <p>Ваш надежный партнер в строительстве и ремонте. Качество, сроки и гарантия — наш приоритет.</p>
                 </div>
                 
@@ -1152,11 +1454,11 @@
                     <div style="display: flex; flex-direction: column; gap: 1rem;">
                         <div class="contact-item">
                             <i class="fas fa-map-marker-alt"></i>
-                            <span>Таджикистан</span>
+                            <span>Душанбе, Айни 9. Голубой экран</span>
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-phone"></i>
-                            <a href="tel:+992000000000" style="color:white; text-decoration: none;">+992 000 000 000</a>
+                            <a href="tel:+992975577755" style="color:white; text-decoration: none;">+992 97 557 7755</a>
                         </div>
                         <div class="contact-item">
                             <i class="fas fa-envelope"></i>
@@ -1169,9 +1471,9 @@
                     <h4>Мы в соцсетях</h4>
                     <div class="social-links">
                         <a href="https://instagram.com/rostkor.tj" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="https://wa.me/992000000000" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://wa.me/992975577755" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://t.me/+992975577755" target="_blank"><i class="fab fa-telegram"></i></a>
+                        <a href="https://www.facebook.com/profile.php?id=61576376002753&locale=ru_RU" target="_blank"><i class="fab fa-facebook"></i></a>
                     </div>
                     <p style="margin-top: 2rem; opacity: 0.8;">Следите за нашими проектами и акциями</p>
                 </div>
@@ -1185,6 +1487,7 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     
     <script>
         const firebaseConfig = {
@@ -1204,16 +1507,22 @@
         let allServices = [];
         let categories = new Set();
         let activeCategory = 'all';
+        let portfolioModalSwiper = null;
+        let portfolioSliders = [];
 
         // Mobile menu toggle
         document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
             document.querySelector('.nav-menu').classList.toggle('active');
+            this.innerHTML = document.querySelector('.nav-menu').classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
         });
 
         // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', function() {
                 document.querySelector('.nav-menu').classList.remove('active');
+                document.querySelector('.mobile-menu-btn').innerHTML = '<i class="fas fa-bars"></i>';
             });
         });
 
@@ -1230,23 +1539,70 @@
         // Smooth scroll for nav links
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetSection = document.querySelector(targetId);
-                
-                if (targetSection) {
-                    window.scrollTo({
-                        top: targetSection.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
+                if (this.id !== 'about-link') {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
                     
-                    // Close mobile menu
-                    document.querySelector('.nav-menu').classList.remove('active');
+                    if (targetSection) {
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close mobile menu
+                        document.querySelector('.nav-menu').classList.remove('active');
+                        document.querySelector('.mobile-menu-btn').innerHTML = '<i class="fas fa-bars"></i>';
+                    }
                 }
             });
         });
 
-        // Modal functionality
+        // Load logo
+        function loadLogo() {
+            db.ref('rostkor_settings/logo').once('value', snapshot => {
+                if (snapshot.exists()) {
+                    const logoUrl = snapshot.val();
+                    const logoElements = document.querySelectorAll('.logo-icon');
+                    const aboutLogo = document.getElementById('aboutLogo');
+                    
+                    logoElements.forEach(logo => {
+                        logo.innerHTML = `<img src="${logoUrl}" alt="ROSTKOR Logo">`;
+                    });
+                    
+                    if (aboutLogo) {
+                        aboutLogo.innerHTML = `<img src="${logoUrl}" alt="ROSTKOR Logo">`;
+                    }
+                } else {
+                    // Default logo if not set
+                    const logoElements = document.querySelectorAll('.logo-icon');
+                    logoElements.forEach(logo => {
+                        logo.innerHTML = '<i class="fas fa-home"></i>';
+                    });
+                }
+            });
+        }
+
+        // About modal
+        document.getElementById('about-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('aboutModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+
+        document.getElementById('aboutModalClose').addEventListener('click', function() {
+            document.getElementById('aboutModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+
+        document.getElementById('aboutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.getElementById('aboutModal').classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Service Modal functionality
         const modal = document.getElementById('serviceModal');
         const modalClose = document.getElementById('modalClose');
 
@@ -1290,8 +1646,103 @@
             }
         });
 
+        // Portfolio Modal
+        const portfolioModal = document.getElementById('portfolioModal');
+        const portfolioModalClose = document.getElementById('portfolioModalClose');
+
+        function openPortfolioModal(portfolioItem) {
+            const slidesContainer = document.getElementById('portfolioModalSlides');
+            slidesContainer.innerHTML = '';
+            
+            // Process images (could be single image or comma-separated list)
+            let images = [];
+            if (portfolioItem.url.includes(',')) {
+                images = portfolioItem.url.split(',').map(url => url.trim());
+            } else {
+                images = [portfolioItem.url];
+            }
+            
+            // Create slides
+            images.forEach((imageUrl, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
+                
+                if (portfolioItem.type === 'video' || imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be')) {
+                    // Handle YouTube videos
+                    let videoUrl = imageUrl;
+                    if (videoUrl.includes('youtube.com/watch?v=')) {
+                        const videoId = videoUrl.split('v=')[1];
+                        const ampersandPosition = videoId.indexOf('&');
+                        videoUrl = 'https://www.youtube.com/embed/' + (ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId);
+                    } else if (videoUrl.includes('youtu.be/')) {
+                        const videoId = videoUrl.split('youtu.be/')[1];
+                        videoUrl = 'https://www.youtube.com/embed/' + videoId;
+                    }
+                    
+                    slide.innerHTML = `
+                        <iframe 
+                            src="${videoUrl}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    `;
+                } else {
+                    // Handle images
+                    slide.innerHTML = `<img src="${imageUrl}" alt="${portfolioItem.title} - изображение ${index + 1}">`;
+                }
+                
+                slidesContainer.appendChild(slide);
+            });
+            
+            // Initialize or update swiper
+            if (portfolioModalSwiper) {
+                portfolioModalSwiper.destroy();
+            }
+            
+            portfolioModalSwiper = new Swiper('.portfolio-modal-slider', {
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+                effect: 'slide',
+                speed: 600,
+            });
+            
+            // Show modal
+            portfolioModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePortfolioModal() {
+            portfolioModal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            if (portfolioModalSwiper) {
+                portfolioModalSwiper.destroy();
+                portfolioModalSwiper = null;
+            }
+        }
+
+        portfolioModalClose.addEventListener('click', closePortfolioModal);
+        portfolioModal.addEventListener('click', function(e) {
+            if (e.target === portfolioModal) {
+                closePortfolioModal();
+            }
+        });
+
         // Load Data
         document.addEventListener('DOMContentLoaded', () => {
+            loadLogo();
             loadServices();
             loadPortfolio();
             loadReviews();
@@ -1427,7 +1878,7 @@
             services.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'service-card';
-                card.setAttribute('onclick', `openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})`);
+                card.onclick = () => openModal(item);
                 card.innerHTML = `
                     <img src="${item.image || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'}" 
                          alt="${item.name}" 
@@ -1439,7 +1890,7 @@
                             <span class="card-price">${item.price ? item.price + ' с.' : 'Договорная'}</span>
                         </h3>
                         <p class="card-description">${item.description ? item.description.substring(0, 120) + '...' : 'Нажмите для подробной информации'}</p>
-                        <a href="#" class="card-cta" onclick="event.stopPropagation(); openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                        <a href="#" class="card-cta" onclick="event.preventDefault(); event.stopPropagation(); openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
                             <span>Подробнее</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1462,7 +1913,7 @@
             renderServices(filtered);
         }
 
-        // 2. Load Portfolio
+        // 2. Load Portfolio with sliders
         function loadPortfolio() {
             const container = document.getElementById('portfolio-list');
             db.ref('rostkor_portfolio').once('value', snapshot => {
@@ -1472,36 +1923,89 @@
                     return;
                 }
 
-                snapshot.forEach(child => {
+                // Destroy existing sliders
+                portfolioSliders.forEach(swiper => {
+                    if (swiper) swiper.destroy();
+                });
+                portfolioSliders = [];
+
+                snapshot.forEach((child, index) => {
                     const item = child.val();
                     const div = document.createElement('div');
                     div.className = 'portfolio-item';
+                    div.onclick = () => openPortfolioModal(item);
                     
-                    let content = '';
-                    if (item.type === 'video') {
-                        let videoUrl = item.url;
-                        if (videoUrl.includes('youtube.com') && !videoUrl.includes('embed')) {
-                            const videoId = videoUrl.split('v=')[1];
-                            const ampersandPosition = videoId.indexOf('&');
-                            if (ampersandPosition !== -1) {
-                                videoUrl = 'https://www.youtube.com/embed/' + videoId.substring(0, ampersandPosition);
-                            } else {
-                                videoUrl = 'https://www.youtube.com/embed/' + videoId;
-                            }
-                        }
-                        content = `<iframe src="${videoUrl}" allowfullscreen title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+                    // Process images (could be single or multiple)
+                    let images = [];
+                    if (item.url.includes(',')) {
+                        images = item.url.split(',').map(url => url.trim());
                     } else {
-                        content = `<img src="${item.url}" alt="${item.title}" loading="lazy">`;
+                        images = [item.url];
                     }
-
+                    
+                    const sliderId = `portfolio-slider-${index}`;
+                    
                     div.innerHTML = `
-                        ${content}
+                        <div class="portfolio-slider swiper" id="${sliderId}">
+                            <div class="swiper-wrapper">
+                                ${images.map((imageUrl, imgIndex) => {
+                                    if (item.type === 'video' || imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be')) {
+                                        // For videos, show thumbnail or play icon
+                                        return `
+                                            <div class="swiper-slide" style="background: #000; position: relative;">
+                                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
+                                                    <i class="fas fa-play-circle" style="font-size: 4rem; color: white; opacity: 0.8;"></i>
+                                                </div>
+                                                <div style="width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;">
+                                                    Видео ${imgIndex + 1}
+                                                </div>
+                                            </div>
+                                        `;
+                                    } else {
+                                        return `
+                                            <div class="swiper-slide">
+                                                <img src="${imageUrl}" alt="${item.title} - изображение ${imgIndex + 1}" loading="lazy">
+                                            </div>
+                                        `;
+                                    }
+                                }).join('')}
+                            </div>
+                            ${images.length > 1 ? `
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                                <div class="swiper-pagination"></div>
+                            ` : ''}
+                        </div>
                         <div class="portfolio-overlay">
                             <h4 style="font-size: 1.4rem; margin-bottom: 0.5rem;">${item.title}</h4>
-                            <p style="font-size: 0.9rem; opacity: 0.9;">Нажмите для просмотра</p>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">${images.length > 1 ? `${images.length} фото` : 'Нажмите для просмотра'}</p>
                         </div>
                     `;
                     container.appendChild(div);
+                    
+                    // Initialize swiper if multiple images
+                    if (images.length > 1) {
+                        setTimeout(() => {
+                            const swiper = new Swiper(`#${sliderId}`, {
+                                navigation: {
+                                    nextEl: `#${sliderId} .swiper-button-next`,
+                                    prevEl: `#${sliderId} .swiper-button-prev`,
+                                },
+                                pagination: {
+                                    el: `#${sliderId} .swiper-pagination`,
+                                    clickable: true,
+                                },
+                                loop: true,
+                                autoplay: {
+                                    delay: 3000,
+                                    disableOnInteraction: false,
+                                },
+                                effect: 'slide',
+                                speed: 600,
+                            });
+                            portfolioSliders.push(swiper);
+                        }, 100);
+                    }
                 });
             });
         }
