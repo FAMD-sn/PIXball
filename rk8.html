@@ -371,6 +371,36 @@
             color: white;
         }
 
+        /* Search Section */
+        .search-section {
+            padding: 2rem 0;
+            background: var(--surface);
+            margin-top: 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 300px;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 86, 255, 0.2);
+        }
+
         /* --- Services Grid --- */
         .services-grid {
             display: grid;
@@ -614,60 +644,219 @@
             transform: rotateY(180deg);
         }
 
+        /* --- Portfolio Section --- */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-bounce);
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .portfolio-item img, .portfolio-item iframe {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+            transition: transform 0.5s ease;
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 2rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: var(--transition-smooth);
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Reviews Section --- */
+        .reviews-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .review-card {
+            background: var(--surface);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border-left: 5px solid var(--primary);
+            transition: var(--transition-bounce);
+            position: relative;
+        }
+
+        .review-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .review-card::before {
+            content: "“";
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            font-size: 5rem;
+            color: rgba(0, 86, 255, 0.1);
+            font-family: serif;
+            line-height: 1;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .reviewer-name { 
+            font-weight: 800; 
+            color: var(--text-main); 
+            font-size: 1.2rem;
+        }
+        
+        .review-stars { 
+            color: #F6AD55; 
+            font-size: 1.2rem;
+        }
+        
+        .review-text { 
+            font-style: italic; 
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            position: relative;
+            z-index: 1;
+        }
+
         /* --- Footer --- */
         footer {
             background: var(--bg-dark);
             color: white;
             padding: 5rem 0 2rem;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary);
         }
 
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 3rem;
-            margin-bottom: 3rem;
-        }
-
-        .footer-col h4 {
-            color: white;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
             position: relative;
-            padding-bottom: 10px;
+            z-index: 1;
         }
 
-        .footer-col h4::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--accent);
+        .footer-col h4 { 
+            color: white; 
+            margin-bottom: 1.5rem; 
+            border-bottom: 2px solid var(--primary); 
+            display: inline-block; 
+            padding-bottom: 8px;
+            font-size: 1.3rem;
         }
-
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
+        
+        .social-links a {
+            color: white;
+            font-size: 1.8rem;
+            margin-right: 1.5rem;
+            transition: var(--transition-bounce);
+            display: inline-block;
         }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
+        
+        .social-links a:hover { 
+            color: var(--primary); 
+            transform: translateY(-5px);
+        }
+        
+        .contact-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            text-decoration: none;
-            transition: var(--transition-bounce);
+            gap: 15px;
+            margin-bottom: 1rem;
+            transition: var(--transition-smooth);
+            padding: 0.5rem 0;
         }
 
-        .social-link:hover {
-            background: var(--primary);
-            transform: translateY(-5px);
+        .contact-item:hover {
+            transform: translateX(5px);
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            font-size: 1.2rem;
+            width: 25px;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
+        /* No results message */
+        .no-results {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            display: none;
+            width: 100%;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--text-light);
         }
 
         /* --- Animations --- */
@@ -700,6 +889,10 @@
             
             .services-grid {
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             }
         }
 
@@ -746,6 +939,11 @@
             .modal-title {
                 font-size: 2rem;
             }
+            
+            .portfolio-grid,
+            .reviews-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 480px) {
@@ -769,6 +967,10 @@
                 min-width: 120px;
                 padding: 0.7rem 1.2rem;
                 font-size: 0.9rem;
+            }
+            
+            .search-input {
+                min-width: 100%;
             }
         }
     </style>
@@ -817,42 +1019,6 @@
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="category-section">
-        <div class="container">
-            <h2 class="section-title">Наши услуги</h2>
-            
-            <!-- Category Filter -->
-            <div class="category-filter">
-                <button class="category-btn active" data-category="all">
-                    <i class="fas fa-th-large"></i>
-                    Все услуги
-                </button>
-                <button class="category-btn" data-category="construction">
-                    <i class="fas fa-hard-hat"></i>
-                    Строительство
-                </button>
-                <button class="category-btn" data-category="repair">
-                    <i class="fas fa-tools"></i>
-                    Ремонт
-                </button>
-                <button class="category-btn" data-category="design">
-                    <i class="fas fa-palette"></i>
-                    Дизайн
-                </button>
-                <button class="category-btn" data-category="cleaning">
-                    <i class="fas fa-broom"></i>
-                    Клининг
-                </button>
-            </div>
-
-            <!-- Services Grid -->
-            <div class="services-grid" id="services-container">
-                <!-- Services will be loaded here -->
-            </div>
-        </div>
-    </section>
-
     <!-- Features Section -->
     <section class="features-section">
         <div class="container">
@@ -890,6 +1056,53 @@
                     <h3>Прозрачный договор</h3>
                     <p>Четкая смета без скрытых платежей и условий</p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="category-section">
+        <div class="container">
+            <h2 class="section-title">Наши услуги</h2>
+            
+            <!-- Search and Filter Section -->
+            <div class="search-section">
+                <div class="search-container">
+                    <input type="text" id="service-search" class="search-input" placeholder="Поиск услуг...">
+                </div>
+                <div id="categories-filter" class="category-filter">
+                    <!-- Categories will be loaded dynamically -->
+                </div>
+            </div>
+            
+            <!-- Services Grid -->
+            <div id="services-list" class="services-grid">
+                <div class="loader"></div>
+            </div>
+            <div id="no-results" class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>Ничего не найдено</h3>
+                <p>Попробуйте изменить поисковый запрос или выбрать другую категорию</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="category-section" style="background: var(--surface);">
+        <div class="container">
+            <h2 class="section-title">Наши работы</h2>
+            <div id="portfolio-list" class="portfolio-grid">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="category-section">
+        <div class="container">
+            <h2 class="section-title">Отзывы клиентов</h2>
+            <div id="reviews-list" class="reviews-container">
+                <div class="loader"></div>
             </div>
         </div>
     </section>
@@ -937,17 +1150,17 @@
                 <div class="footer-col">
                     <h4>Контакты</h4>
                     <div style="display: flex; flex-direction: column; gap: 1rem;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-map-marker-alt" style="color: var(--accent);"></i>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
                             <span>Таджикистан</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-phone" style="color: var(--accent);"></i>
-                            <a href="tel:+992000000000" style="color: white; text-decoration: none;">+992 000 000 000</a>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+992000000000" style="color:white; text-decoration: none;">+992 000 000 000</a>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fas fa-envelope" style="color: var(--accent);"></i>
-                            <a href="mailto:info@rostkor.tj" style="color: white; text-decoration: none;">info@rostkor.tj</a>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:info@rostkor.tj" style="color:white; text-decoration: none;">info@rostkor.tj</a>
                         </div>
                     </div>
                 </div>
@@ -955,17 +1168,17 @@
                 <div class="footer-col">
                     <h4>Мы в соцсетях</h4>
                     <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="https://instagram.com/rostkor.tj" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/992000000000" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-telegram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
                     </div>
-                    <p style="margin-top: 1.5rem; opacity: 0.8;">Следите за нашими проектами и акциями</p>
+                    <p style="margin-top: 2rem; opacity: 0.8;">Следите за нашими проектами и акциями</p>
                 </div>
             </div>
             
-            <div style="text-align: center; padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <p style="opacity: 0.7;">&copy; 2026 ROSTKOR. Все права защищены.</p>
+            <div style="text-align: center; margin-top: 4rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
+                &copy; 2026 ROSTKOR. Все права защищены. | Разработано с <i class="fas fa-heart" style="color: #ff6b6b;"></i>
             </div>
         </div>
     </footer>
@@ -987,9 +1200,21 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        // Global variables for filtering
+        let allServices = [];
+        let categories = new Set();
+        let activeCategory = 'all';
+
         // Mobile menu toggle
         document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
             document.querySelector('.nav-menu').classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelector('.nav-menu').classList.remove('active');
+            });
         });
 
         // Header scroll effect
@@ -1065,136 +1290,252 @@
             }
         });
 
-        // Category filter
-        let allServices = [];
-        let activeCategory = 'all';
-
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                // Update active button
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Filter services
-                activeCategory = this.dataset.category;
-                filterServices();
+        // Load Data
+        document.addEventListener('DOMContentLoaded', () => {
+            loadServices();
+            loadPortfolio();
+            loadReviews();
+            
+            // Add scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for animation
+            document.querySelectorAll('.service-card, .feature-card, .review-card, .portfolio-item').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
             });
+
+            // Search functionality
+            document.getElementById('service-search').addEventListener('input', filterServices);
         });
 
-        function filterServices() {
-            const container = document.getElementById('services-container');
-            const filtered = activeCategory === 'all' 
-                ? allServices 
-                : allServices.filter(service => service.category === activeCategory);
+        // 1. Load Services with Categories
+        function loadServices() {
+            const container = document.getElementById('services-list');
+            db.ref('rostkor_services').once('value', snapshot => {
+                container.innerHTML = '';
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center; width:100%; font-size: 1.2rem; color: var(--text-light);">Услуги пока не добавлены.</p>';
+                    return;
+                }
+                
+                allServices = [];
+                categories.clear();
+                
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    item.id = child.key;
+                    allServices.push(item);
+                    
+                    // Collect categories
+                    if (item.category) {
+                        categories.add(item.category);
+                    }
+                });
+                
+                // Render category filter
+                renderCategoryFilter();
+                
+                // Render all services
+                renderServices(allServices);
+            });
+        }
+
+        function renderCategoryFilter() {
+            const filterContainer = document.getElementById('categories-filter');
+            filterContainer.innerHTML = '';
             
-            renderServices(filtered);
+            // Add "All" category
+            const allBtn = document.createElement('button');
+            allBtn.className = 'category-btn active';
+            allBtn.innerHTML = '<i class="fas fa-th-large"></i> Все услуги';
+            allBtn.onclick = () => {
+                document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                allBtn.classList.add('active');
+                activeCategory = 'all';
+                filterServices();
+            };
+            filterContainer.appendChild(allBtn);
+            
+            // Add predefined categories with icons
+            const predefinedCategories = [
+                { name: 'Строительство', icon: 'fas fa-hard-hat' },
+                { name: 'Ремонт', icon: 'fas fa-tools' },
+                { name: 'Дизайн', icon: 'fas fa-palette' },
+                { name: 'Клининг', icon: 'fas fa-broom' }
+            ];
+            
+            // Add each predefined category
+            predefinedCategories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'category-btn';
+                btn.innerHTML = `<i class="${cat.icon}"></i> ${cat.name}`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeCategory = cat.name;
+                    filterServices();
+                };
+                filterContainer.appendChild(btn);
+            });
+            
+            // Add dynamic categories from data
+            categories.forEach(category => {
+                // Skip if already in predefined
+                if (!predefinedCategories.some(cat => cat.name === category)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'category-btn';
+                    btn.innerHTML = `<i class="fas fa-tag"></i> ${category}`;
+                    btn.onclick = () => {
+                        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                        btn.classList.add('active');
+                        activeCategory = category;
+                        filterServices();
+                    };
+                    filterContainer.appendChild(btn);
+                }
+            });
         }
 
         function renderServices(services) {
-            const container = document.getElementById('services-container');
+            const container = document.getElementById('services-list');
+            const noResults = document.getElementById('no-results');
             
             if (services.length === 0) {
-                container.innerHTML = '<p style="text-align: center; width: 100%; color: var(--text-secondary); font-size: 1.2rem;">Услуги не найдены</p>';
+                container.innerHTML = '';
+                noResults.style.display = 'block';
                 return;
             }
             
-            container.innerHTML = services.map(service => `
-                <div class="service-card" onclick="openModal(${JSON.stringify(service).replace(/"/g, '&quot;')})">
-                    <img src="${service.image || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=600&q=80'}" 
-                         alt="${service.name}" 
+            noResults.style.display = 'none';
+            container.innerHTML = '';
+            
+            services.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.setAttribute('onclick', `openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})`);
+                card.innerHTML = `
+                    <img src="${item.image || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'}" 
+                         alt="${item.name}" 
                          class="card-image">
                     <div class="card-content">
-                        <div class="card-category">${service.category || 'Общее'}</div>
+                        <div class="card-category">${item.category || 'Общее'}</div>
                         <h3 class="card-title">
-                            ${service.name}
-                            <span class="card-price">${service.price ? service.price + ' с.' : 'Договорная'}</span>
+                            ${item.name}
+                            <span class="card-price">${item.price ? item.price + ' с.' : 'Договорная'}</span>
                         </h3>
-                        <p class="card-description">${service.description ? service.description.substring(0, 120) + '...' : 'Нажмите для подробной информации'}</p>
-                        <a href="#" class="card-cta" onclick="event.stopPropagation(); openModal(${JSON.stringify(service).replace(/"/g, '&quot;')})">
+                        <p class="card-description">${item.description ? item.description.substring(0, 120) + '...' : 'Нажмите для подробной информации'}</p>
+                        <a href="#" class="card-cta" onclick="event.stopPropagation(); openModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
                             <span>Подробнее</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
-                </div>
-            `).join('');
+                `;
+                container.appendChild(card);
+            });
         }
 
-        // Load services from Firebase
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add page transition animations
-            document.querySelectorAll('.page-transition').forEach(el => {
-                setTimeout(() => el.classList.add('active'), 100);
+        function filterServices() {
+            const searchTerm = document.getElementById('service-search').value.toLowerCase();
+            
+            let filtered = allServices.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                                    (item.description && item.description.toLowerCase().includes(searchTerm));
+                const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+                return matchesSearch && matchesCategory;
             });
+            
+            renderServices(filtered);
+        }
 
-            // Load services
-            db.ref('rostkor_services').once('value', snapshot => {
+        // 2. Load Portfolio
+        function loadPortfolio() {
+            const container = document.getElementById('portfolio-list');
+            db.ref('rostkor_portfolio').once('value', snapshot => {
+                container.innerHTML = '';
                 if (!snapshot.exists()) {
-                    // Add sample services for demo
-                    allServices = [
-                        {
-                            name: "Евроремонт квартир",
-                            category: "repair",
-                            price: "1500",
-                            description: "Полный комплекс ремонтных работ с использованием современных материалов и технологий. От черновой отделки до финишных работ.",
-                            image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=800&q=80",
-                            features: ["Демонтаж старых покрытий", "Выравнивание стен и потолков", "Укладка напольных покрытий", "Установка сантехники", "Монтаж электрики"]
-                        },
-                        {
-                            name: "Строительство домов",
-                            category: "construction",
-                            price: "5000",
-                            description: "Строительство частных домов под ключ от проекта до сдачи объекта. Используем качественные материалы и современные технологии.",
-                            image: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80",
-                            features: ["Проектирование", "Фундаментные работы", "Возведение стен", "Кровельные работы", "Внутренняя отделка"]
-                        },
-                        {
-                            name: "Дизайн интерьера",
-                            category: "design",
-                            price: "800",
-                            description: "Создание современных и функциональных интерьеров с учетом пожеланий клиента и особенностей помещения.",
-                            image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-                            features: ["3D-визуализация", "Подбор материалов", "Расстановка мебели", "Световой дизайн", "Авторский надзор"]
-                        },
-                        {
-                            name: "Генеральная уборка",
-                            category: "cleaning",
-                            price: "300",
-                            description: "Комплексная уборка помещений любого размера с использованием профессиональной химии и оборудования.",
-                            image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80",
-                            features: ["Мойка окон", "Чистка ковров", "Дезинфекция санузлов", "Уборка кухни", "Вывоз мусора"]
+                    container.innerHTML = '<p style="text-align:center; width:100%; font-size: 1.2rem; color: var(--text-light);">Работ пока нет.</p>';
+                    return;
+                }
+
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    const div = document.createElement('div');
+                    div.className = 'portfolio-item';
+                    
+                    let content = '';
+                    if (item.type === 'video') {
+                        let videoUrl = item.url;
+                        if (videoUrl.includes('youtube.com') && !videoUrl.includes('embed')) {
+                            const videoId = videoUrl.split('v=')[1];
+                            const ampersandPosition = videoId.indexOf('&');
+                            if (ampersandPosition !== -1) {
+                                videoUrl = 'https://www.youtube.com/embed/' + videoId.substring(0, ampersandPosition);
+                            } else {
+                                videoUrl = 'https://www.youtube.com/embed/' + videoId;
+                            }
                         }
-                    ];
-                } else {
-                    allServices = [];
-                    snapshot.forEach(child => {
-                        const item = child.val();
-                        item.id = child.key;
-                        allServices.push(item);
-                    });
-                }
-                
-                renderServices(allServices);
+                        content = `<iframe src="${videoUrl}" allowfullscreen title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe>`;
+                    } else {
+                        content = `<img src="${item.url}" alt="${item.title}" loading="lazy">`;
+                    }
+
+                    div.innerHTML = `
+                        ${content}
+                        <div class="portfolio-overlay">
+                            <h4 style="font-size: 1.4rem; margin-bottom: 0.5rem;">${item.title}</h4>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">Нажмите для просмотра</p>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
             });
-        });
+        }
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
+        // 3. Load Reviews
+        function loadReviews() {
+            const container = document.getElementById('reviews-list');
+            db.ref('rostkor_reviews').once('value', snapshot => {
+                container.innerHTML = '';
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center; width:100%; font-size: 1.2rem; color: var(--text-light);">Отзывов пока нет.</p>';
+                    return;
                 }
-            });
-        }, observerOptions);
 
-        // Observe elements
-        document.querySelectorAll('.service-card, .feature-card').forEach(el => {
-            observer.observe(el);
-        });
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    const stars = parseInt(item.rating) || 5;
+                    const starsHtml = Array(5).fill(0).map((_, i) => 
+                        `<i class="fas fa-star ${i < stars ? '' : 'text-muted'}" style="color:${i < stars ? '#F6AD55' : '#ccc'}"></i>`
+                    ).join('');
+
+                    const div = document.createElement('div');
+                    div.className = 'review-card';
+                    div.innerHTML = `
+                        <div class="review-header">
+                            <span class="reviewer-name">${item.clientName}</span>
+                            <div class="review-stars">${starsHtml}</div>
+                        </div>
+                        <p class="review-text">"${item.text}"</p>
+                    `;
+                    container.appendChild(div);
+                });
+            });
+        }
     </script>
 </body>
 </html>
