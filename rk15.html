@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>ROSTKOR — Строительство, Ремонт, Дизайн, Клининг</title>
+    <meta name="description" content="ROSTKOR — полный комплекс услуг: строительство, ремонт, дизайн интерьеров и клининг в Таджикистане. От фундамента до чистоты.">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
+
+    <style>
+        :root {
+            --primary: #0056FF;
+            --primary-dark: #0047D6;
+            --primary-light: #337AFF;
+            --accent: #FF6B35;
+            --accent-dark: #E55A2B;
+            --text-main: #1A1A1A;
+            --text-secondary: #666666;
+            --text-light: #999999;
+            --bg-light: #2818bb;
+            --bg-dark: #0F172A;
+            --surface: #4909c8;
+            --surface-dark: #F8FAFC;
+            --border: #E2E8F0;
+            --border-light: #F1F5F9;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --radius-xl: 40px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(255, 255, 255, 0.92);
+            --glass-border: rgba(255, 255, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-bottom: 80px;
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* --- Header --- */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: var(--transition);
+            height: 70px;
+        }
+
+        header.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+        }
+
+        /* --- Bottom Navigation --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border);
+            z-index: 1000;
+            padding: 0.8rem 0;
+            box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 86, 255, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+            background: rgba(0, 86, 255, 0.1);
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+        }
+
+        .nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .nav-item.accent {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-item.accent:hover {
+            background: var(--primary-dark);
+        }
+
+        /* --- Services Section --- */
+        .services-section {
+            padding: 4rem 0 2rem;
+            margin-top: 70px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Search Section */
+        .search-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 86, 255, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        /* Category Filter */
+        .category-filter {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-item {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .category-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .category-item.active {
+            border-color: var(--primary);
+            background: rgba(0, 86, 255, 0.05);
+            box-shadow: 0 0 0 2px rgba(0, 86, 255, 0.1);
+        }
+
+        .category-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            z-index: 2;
+        }
+
+        .category-image {
+            position: absolute;
+            right: 0.5rem;
+            bottom: 0.5rem;
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .category-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-category {
+            display: inline-block;
+            background: rgba(0, 86, 255, 0.1);
+            color: var(--primary);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .card-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            margin-left: 0.5rem;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .card-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .card-cta:hover {
+            gap: 12px;
+        }
+
+        /* Portfolio Section */
+        .portfolio-section {
+            padding: 4rem 0;
+            background: var(--surface-dark);
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .portfolio-slider {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .portfolio-slider .swiper-slide {
+            width: 100%;
+            height: 100%;
+        }
+
+        .portfolio-slider .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .portfolio-slider .swiper-button-next,
+        .portfolio-slider .swiper-button-prev {
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .portfolio-slider .swiper-button-next:hover,
+        .portfolio-slider .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .portfolio-slider .swiper-button-next:after,
+        .portfolio-slider .swiper-button-prev:after {
+            font-size: 1rem;
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 1.5rem;
+            color: white;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Modal Windows */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            z-index: 10;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        /* Order Form */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            background: white;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 86, 255, 0.1);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* Settings Modal */
+        .settings-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .theme-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .theme-option {
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .theme-option:hover {
+            border-color: var(--primary);
+        }
+
+        .theme-option.active {
+            border-color: var(--primary);
+            background: rgba(0, 86, 255, 0.05);
+        }
+
+        .size-selector {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .size-btn {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .size-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .size-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-col h4 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Loader */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .category-filter {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .category-item {
+                min-height: 80px;
+                padding: 0.75rem;
+            }
+
+            .category-text {
+                font-size: 1rem;
+            }
+
+            .category-image {
+                width: 50px;
+                height: 50px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-grid {
+                gap: 0.25rem;
+            }
+
+            .nav-item span {
+                font-size: 0.7rem;
+            }
+
+            .nav-item i {
+                font-size: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                max-width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .category-filter {
+                grid-template-columns: 1fr;
+            }
+
+            .category-item {
+                min-height: 70px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-header {
+                padding: 1.5rem 1.5rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <img src="rklogo.jpg" alt="ROSTKOR">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="services-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наши услуги</h2>
+                <p class="section-subtitle">Строительство, ремонт, дизайн и клининг под ключ</p>
+            </div>
+
+            <!-- Search -->
+            <div class="search-section">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="service-search" class="search-input" placeholder="Поиск услуг...">
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="category-filter" id="categories-filter">
+                <!-- Categories will be loaded dynamically -->
+            </div>
+
+            <!-- Services Grid -->
+            <div id="services-list" class="services-grid">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title" style="text-align: center;">Почему выбирают нас</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Опытная команда</h3>
+                    <p>Профессионалы с многолетним опытом</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Гарантия качества</h3>
+                    <p>Гарантия на все виды работ и материалы</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Соблюдение сроков</h3>
+                    <p>Работаем точно в оговоренные сроки</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3>Прозрачный договор</h3>
+                    <p>Четкая смета без скрытых платежей</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="portfolio-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Наши работы</h2>
+                <p class="section-subtitle">Реализованные проекты и отзывы клиентов</p>
+            </div>
+            <div id="portfolio-list" class="portfolio-grid">
+                <div class="loader"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacts">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem;">
+                        <div class="logo-icon" style="width: 60px; height: 60px;">
+                            <img src="rklogo.jpg" alt="ROSTKOR">
+                        </div>
+                        <h4>ROSTKOR</h4>
+                    </div>
+                    <p>Ваш надежный партнер в строительстве и ремонте. Качество, сроки и гарантия — наш приоритет.</p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Душанбе, Айни 9. Голубой экран</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:+992975577755" style="color:white; text-decoration: none;">+992 97 557 7755</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:info@rostkor.tj" style="color:white; text-decoration: none;">info@rostkor.tj</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Мы в соцсетях</h4>
+                    <div class="social-links">
+                        <a href="https://instagram.com/rostkor.tj" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/992975577755" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://t.me/+992975577755" target="_blank"><i class="fab fa-telegram"></i></a>
+                    </div>
+                    <p style="margin-top: 2rem; opacity: 0.8;">Следите за нашими проектами</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 4rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; font-size: 0.9rem; opacity: 0.7;">
+                &copy; 2026 ROSTKOR. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-container">
+            <div class="nav-grid">
+                <a href="#services" class="nav-item active">
+                    <i class="fas fa-hammer"></i>
+                    <span>Услуги</span>
+                </a>
+                <a href="#portfolio" class="nav-item">
+                    <i class="fas fa-images"></i>
+                    <span>Работы</span>
+                </a>
+                <a href="#" class="nav-item accent" id="order-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Заказать</span>
+                </a>
+                <a href="#contacts" class="nav-item">
+                    <i class="fas fa-phone"></i>
+                    <span>Контакты</span>
+                </a>
+                <a href="#" class="nav-item" id="settings-btn">
+                    <i class="fas fa-cog"></i>
+                    <span>Настройки</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <button class="modal-close" id="orderModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">Заказать услугу</h2>
+                <p>Заполните форму и мы свяжемся с вами в ближайшее время</p>
+            </div>
+            
+            <div class="modal-body">
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label class="form-label">Номер телефона *</label>
+                        <input type="tel" id="order-phone" class="form-control" placeholder="+992 ___ __ __" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ваше имя</label>
+                        <input type="text" id="order-name" class="form-control" placeholder="Иван Иванов">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Услуга</label>
+                        <input type="text" id="order-service" class="form-control" placeholder="Выберите услугу" list="services-list-options">
+                        <datalist id="services-list-options">
+                            <!-- Options will be filled from Firebase -->
+                        </datalist>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Комментарий</label>
+                        <textarea id="order-comment" class="form-control" rows="3" placeholder="Дополнительная информация..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-paper-plane"></i> Отправить заявку
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <button class="modal-close" id="settingsModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="modal-header">
+                <h2 class="modal-title">Настройки</h2>
+                <p>Настройте интерфейс под себя</p>
+            </div>
+            
+            <div class="modal-body">
+                <div class="settings-grid">
+                    <div>
+                        <h3 style="margin-bottom: 1rem;">Тема</h3>
+                        <div class="theme-selector">
+                            <div class="theme-option active" data-theme="light">
+                                <i class="fas fa-sun" style="font-size: 2rem; margin-bottom: 0.5rem; color: #F6AD55;"></i>
+                                <div>Светлая</div>
+                            </div>
+                            <div class="theme-option" data-theme="dark">
+                                <i class="fas fa-moon" style="font-size: 2rem; margin-bottom: 0.5rem; color: #667EEA;"></i>
+                                <div>Тёмная</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 style="margin-bottom: 1rem;">Размер интерфейса</h3>
+                        <div class="size-selector">
+                            <button class="size-btn" data-size="s">S</button>
+                            <button class="size-btn active" data-size="m">M</button>
+                            <button class="size-btn" data-size="l">L</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                    <button id="saveSettings" class="btn btn-primary btn-block">
+                        <i class="fas fa-save"></i> Сохранить настройки
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Details Modal -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content">
+            <button class="modal-close" id="serviceModalClose">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <img id="modalImage" src="" alt="" style="width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius-lg) var(--radius-lg) 0 0;">
+            
+            <div class="modal-body">
+                <h2 id="modalTitle" class="modal-title" style="margin-bottom: 0.5rem;"></h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <span id="modalCategory" class="card-category"></span>
+                    <div id="modalPrice" style="font-size: 1.3rem; font-weight: 700; color: var(--primary);"></div>
+                </div>
+                <div id="modalDescription" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 2rem;"></div>
+                
+                <button onclick="openOrderModal()" class="btn btn-primary btn-block">
+                    <i class="fas fa-shopping-cart"></i> Заказать эту услугу
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal -->
+    <div class="modal" id="portfolioModal">
+        <div class="modal-content" style="max-width: 800px; background: black;">
+            <button class="modal-close" id="portfolioModalClose" style="background: rgba(255,255,255,0.2);">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="swiper portfolio-modal-slider" style="width: 100%; height: 70vh;">
+                <div class="swiper-wrapper" id="portfolioModalSlides">
+                    <!-- Slides will be added here -->
+                </div>
+                <div class="swiper-button-next"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQj3rSIhnAnYSrwBK9BJkNl9FvrLc0PLU",
+            authDomain: "rostkor.firebaseapp.com",
+            databaseURL: "https://rostkor-default-rtdb.firebaseio.com",
+            projectId: "rostkor",
+            storageBucket: "rostkor.firebasestorage.app",
+            messagingSenderId: "1017428960882",
+            appId: "1:1017428960882:web:6a7c46178174bf8a3704eb"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Cache management
+        const cache = {
+            services: null,
+            portfolio: null,
+            lastUpdated: null,
+            
+            set(key, data) {
+                localStorage.setItem(`rostkor_${key}`, JSON.stringify(data));
+                localStorage.setItem(`rostkor_${key}_time`, Date.now());
+            },
+            
+            get(key) {
+                const data = localStorage.getItem(`rostkor_${key}`);
+                const time = localStorage.getItem(`rostkor_${key}_time`);
+                
+                if (!data || !time) return null;
+                
+                // Cache valid for 1 hour
+                if (Date.now() - parseInt(time) > 3600000) {
+                    localStorage.removeItem(`rostkor_${key}`);
+                    localStorage.removeItem(`rostkor_${key}_time`);
+                    return null;
+                }
+                
+                return JSON.parse(data);
+            },
+            
+            clear() {
+                ['services', 'portfolio', 'reviews'].forEach(key => {
+                    localStorage.removeItem(`rostkor_${key}`);
+                    localStorage.removeItem(`rostkor_${key}_time`);
+                });
+            }
+        };
+
+        // Global variables
+        let allServices = [];
+        let activeCategory = 'Все услуги';
+        let portfolioModalSwiper = null;
+        let portfolioSliders = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadServices();
+            loadPortfolio();
+            setupEventListeners();
+            loadSettings();
+            setupIntersectionObserver();
+        });
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 20) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Bottom nav active state
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    if (this.id === 'order-btn' || this.id === 'settings-btn') {
+                        e.preventDefault();
+                        return;
+                    }
+                    
+                    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Order button
+            document.getElementById('order-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openOrderModal();
+            });
+
+            // Settings button
+            document.getElementById('settings-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openSettingsModal();
+            });
+
+            // Search functionality
+            document.getElementById('service-search').addEventListener('input', filterServices);
+
+            // Order form submission
+            document.getElementById('orderForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitOrder();
+            });
+
+            // Modal close buttons
+            document.getElementById('orderModalClose').addEventListener('click', closeOrderModal);
+            document.getElementById('settingsModalClose').addEventListener('click', closeSettingsModal);
+            document.getElementById('serviceModalClose').addEventListener('click', closeServiceModal);
+            document.getElementById('portfolioModalClose').addEventListener('click', closePortfolioModal);
+
+            // Modal background click
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        if (this.id === 'orderModal') closeOrderModal();
+                        if (this.id === 'settingsModal') closeSettingsModal();
+                        if (this.id === 'serviceModal') closeServiceModal();
+                        if (this.id === 'portfolioModal') closePortfolioModal();
+                    }
+                });
+            });
+
+            // Settings save
+            document.getElementById('saveSettings').addEventListener('click', saveSettings);
+        }
+
+        // Load services with caching
+        function loadServices() {
+            const container = document.getElementById('services-list');
+            
+            // Try cache first
+            const cached = cache.get('services');
+            if (cached) {
+                allServices = cached;
+                renderCategories();
+                renderServices(allServices);
+                populateServicesDatalist();
+                return;
+            }
+
+            // Load from Firebase
+            db.ref('rostkor_services').once('value', snapshot => {
+                container.innerHTML = '';
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center; width:100%; font-size: 1.2rem; color: var(--text-light);">Услуги пока не добавлены.</p>';
+                    return;
+                }
+                
+                allServices = [];
+                snapshot.forEach(child => {
+                    const item = child.val();
+                    item.id = child.key;
+                    allServices.push(item);
+                });
+                
+                // Cache the data
+                cache.set('services', allServices);
+                
+                renderCategories();
+                renderServices(allServices);
+                populateServicesDatalist();
+            });
+        }
+
+        // Render categories
+        function renderCategories() {
+            const container = document.getElementById('categories-filter');
+            const categories = [
+                { name: 'Все услуги', icon: 'vse.webp' },
+                { name: 'Строительство', icon: 'str.webp' },
+                { name: 'Ремонт', icon: 'rem.webp' },
+                { name: 'Дизайн', icon: 'diz.webp' },
+                { name: 'Клининг', icon: 'cli.webp' }
+            ];
+
+            container.innerHTML = categories.map(cat => `
+                <div class="category-item ${cat.name === activeCategory ? 'active' : ''}" 
+                     data-category="${cat.name}"
+                     onclick="setActiveCategory('${cat.name}')">
+                    <div class="category-text">${cat.name}</div>
+                    <div class="category-image">
+                        <img src="${cat.icon}" alt="${cat.name}">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setActiveCategory(category) {
+            activeCategory = category;
+            renderCategories();
+            filterServices();
+        }
+
+        function renderServices(services) {
+            const container = document.getElementById('services-list');
+            
+            if (services.length === 0) {
+                container.innerHTML = '<p style="text-align:center; width:100%; padding: 3rem; color: var(--text-light);">Ничего не найдено</p>';
+                return;
+            }
+            
+            container.innerHTML = services.map(item => `
+                <div class="service-card" onclick="openServiceModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                    <img src="${item.image || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80'}" 
+                         alt="${item.name}" 
+                         class="card-image">
+                    <div class="card-content">
+                        <div class="card-category">${item.category || 'Общее'}</div>
+                        <h3 class="card-title">
+                            ${item.name}
+                            <span class="card-price">${item.price ? item.price + ' с.' : 'Договорная'}</span>
+                        </h3>
+                        <p class="card-description">${item.description ? item.description.substring(0, 100) + '...' : 'Нажмите для подробной информации'}</p>
+                        <a href="#" class="card-cta" onclick="event.preventDefault(); event.stopPropagation(); openServiceModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                            <span>Подробнее</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterServices() {
+            const searchTerm = document.getElementById('service-search').value.toLowerCase();
+            
+            let filtered = allServices.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchTerm) ||
+                                    (item.description && item.description.toLowerCase().includes(searchTerm));
+                const matchesCategory = activeCategory === 'Все услуги' || item.category === activeCategory;
+                return matchesSearch && matchesCategory;
+            });
+            
+            renderServices(filtered);
+        }
+
+        function populateServicesDatalist() {
+            const datalist = document.getElementById('services-list-options');
+            datalist.innerHTML = allServices.map(service => 
+                `<option value="${service.name}">${service.category} - ${service.price ? service.price + ' с.' : 'Договорная'}</option>`
+            ).join('');
+        }
+
+        // Load portfolio with caching
+        function loadPortfolio() {
+            const container = document.getElementById('portfolio-list');
+            
+            // Try cache first
+            const cached = cache.get('portfolio');
+            if (cached) {
+                renderPortfolio(cached);
+                return;
+            }
+
+            // Load from Firebase
+            db.ref('rostkor_portfolio').once('value', snapshot => {
+                container.innerHTML = '';
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center; width:100%; font-size: 1.2rem; color: var(--text-light);">Работ пока нет.</p>';
+                    return;
+                }
+
+                const portfolioItems = [];
+                snapshot.forEach(child => {
+                    portfolioItems.push(child.val());
+                });
+                
+                // Cache the data
+                cache.set('portfolio', portfolioItems);
+                
+                renderPortfolio(portfolioItems);
+            });
+        }
+
+        function renderPortfolio(items) {
+            const container = document.getElementById('portfolio-list');
+            
+            container.innerHTML = items.map((item, index) => {
+                const images = item.url.split(',').map(url => url.trim());
+                
+                return `
+                    <div class="portfolio-item" onclick="openPortfolioModal(${JSON.stringify(item).replace(/"/g, '&quot;')})">
+                        <div class="portfolio-slider swiper" id="portfolio-slider-${index}">
+                            <div class="swiper-wrapper">
+                                ${images.slice(0, 3).map((imageUrl, imgIndex) => `
+                                    <div class="swiper-slide">
+                                        <img src="${imageUrl}" alt="${item.title} - изображение ${imgIndex + 1}" 
+                                             onerror="this.src='https://via.placeholder.com/600x400?text=Изображение+не+загружено'">
+                                    </div>
+                                `).join('')}
+                            </div>
+                            ${images.length > 1 ? `
+                                <div class="swiper-button-next"></div>
+                                <div class="swiper-button-prev"></div>
+                            ` : ''}
+                        </div>
+                        <div class="portfolio-overlay">
+                            <h4 style="font-size: 1.2rem; margin-bottom: 0.5rem;">${item.title}</h4>
+                            <p style="font-size: 0.9rem; opacity: 0.9;">${images.length} фото</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Initialize sliders
+            setTimeout(() => {
+                items.forEach((_, index) => {
+                    const slider = new Swiper(`#portfolio-slider-${index}`, {
+                        navigation: {
+                            nextEl: `#portfolio-slider-${index} .swiper-button-next`,
+                            prevEl: `#portfolio-slider-${index} .swiper-button-prev`,
+                        },
+                        loop: true,
+                        allowTouchMove: true,
+                        autoplay: false, // No autoplay as requested
+                    });
+                    portfolioSliders.push(slider);
+                });
+            }, 100);
+        }
+
+        // Modal functions
+        function openOrderModal() {
+            document.getElementById('orderModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('orderForm').reset();
+        }
+
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openServiceModal(service) {
+            document.getElementById('modalImage').src = service.image || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80';
+            document.getElementById('modalTitle').textContent = service.name;
+            document.getElementById('modalCategory').textContent = service.category || 'Общее';
+            document.getElementById('modalPrice').textContent = service.price ? `${service.price} с.` : 'Цена договорная';
+            document.getElementById('modalDescription').textContent = service.description || 'Описание отсутствует';
+            
+            document.getElementById('serviceModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openPortfolioModal(portfolioItem) {
+            const slidesContainer = document.getElementById('portfolioModalSlides');
+            slidesContainer.innerHTML = '';
+            
+            const images = portfolioItem.url.split(',').map(url => url.trim());
+            
+            images.forEach(imageUrl => {
+                const slide = document.createElement('div');
+                slide.className = 'swiper-slide';
+                
+                if (portfolioItem.type === 'video' || imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be')) {
+                    let videoUrl = imageUrl;
+                    if (videoUrl.includes('youtube.com/watch?v=')) {
+                        const videoId = videoUrl.split('v=')[1];
+                        const ampersandPosition = videoId.indexOf('&');
+                        videoUrl = 'https://www.youtube.com/embed/' + (ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId);
+                    } else if (videoUrl.includes('youtu.be/')) {
+                        const videoId = videoUrl.split('youtu.be/')[1];
+                        videoUrl = 'https://www.youtube.com/embed/' + videoId;
+                    }
+                    
+                    slide.innerHTML = `
+                        <iframe 
+                            src="${videoUrl}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            style="width: 100%; height: 100%;">
+                        </iframe>
+                    `;
+                } else {
+                    slide.innerHTML = `<img src="${imageUrl}" alt="${portfolioItem.title}" style="width: 100%; height: 100%; object-fit: contain;">`;
+                }
+                
+                slidesContainer.appendChild(slide);
+            });
+            
+            // Initialize modal swiper
+            if (portfolioModalSwiper) {
+                portfolioModalSwiper.destroy();
+            }
+            
+            portfolioModalSwiper = new Swiper('.portfolio-modal-slider', {
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                loop: true,
+                autoplay: false, // No autoplay as requested
+                effect: 'slide',
+                speed: 400,
+            });
+            
+            document.getElementById('portfolioModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePortfolioModal() {
+            document.getElementById('portfolioModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+            
+            if (portfolioModalSwiper) {
+                portfolioModalSwiper.destroy();
+                portfolioModalSwiper = null;
+            }
+        }
+
+        // Order submission
+        function submitOrder() {
+            const phone = document.getElementById('order-phone').value;
+            const name = document.getElementById('order-name').value;
+            const service = document.getElementById('order-service').value;
+            const comment = document.getElementById('order-comment').value;
+            
+            if (!phone) {
+                alert('Пожалуйста, введите номер телефона');
+                return;
+            }
+            
+            // Format message for Telegram
+            const message = `
+📞 *Новая заявка с сайта ROSTKOR*
+
+👤 *Имя:* ${name || 'Не указано'}
+📱 *Телефон:* ${phone}
+🔧 *Услуга:* ${service || 'Не указана'}
+💬 *Комментарий:* ${comment || 'Отсутствует'}
+
+⏰ *Время:* ${new Date().toLocaleString('ru-RU')}
+            `.trim();
+            
+            // Telegram bot URL (token and chat_id to be filled)
+            const botToken = ''; // Add your bot token here
+            const chatId = ''; // Add your chat ID here
+            
+            if (botToken && chatId) {
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Message sent:', data);
+                })
+                .catch(error => {
+                    console.error('Error sending message:', error);
+                });
+            }
+            
+            alert('Спасибо! Скоро вам позвонят.');
+            closeOrderModal();
+            
+            // Reset form
+            document.getElementById('orderForm').reset();
+        }
+
+        // Settings management
+        function loadSettings() {
+            const theme = localStorage.getItem('rostkor_theme') || 'light';
+            const size = localStorage.getItem('rostkor_size') || 'm';
+            
+            // Set theme
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.dataset.theme === theme) {
+                    option.classList.add('active');
+                }
+            });
+            
+            // Set size
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.size === size) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            applyTheme(theme);
+            applySize(size);
+            
+            // Add click handlers
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.theme-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    applyTheme(this.dataset.theme);
+                });
+            });
+            
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    applySize(this.dataset.size);
+                });
+            });
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.style.setProperty('--bg-light', '#0F172A');
+                document.documentElement.style.setProperty('--text-main', '#2818bb');
+                document.documentElement.style.setProperty('--text-secondary', '#CBD5E1');
+                document.documentElement.style.setProperty('--surface', '#1E293B');
+                document.documentElement.style.setProperty('--surface-dark', '#334155');
+                document.documentElement.style.setProperty('--border', '#475569');
+                document.documentElement.style.setProperty('--border-light', '#64748B');
+                document.documentElement.style.setProperty('--glass-bg', 'rgba(30, 41, 59, 0.92)');
+                document.documentElement.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.1)');
+            } else {
+                // Reset to light theme
+                document.documentElement.style.setProperty('--bg-light', '##02bde');
+                document.documentElement.style.setProperty('--text-main', '#1A1A1A');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--surface', '#2818bb');
+                document.documentElement.style.setProperty('--surface-dark', '#F8FAFC');
+                document.documentElement.style.setProperty('--border', '#E2E8F0');
+                document.documentElement.style.setProperty('--border-light', '#F1F5F9');
+                document.documentElement.style.setProperty('--glass-bg', 'rgba(255, 255, 255, 0.92)');
+                document.documentElement.style.setProperty('--glass-border', 'rgba(255, 255, 255, 0.25)');
+            }
+        }
+
+        function applySize(size) {
+            const scale = {
+                's': 0.9,
+                'm': 1,
+                'l': 1.1
+            }[size];
+            
+            document.documentElement.style.fontSize = `${scale * 100}%`;
+        }
+
+        function saveSettings() {
+            const activeTheme = document.querySelector('.theme-option.active').dataset.theme;
+            const activeSize = document.querySelector('.size-btn.active').dataset.size;
+            
+            localStorage.setItem('rostkor_theme', activeTheme);
+            localStorage.setItem('rostkor_size', activeSize);
+            
+            alert('Настройки сохранены!');
+            closeSettingsModal();
+        }
+
+        // Intersection Observer for animations
+        function setupIntersectionObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+            
+            document.querySelectorAll('.service-card, .feature-card, .portfolio-item').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(el);
+            });
+        }
+    </script>
+</body>
+</html>
