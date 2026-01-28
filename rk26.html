@@ -2637,64 +2637,50 @@
         // Load logo
 
         // Modal functionality
-        function openModal(item, type) {
-            const modal = document.getElementById('detailModal');
-            const modalMedia = document.getElementById('modalMedia');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalCategory = document.getElementById('modalCategory');
-            const modalDescription = document.getElementById('modalDescription');
-            
-            // Clear previous content
-            modalMedia.innerHTML = '';
-            
-            if (type === 'portfolio') {
-                if (item.type === 'video' || item.isVideo) {
-                    // Handle video
-                    let videoUrl = item.url;
-                    if (videoUrl.includes('youtube.com/watch?v=')) {
-                        const videoId = videoUrl.split('v=')[1];
-                        const ampersandPosition = videoId.indexOf('&');
-                        videoUrl = 'https://www.youtube.com/embed/' + (ampersandPosition !== -1 ? videoId.substring(0, ampersandPosition) : videoId);
-                    } else if (videoUrl.includes('youtu.be/')) {
-                        const videoId = videoUrl.split('youtu.be/')[1];
-                        videoUrl = 'https://www.youtube.comembed/' + videoId;
-                    }
-                    
-                    modalMedia.innerHTML = `
-                        <iframe 
-                            src="${videoUrl}" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>
-                    `;
-                } else {
-                    // Handle images - если несколько изображений через запятую
-                    if (item.url && item.url.includes(',')) {
-                        const urls = item.url.split(',');
-                        // Отображаем первое изображение
-                        const firstImage = urls[0].trim();
-                        modalMedia.innerHTML = `<img src="${firstImage}" alt="${item.name}">`;
-                    } else {
-                        modalMedia.innerHTML = `<img src="${item.url || item.media}" alt="${item.name}">`;
-                    }
-                }
-            } else {
-                // Handle service image
-                modalMedia.innerHTML = `<img src="${item.image}" alt="${item.name}">`;
-            }
-            
-            modalTitle.textContent = item.name;
-            modalCategory.textContent = item.category || 'Общее';
-            modalDescription.textContent = item.description || '';
-            
-            // Set service name for order form
-            document.getElementById('orderService').value = item.name;
-            
-            modal.classList.add('active');
-            modal.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
+// Modal functionality
+function openModal(item, type) {
+    // Если это видео, открываем в новой вкладке
+    if (type === 'portfolio' && (item.type === 'video' || item.isVideo)) {
+        // Открываем видео в новой вкладке
+        window.open(item.url || item.media, '_blank');
+        return; // Прерываем выполнение, чтобы не открывать модальное окно
+    }
+    
+    const modal = document.getElementById('detailModal');
+    const modalMedia = document.getElementById('modalMedia');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalCategory = document.getElementById('modalCategory');
+    const modalDescription = document.getElementById('modalDescription');
+    
+    // Clear previous content
+    modalMedia.innerHTML = '';
+    
+    if (type === 'portfolio') {
+        // Handle images - если несколько изображений через запятую
+        if (item.url && item.url.includes(',')) {
+            const urls = item.url.split(',');
+            // Отображаем первое изображение
+            const firstImage = urls[0].trim();
+            modalMedia.innerHTML = `<img src="${firstImage}" alt="${item.name}">`;
+        } else {
+            modalMedia.innerHTML = `<img src="${item.url || item.media}" alt="${item.name}">`;
         }
+    } else {
+        // Handle service image
+        modalMedia.innerHTML = `<img src="${item.image}" alt="${item.name}">`;
+    }
+    
+    modalTitle.textContent = item.name;
+    modalCategory.textContent = item.category || 'Общее';
+    modalDescription.textContent = item.description || '';
+    
+    // Set service name for order form
+    document.getElementById('orderService').value = item.name;
+    
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+}
 
         function closeModal() {
             const modal = document.getElementById('detailModal');
