@@ -1,0 +1,1541 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+    <title>РОСКОР — Дизайн, Ремонт и Клининг под ключ</title>
+    <meta name="description" content="РОСКОР — полный цикл работ: дизайн интерьеров, ремонт под ключ и клининг. От идеи до идеальной чистоты в Таджикистане.">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #1f3fbf;
+            --primary-dark: #152d8a;
+            --primary-light: #4a6ae0;
+            --accent: #d4a24c;
+            --accent-dark: #b8882e;
+            --accent-light: #e8c070;
+            --white: #ffffff;
+            --gray-50: #f8f9fc;
+            --gray-100: #f0f2f8;
+            --gray-200: #dde1ee;
+            --gray-300: #c0c7dc;
+            --gray-500: #6b77a0;
+            --gray-700: #2e3a5c;
+            --gray-900: #111827;
+            --text-primary: #111827;
+            --text-secondary: #4b5470;
+            --bg: #ffffff;
+            --bg2: #f6f8fe;
+            --border: #e0e4f0;
+            --shadow-sm: 0 2px 8px rgba(31,63,191,0.07);
+            --shadow-md: 0 6px 24px rgba(31,63,191,0.10);
+            --shadow-lg: 0 16px 48px rgba(31,63,191,0.14);
+            --r: 10px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+        /* ===== HEADER ===== */
+        .site-header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 900;
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 68px;
+            gap: 16px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .logo-icon {
+            width: 36px; height: 36px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1rem;
+        }
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.3rem;
+            letter-spacing: 0.04em;
+            color: var(--primary);
+        }
+        .logo-text span { color: var(--accent); }
+
+        .header-nav { display: flex; align-items: center; gap: 28px; }
+        .header-nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .header-nav a:hover { color: var(--primary); }
+
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .header-phone {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .header-phone i { color: var(--primary); }
+
+        .btn-header {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--r);
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-header:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+        @media (max-width: 900px) { .header-nav { display: none; } }
+        @media (max-width: 600px) { .header-phone { display: none; } }
+
+        /* ===== HERO ===== */
+        .hero {
+            margin-top: 68px;
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-left {
+            background: linear-gradient(135deg, #2a4fd6 0%, #1f3fbf 40%, #152d8a 70%, #0d1f6e 100%);
+            padding: 80px 64px 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+        /* sparkle / star decorations on hero left */
+        .hero-left::before {
+            content: '';
+            position: absolute;
+            top: 10%; right: 5%;
+            width: 180px; height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-left::after {
+            content: '';
+            position: absolute;
+            bottom: 15%; left: -40px;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(212,162,76,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        /* Stars */
+        .hero-stars {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .hero-stars span {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(1.9rem, 3vw, 2.6rem);
+            font-weight: 900;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+            text-transform: uppercase;
+        }
+        .hero-sub {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 340px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-btns {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .btn-gold {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: var(--r);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-gold:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,162,76,0.4); }
+        .btn-outline-white {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.5);
+            padding: 13px 28px;
+            border-radius: var(--r);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.1); }
+
+        .hero-right {
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-right img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .hero-right::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #152d8a 0%, rgba(21,45,138,0.4) 40%, transparent 100%);
+        }
+        .hero-dots {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px;
+            z-index: 10;
+        }
+        .hero-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .hero-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
+
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; min-height: auto; }
+            .hero-right { height: 260px; }
+            .hero-left { padding: 48px 24px 72px; }
+        }
+
+        /* ===== НАШИ УСЛУГИ (section title + cards) ===== */
+        .services-section {
+            background: var(--bg);
+            padding: 64px 0 72px;
+        }
+        .services-section-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.9rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 44px;
+            color: var(--text-primary);
+        }
+        .service-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .service-card-main {
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 36px 28px 32px;
+            box-shadow: 0 4px 20px rgba(31,63,191,0.09);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .service-card-main::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+        .service-card-main:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+        .service-card-main:hover::before { transform: scaleX(1); }
+
+        .sc-icon {
+            width: 80px; height: 80px;
+            margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .sc-icon svg { width: 76px; height: 76px; }
+        .sc-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: var(--text-primary);
+        }
+        .sc-list { list-style: none; }
+        .sc-list li {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .sc-list li::before {
+            content: '●';
+            color: var(--accent);
+            font-size: 0.45rem;
+            margin-top: 7px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 900px) {
+            .service-cards-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== WHY US ===== */
+        .why-us {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .why-us-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #eaeefd 0%, #eef2ff 50%, #e8edfe 100%);
+            z-index: 0;
+        }
+        .why-us .container { position: relative; z-index: 1; }
+        .why-us-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: center;
+        }
+        .why-us-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 36px;
+            color: var(--text-primary);
+        }
+        .why-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .why-check {
+            width: 28px; height: 28px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .why-check i { color: white; font-size: 0.68rem; }
+        .why-item-text strong {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            font-size: 0.95rem;
+        }
+        .why-item-text span { font-size: 0.86rem; color: var(--text-secondary); }
+
+        .why-image {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            box-shadow: var(--shadow-lg);
+        }
+        .why-image img { width: 100%; height: 100%; object-fit: cover; }
+        .why-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(31,63,191,0.12), transparent);
+        }
+
+        @media (max-width: 768px) {
+            .why-us-grid { grid-template-columns: 1fr; gap: 40px; }
+        }
+
+        /* ===== PORTFOLIO ===== */
+        .portfolio-section { padding: 80px 0; background: var(--bg); }
+        .section-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .section-heading {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+        .section-heading span { color: var(--primary); }
+        .section-sub { color: var(--text-secondary); margin-top: 8px; font-size: 0.95rem; }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .portfolio-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+        .portfolio-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; display: block; }
+        .portfolio-item:hover img { transform: scale(1.05); }
+        .portfolio-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15,28,80,0.9) 0%, rgba(31,63,191,0.1) 60%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 24px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+        .portfolio-overlay h4 { color: white; font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; }
+        .portfolio-overlay p { color: rgba(255,255,255,0.75); font-size: 0.85rem; margin-top: 4px; }
+        .video-play-btn {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 56px; height: 56px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.3rem;
+            box-shadow: 0 4px 16px rgba(31,63,191,0.5);
+        }
+        .portfolio-footer { text-align: center; margin-top: 40px; }
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            border-radius: var(--r);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .btn-primary:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,162,76,0.35); }
+
+        @media (max-width: 640px) { .portfolio-grid { grid-template-columns: 1fr; } }
+
+        /* ===== WORKFLOW ===== */
+        .workflow-section {
+            padding: 80px 0;
+            background: var(--bg2);
+        }
+        .workflow-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: left;
+            margin-bottom: 56px;
+            color: var(--text-primary);
+        }
+        .workflow-steps {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 0;
+            flex-wrap: wrap;
+        }
+        .workflow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+            max-width: 150px;
+            position: relative;
+        }
+        .workflow-step::after {
+            content: '›';
+            position: absolute;
+            right: -10px;
+            top: 22px;
+            font-size: 1.4rem;
+            color: var(--gray-300);
+            font-weight: 300;
+        }
+        .workflow-step:last-child::after { display: none; }
+        .step-circle {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+        .workflow-step:hover .step-circle {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+        .step-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); line-height: 1.3; }
+
+        @media (max-width: 640px) {
+            .workflow-steps { flex-direction: column; align-items: center; gap: 24px; }
+            .workflow-step::after { display: none; }
+        }
+
+        /* ===== CONTACT FORM ===== */
+        .contact-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1f3fbf 0%, #152d8a 60%, #0d1f6e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .contact-section::before {
+            content: '';
+            position: absolute;
+            top: -100px; right: -100px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(212,162,76,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .contact-section::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -80px;
+            width: 350px; height: 350px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .contact-inner {
+            max-width: 680px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        .contact-title {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+        }
+        .contact-sub { color: rgba(255,255,255,0.75); margin-bottom: 40px; font-size: 0.95rem; }
+        .contact-form {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 36px;
+        }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 6px; text-align: left; }
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid rgba(255,255,255,0.2);
+            border-radius: var(--r);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .form-input::placeholder { color: rgba(255,255,255,0.45); }
+        .form-input:focus, .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212,162,76,0.2);
+        }
+        .form-select { cursor: pointer; }
+        .form-select option { background: #1f3fbf; color: white; }
+        .form-submit {
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: var(--r);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .form-submit:hover { background: var(--accent-dark); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(212,162,76,0.4); }
+
+        @media (max-width: 560px) { .form-row { grid-template-columns: 1fr; } .contact-form { padding: 24px 20px; } }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: var(--gray-900);
+            color: rgba(255,255,255,0.7);
+            padding: 56px 0 32px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+        .footer-logo {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 16px;
+        }
+        .footer-logo-icon {
+            width: 36px; height: 36px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: white;
+        }
+        .footer-logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            color: white;
+        }
+        .footer-logo-text span { color: var(--accent); }
+        .footer-desc { font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
+        .social-row { display: flex; gap: 10px; }
+        .social-btn {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .social-btn:hover { background: var(--primary); color: white; }
+        .footer-col h4 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 0.95rem; letter-spacing: 0.03em; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--accent); }
+        .footer-contact-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; font-size: 0.88rem; }
+        .footer-contact-item i { color: var(--accent); margin-top: 3px; flex-shrink: 0; }
+        .footer-contact-item a { color: rgba(255,255,255,0.7); text-decoration: none; }
+        .footer-contact-item a:hover { color: white; }
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.08);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+
+        /* ===== BOTTOM NAV (mobile) ===== */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            z-index: 800;
+            padding: 8px 0;
+        }
+        @media (max-width: 768px) { .bottom-nav { display: block; } body { padding-bottom: 64px; } }
+        .nav-items { display: flex; justify-content: space-around; list-style: none; }
+        .nav-link { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--text-secondary); font-size: 0.7rem; gap: 3px; padding: 4px 12px; transition: color 0.2s; }
+        .nav-link i { font-size: 1.2rem; }
+        .nav-link.active { color: var(--primary); }
+
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5,10,30,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: flex; align-items: flex-start; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            overflow-y: auto;
+            padding: 80px 20px 40px;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-box {
+            background: var(--bg);
+            border-radius: 12px;
+            width: 100%; max-width: 1100px;
+            padding: 40px 32px;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 16px; right: 16px;
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--gray-100);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .modal-close-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .modal-title { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 28px; }
+        .modal-services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .modal-service-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+        .modal-service-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--primary); }
+        .modal-service-card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+        .msc-body { padding: 16px; }
+        .msc-cat { font-size: 0.75rem; font-weight: 600; color: var(--primary); background: rgba(31,63,191,0.08); padding: 3px 10px; border-radius: 4px; display: inline-block; margin-bottom: 8px; }
+        .msc-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+        .msc-price { font-size: 0.82rem; color: var(--accent); font-weight: 600; }
+        .msc-desc { font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px; margin-bottom: 14px; }
+        .msc-btns { display: flex; gap: 10px; }
+        .msc-btn-order {
+            flex: 1; padding: 10px 14px; border-radius: 8px; border: none;
+            background: var(--primary); color: white; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+        }
+        .msc-btn-order:hover { background: var(--primary-dark); }
+        .msc-btn-detail {
+            flex: 1; padding: 10px 14px; border-radius: 8px;
+            background: var(--bg2); border: 1px solid var(--border); color: var(--text-primary); font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+        }
+        .msc-btn-detail:hover { border-color: var(--primary); }
+
+        /* Detail modal */
+        .detail-modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5,10,30,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2100;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            padding: 20px;
+        }
+        .detail-modal-overlay.active { opacity: 1; visibility: visible; }
+        .detail-modal-box {
+            background: var(--bg);
+            border-radius: 12px;
+            width: 100%; max-width: 720px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        .detail-modal-media img { width: 100%; height: 280px; object-fit: cover; display: block; }
+        .detail-modal-body { padding: 28px; }
+        .detail-cat { font-size: 0.75rem; font-weight: 600; color: var(--primary); background: rgba(31,63,191,0.08); padding: 4px 12px; border-radius: 4px; display: inline-block; margin-bottom: 12px; }
+        .detail-name { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.4rem; margin-bottom: 12px; }
+        .detail-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-bottom: 20px; }
+        .detail-order-btn {
+            width: 100%; padding: 14px; border-radius: var(--r);
+            background: var(--primary); color: white; border: none;
+            font-weight: 700; font-size: 1rem; cursor: pointer;
+            font-family: 'Montserrat', sans-serif; transition: all 0.2s;
+        }
+        .detail-order-btn:hover { background: var(--primary-dark); }
+
+        /* Order modal */
+        .order-modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5,10,30,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 2200;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            padding: 20px;
+        }
+        .order-modal-overlay.active { opacity: 1; visibility: visible; }
+        .order-modal-box {
+            background: var(--bg);
+            border-radius: 12px;
+            width: 100%; max-width: 480px;
+            padding: 36px;
+            position: relative;
+            box-shadow: var(--shadow-lg);
+        }
+        .order-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.4rem; margin-bottom: 24px; }
+        .order-form { display: flex; flex-direction: column; gap: 16px; }
+        .order-form .form-input {
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            color: var(--text-primary);
+        }
+        .order-form .form-input::placeholder { color: var(--gray-300); }
+        .order-form .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(31,63,191,0.1); }
+        .order-form .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--r);
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            transition: border-color 0.2s;
+            outline: none;
+            min-height: 100px; resize: vertical;
+        }
+        .order-form .form-textarea::placeholder { color: var(--gray-300); }
+        .order-form .form-textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(31,63,191,0.1); }
+        .order-form .form-label { color: var(--text-secondary); }
+        .order-submit {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: var(--r);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .order-submit:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 90px; left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: #16a34a;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 3000;
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+            box-shadow: var(--shadow-md);
+        }
+        .toast.active { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+        /* Loader */
+        .loader {
+            display: flex; align-items: center; justify-content: center;
+            padding: 40px;
+        }
+        .loader-spin {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.7s ease both; }
+        .fade-up-1 { animation-delay: 0.1s; }
+        .fade-up-2 { animation-delay: 0.25s; }
+        .fade-up-3 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+    <div class="container">
+        <div class="header-inner">
+            <a href="#" class="logo">
+                <span class="logo-text">ROST<span>KOR.TJ</span></span>
+            </a>
+            <nav class="header-nav">
+                <a href="#services-section">Услуги</a>
+                <a href="#portfolio-section">Проекты</a>
+                <a href="#why-section">О нас</a>
+                <a href="#contact-section">Контакты</a>
+            </nav>
+            <div class="header-right">
+                <a href="tel:+992975577755" class="header-phone"><i class="fas fa-phone"></i>+992 975577755</a>
+                <button class="btn-header" onclick="document.getElementById('orderModal').classList.add('active')">Получить консультацию</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+    <div class="hero-left">
+        <!-- Sparkle stars decoration -->
+        <div class="hero-stars">
+            <span style="width:3px;height:3px;top:15%;left:12%;animation-delay:0s;"></span>
+            <span style="width:2px;height:2px;top:25%;left:60%;animation-delay:0.5s;"></span>
+            <span style="width:4px;height:4px;top:70%;left:25%;animation-delay:1s;"></span>
+            <span style="width:2px;height:2px;top:45%;left:80%;animation-delay:1.5s;"></span>
+            <span style="width:3px;height:3px;top:85%;left:50%;animation-delay:0.8s;"></span>
+            <span style="width:2px;height:2px;top:10%;left:40%;animation-delay:2s;"></span>
+            <span style="width:3px;height:3px;top:55%;left:5%;animation-delay:1.2s;"></span>
+        </div>
+        <h1 class="hero-title fade-up">Дизайн, ремонт<br>и клининг под ключ</h1>
+        <p class="hero-sub fade-up fade-up-1">Полный цикл работ — от идеи<br>до идеальной чистоты</p>
+        <div class="hero-btns fade-up fade-up-2">
+            <button class="btn-gold" onclick="document.getElementById('orderModal').classList.add('active'); document.getElementById('orderServiceField').value='Консультация'">Получить консультацию</button>
+            <button class="btn-outline-white" onclick="document.getElementById('orderModal').classList.add('active'); document.getElementById('orderServiceField').value='Расчёт стоимости'">Рассчитать стоимость</button>
+        </div>
+        <div class="hero-dots" style="position:relative;bottom:auto;left:auto;transform:none;margin-top:40px;">
+            <div class="hero-dot active"></div>
+            <div class="hero-dot"></div>
+            <div class="hero-dot"></div>
+            <div class="hero-dot"></div>
+        </div>
+    </div>
+    <div class="hero-right">
+        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1000&q=85" alt="Интерьер">
+    </div>
+</section>
+
+<!-- НАШИ УСЛУГИ -->
+<section id="services-section" class="services-section">
+    <div class="container">
+        <h2 class="services-section-title">Наши услуги</h2>
+        <div class="service-cards-grid">
+            <!-- Design card -->
+            <div class="service-card-main fade-up" onclick="openCategoryModal('Дизайн')">
+                <div class="sc-icon">
+                    <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- House with pencil icon -->
+                        <rect x="6" y="34" width="40" height="30" rx="3" fill="#dce6ff" stroke="#1f3fbf" stroke-width="2"/>
+                        <path d="M4 36 L26 14 L48 36" stroke="#1f3fbf" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+                        <rect x="18" y="46" width="16" height="18" rx="2" fill="#b8caff" stroke="#1f3fbf" stroke-width="1.5"/>
+                        <!-- Pencil -->
+                        <rect x="46" y="30" width="10" height="26" rx="2" transform="rotate(45 46 30)" fill="#d4a24c" stroke="#b8882e" stroke-width="1.5"/>
+                        <path d="M57 55 L61 65 L51 62 Z" fill="#d4a24c" stroke="#b8882e" stroke-width="1"/>
+                        <!-- Stars/sparkles -->
+                        <circle cx="60" cy="14" r="3" fill="#d4a24c" opacity="0.7"/>
+                        <circle cx="68" cy="24" r="2" fill="#4a6ae0" opacity="0.6"/>
+                        <path d="M65 10 L66 13 L69 14 L66 15 L65 18 L64 15 L61 14 L64 13 Z" fill="#d4a24c" opacity="0.8"/>
+                    </svg>
+                </div>
+                <div class="sc-title">Дизайн интерьера</div>
+                <ul class="sc-list">
+                    <li>Планировки</li>
+                    <li>3D-визуализация</li>
+                    <li>Подбор материалов</li>
+                </ul>
+            </div>
+            <!-- Repair card -->
+            <div class="service-card-main fade-up fade-up-1" onclick="openCategoryModal('Ремонт')">
+                <div class="sc-icon">
+                    <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Wrench -->
+                        <path d="M52 8 C46 8 40 14 42 22 L16 48 C12 52 12 58 16 62 C20 66 26 66 30 62 L56 36 C64 38 70 32 70 26 C70 18 62 12 56 14 L50 20 L44 20 L44 14 Z" fill="#dce6ff" stroke="#1f3fbf" stroke-width="2" stroke-linejoin="round"/>
+                        <!-- Hammer -->
+                        <rect x="8" y="8" width="28" height="14" rx="3" fill="#b8caff" stroke="#1f3fbf" stroke-width="2" transform="rotate(45 22 15)"/>
+                        <path d="M28 28 L14 42" stroke="#1f3fbf" stroke-width="3" stroke-linecap="round"/>
+                        <!-- Sparkles -->
+                        <path d="M60 6 L61.5 10 L65 11.5 L61.5 13 L60 17 L58.5 13 L55 11.5 L58.5 10 Z" fill="#d4a24c" opacity="0.9"/>
+                        <circle cx="68" cy="20" r="2.5" fill="#d4a24c" opacity="0.7"/>
+                        <circle cx="60" cy="26" r="1.5" fill="#4a6ae0" opacity="0.6"/>
+                    </svg>
+                </div>
+                <div class="sc-title">Ремонт под ключ</div>
+                <ul class="sc-list">
+                    <li>Черновые и чистовые работы</li>
+                    <li>Электрика и сантехника</li>
+                    <li>Контроль сроков</li>
+                </ul>
+            </div>
+            <!-- Cleaning card -->
+            <div class="service-card-main fade-up fade-up-2" onclick="openCategoryModal('Клининг')">
+                <div class="sc-icon">
+                    <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- House outline -->
+                        <path d="M10 38 L38 12 L66 38" stroke="#1f3fbf" stroke-width="2.5" fill="none" stroke-linejoin="round"/>
+                        <rect x="14" y="36" width="48" height="28" rx="3" fill="#dce6ff" stroke="#1f3fbf" stroke-width="2"/>
+                        <!-- Spray bottle -->
+                        <rect x="44" y="28" width="14" height="22" rx="3" fill="#4a6ae0" stroke="#1f3fbf" stroke-width="1.5"/>
+                        <path d="M52 28 L52 22 L60 22" stroke="#1f3fbf" stroke-width="1.5" stroke-linecap="round"/>
+                        <rect x="48" y="42" width="6" height="4" rx="1" fill="white" opacity="0.6"/>
+                        <!-- Spray droplets -->
+                        <circle cx="66" cy="24" r="2" fill="#4a6ae0" opacity="0.5"/>
+                        <circle cx="70" cy="20" r="1.5" fill="#4a6ae0" opacity="0.4"/>
+                        <circle cx="68" cy="30" r="1.5" fill="#4a6ae0" opacity="0.4"/>
+                        <!-- Sparkles -->
+                        <path d="M24 20 L25.5 24 L29 25.5 L25.5 27 L24 31 L22.5 27 L19 25.5 L22.5 24 Z" fill="#d4a24c" opacity="0.9"/>
+                        <circle cx="8" cy="24" r="2" fill="#d4a24c" opacity="0.7"/>
+                    </svg>
+                </div>
+                <div class="sc-title">Клининг</div>
+                <ul class="sc-list">
+                    <li>После ремонта</li>
+                    <li>Генеральная уборка</li>
+                    <li>Сдача объекта «чак в журнале»</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-us" id="why-section">
+    <div class="why-us-bg"></div>
+    <div class="container">
+        <div class="why-us-grid">
+            <div>
+                <h2 class="why-us-title">Почему мы</h2>
+                <div class="why-item">
+                    <div class="why-check"><i class="fas fa-check"></i></div>
+                    <div class="why-item-text">
+                        <strong>Один подрядчик — без головной боли</strong>
+                        <span>Всё под одной крышей: дизайн, ремонт и клининг</span>
+                    </div>
+                </div>
+                <div class="why-item">
+                    <div class="why-check"><i class="fas fa-check"></i></div>
+                    <div class="why-item-text">
+                        <strong>Фиксированные сроки</strong>
+                        <span>Выполняем работы точно в оговоренные сроки</span>
+                    </div>
+                </div>
+                <div class="why-item">
+                    <div class="why-check"><i class="fas fa-check"></i></div>
+                    <div class="why-item-text">
+                        <strong>Прозрачная смета</strong>
+                        <span>Без скрытых платежей и неожиданных доплат</span>
+                    </div>
+                </div>
+                <div class="why-item">
+                    <div class="why-check"><i class="fas fa-check"></i></div>
+                    <div class="why-item-text">
+                        <strong>Опыт 10+ лет</strong>
+                        <span>Сотни реализованных объектов в Таджикистане</span>
+                    </div>
+                </div>
+                <div class="why-item">
+                    <div class="why-check"><i class="fas fa-check"></i></div>
+                    <div class="why-item-text">
+                        <strong>Гарантия на работы</strong>
+                        <span>От 1 до 3 лет в зависимости от вида работ</span>
+                    </div>
+                </div>
+            </div>
+            <div class="why-image">
+                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=700&q=80" alt="Специалист">
+                <div class="why-image-overlay"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio-section" id="portfolio-section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-heading">Наши <span>проекты</span></h2>
+                <p class="section-sub">Реализованные объекты нашей команды</p>
+            </div>
+        </div>
+        <div class="portfolio-grid" id="portfolio-list">
+            <div class="loader"><div class="loader-spin"></div></div>
+        </div>
+        <div class="portfolio-footer">
+            <button class="btn-primary" onclick="openAllPortfolio()">Смотреть все проекты</button>
+        </div>
+    </div>
+</section>
+
+<!-- WORKFLOW -->
+<section class="workflow-section">
+    <div class="container">
+        <h2 class="workflow-title">Как мы работаем</h2>
+        <div class="workflow-steps">
+            <div class="workflow-step">
+                <div class="step-circle"><i class="fas fa-clipboard-list"></i></div>
+                <div class="step-label">Заявка</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-circle"><i class="fas fa-ruler-combined"></i></div>
+                <div class="step-label">Замер &amp; концепция</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-circle"><i class="fas fa-pencil-ruler"></i></div>
+                <div class="step-label">Дизайн</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-circle"><i class="fas fa-hammer"></i></div>
+                <div class="step-label">Ремонт</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-circle"><i class="fas fa-broom"></i></div>
+                <div class="step-label">Клининг</div>
+            </div>
+            <div class="workflow-step">
+                <div class="step-circle"><i class="fas fa-trophy"></i></div>
+                <div class="step-label">Сдача объекта</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT FORM (синий блок как на макете) -->
+<section class="contact-section" id="contact-section">
+    <div class="container">
+        <div class="contact-inner">
+            <h2 class="contact-title">Хотите результат без лишних забот?</h2>
+            <p class="contact-sub">Оставьте заявку и мы свяжемся с вами в ближайшее время</p>
+            <div class="contact-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Ваше имя</label>
+                        <input type="text" id="cf-name" class="form-input" placeholder="Иван Иванов">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Номер телефона</label>
+                        <input type="tel" id="cf-phone" class="form-input" placeholder="+992 00 000 0000">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Выберите услугу</label>
+                    <select id="cf-service" class="form-select">
+                        <option value="">Выберите услугу</option>
+                        <option>Дизайн интерьера</option>
+                        <option>Ремонт под ключ</option>
+                        <option>Клининг</option>
+                        <option>Строительство</option>
+                        <option>Консультация</option>
+                    </select>
+                </div>
+                <button class="form-submit" onclick="submitContactForm()">Отправить заявку</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contacts">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <div class="footer-logo">
+                    <div class="footer-logo-icon"><i class="fas fa-home"></i></div>
+                    <span class="footer-logo-text">РОС<span>КОР</span></span>
+                </div>
+                <p class="footer-desc">Ваш надёжный партнёр по дизайну, ремонту и клинингу в Таджикистане. Полный цикл работ под ключ.</p>
+                <div class="social-row">
+                    <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="social-btn"><i class="fab fa-telegram"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4>Услуги</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="openCategoryModal('Дизайн')">Дизайн интерьера</a></li>
+                    <li><a href="#" onclick="openCategoryModal('Ремонт')">Ремонт под ключ</a></li>
+                    <li><a href="#" onclick="openCategoryModal('Клининг')">Клининг</a></li>
+                    <li><a href="#" onclick="openCategoryModal('Строительство')">Строительство</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Контакты</h4>
+                <div class="footer-contact-item"><i class="fas fa-map-marker-alt"></i><span>Душанбе, Айни 9</span></div>
+                <div class="footer-contact-item"><i class="fas fa-phone"></i><a href="tel:+992975577755">+992 97 557 7755</a></div>
+                <div class="footer-contact-item"><i class="fas fa-clock"></i><span>Пн-Сб: 9:00–19:00</span></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2025 РОСКОР. Все права защищены.</span>
+            <span>Душанбе, Таджикистан</span>
+        </div>
+    </div>
+</footer>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+    <ul class="nav-items">
+        <li><a href="#services-section" class="nav-link active"><i class="fas fa-hammer"></i><span>Услуги</span></a></li>
+        <li><a href="#portfolio-section" class="nav-link"><i class="fas fa-images"></i><span>Работы</span></a></li>
+        <li><a href="#why-section" class="nav-link"><i class="fas fa-star"></i><span>О нас</span></a></li>
+        <li><a href="#contact-section" class="nav-link"><i class="fas fa-phone"></i><span>Контакт</span></a></li>
+    </ul>
+</nav>
+
+<!-- CATEGORY MODAL -->
+<div class="modal-overlay" id="categoryModal">
+    <div class="modal-box">
+        <button class="modal-close-btn" onclick="closeCategoryModal()"><i class="fas fa-times"></i></button>
+        <h2 class="modal-title" id="modalCategoryTitle"></h2>
+        <div class="modal-services-grid" id="categoryServicesGrid"></div>
+    </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="detail-modal-overlay" id="detailModal">
+    <div class="detail-modal-box">
+        <button class="modal-close-btn" style="position:absolute;top:12px;right:12px;z-index:10;" id="detailModalClose"><i class="fas fa-times"></i></button>
+        <div class="detail-modal-media" id="detailMedia"></div>
+        <div class="detail-modal-body">
+            <div class="detail-cat" id="detailCat"></div>
+            <div class="detail-name" id="detailName"></div>
+            <div class="detail-desc" id="detailDesc"></div>
+            <button class="detail-order-btn" id="detailOrderBtn">Заказать</button>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER MODAL -->
+<div class="order-modal-overlay" id="orderModal">
+    <div class="order-modal-box">
+        <button class="modal-close-btn" style="position:absolute;top:12px;right:12px;" onclick="document.getElementById('orderModal').classList.remove('active')"><i class="fas fa-times"></i></button>
+        <div class="order-title">Оформить заявку</div>
+        <div class="order-form">
+            <div>
+                <label class="form-label">Имя</label>
+                <input type="text" id="orderName" class="form-input" placeholder="Ваше имя">
+            </div>
+            <div>
+                <label class="form-label">Телефон</label>
+                <input type="tel" id="orderPhone" class="form-input" placeholder="+992 00 000 0000" required>
+            </div>
+            <div>
+                <label class="form-label">Услуга</label>
+                <input type="text" id="orderServiceField" class="form-input" placeholder="Услуга">
+            </div>
+            <div>
+                <label class="form-label">Комментарий</label>
+                <textarea id="orderComment" class="form-textarea" placeholder="Опишите задачу..."></textarea>
+            </div>
+            <button class="order-submit" onclick="submitOrderForm()">Отправить заявку</button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> Заявка отправлена! Мы свяжемся с вами.</div>
+
+<!-- SCRIPTS -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+<script>
+    // ===== Firebase =====
+    const firebaseConfig = {
+        apiKey: "AIzaSyCQj3rSIhnAnYSrwBK9BJkNl9FvrLc0PLU",
+        authDomain: "rostkor.firebaseapp.com",
+        databaseURL: "https://rostkor-default-rtdb.firebaseio.com",
+        projectId: "rostkor",
+        storageBucket: "rostkor.firebasestorage.app",
+        messagingSenderId: "1017428960882",
+        appId: "1:1017428960882:web:6a7c46178174bf8a3704eb"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ===== Telegram =====
+    const TG_TOKEN = '8513421287:AAFRRy6YcJDrT0SvLTmpv3xipyX7vW-msZA';
+    const TG_CHAT = '5923348130';
+
+    let allServices = [], allPortfolio = [];
+
+    // Category mapping: Строительство → Ремонт
+    function normalizeCategory(cat) {
+        if (!cat) return 'Другое';
+        if (cat === 'Строительство') return 'Ремонт';
+        return cat;
+    }
+
+    // Load services
+    db.ref('rostkor_services').once('value', snapshot => {
+        if (snapshot.exists()) {
+            allServices = [];
+            snapshot.forEach(child => {
+                let item = child.val();
+                item.id = child.key;
+                item.category = normalizeCategory(item.category);
+                allServices.push(item);
+            });
+        }
+    });
+
+    // Load portfolio
+    db.ref('rostkor_portfolio').once('value', snapshot => {
+        if (snapshot.exists()) {
+            allPortfolio = [];
+            snapshot.forEach(child => {
+                let item = child.val();
+                item.id = child.key;
+                item.name = item.title || item.name;
+                item.media = item.image || item.url || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80';
+                item.category = normalizeCategory(item.category);
+                allPortfolio.push(item);
+            });
+            renderPortfolio();
+        } else {
+            renderPortfolioFallback();
+        }
+    });
+
+    function renderPortfolio() {
+        const container = document.getElementById('portfolio-list');
+        const items = allPortfolio.slice(0, 4);
+        if (!items.length) { renderPortfolioFallback(); return; }
+        container.innerHTML = '';
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'portfolio-item';
+            div.onclick = () => openDetailModal(item);
+            let mediaHtml = '';
+            if (item.type === 'video') {
+                div.onclick = () => window.open(item.media, '_blank');
+                mediaHtml = `
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80" alt="${item.name}">
+                    <div class="video-play-btn"><i class="fas fa-play"></i></div>`;
+            } else {
+                mediaHtml = `<img src="${item.media}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80'">`;
+            }
+            div.innerHTML = mediaHtml + `
+                <div class="portfolio-overlay">
+                    <h4>${item.name}</h4>
+                    <p>${item.category || ''}</p>
+                </div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function renderPortfolioFallback() {
+        const container = document.getElementById('portfolio-list');
+        const fallback = [
+            { name: 'Квартира', category: 'Дизайн', img: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80' },
+            { name: 'Дом', category: 'Ремонт', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80' },
+            { name: 'Офис', category: 'Ремонт', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&q=80' },
+            { name: 'До/После', category: 'Клининг', img: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80' },
+        ];
+        container.innerHTML = '';
+        fallback.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'portfolio-item';
+            div.innerHTML = `<img src="${item.img}" alt="${item.name}">
+                <div class="portfolio-overlay"><h4>${item.name}</h4><p>${item.category}</p></div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function openAllPortfolio() {
+        const modal = document.getElementById('categoryModal');
+        document.getElementById('modalCategoryTitle').innerText = 'Все проекты';
+        const grid = document.getElementById('categoryServicesGrid');
+        grid.innerHTML = '';
+        const items = allPortfolio.length ? allPortfolio : [];
+        items.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'modal-service-card';
+            card.innerHTML = `
+                <img src="${item.media}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80'">
+                <div class="msc-body">
+                    <span class="msc-cat">${item.category || ''}</span>
+                    <div class="msc-name">${item.name}</div>
+                    <div class="msc-desc">${(item.description||'').substring(0,100)}</div>
+                    <div class="msc-btns">
+                        <button class="msc-btn-order" onclick="openOrderModal('${item.name.replace(/'/g,"\\'")}')">Заказать</button>
+                    </div>
+                </div>`;
+            grid.appendChild(card);
+        });
+        if (!items.length) grid.innerHTML = '<p style="color:var(--text-secondary);padding:20px;">Проекты загружаются...</p>';
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function openCategoryModal(category) {
+        const modal = document.getElementById('categoryModal');
+        document.getElementById('modalCategoryTitle').innerText = category;
+        const grid = document.getElementById('categoryServicesGrid');
+        grid.innerHTML = '';
+        let filterCat = category;
+        const filtered = allServices.filter(s => s.category === filterCat);
+        if (!filtered.length) {
+            grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-secondary);">Услуги загружаются или отсутствуют</div>';
+        } else {
+            filtered.forEach(service => {
+                const card = document.createElement('div');
+                card.className = 'modal-service-card';
+                card.innerHTML = `
+                    <img src="${service.image || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80'}" alt="${service.name}" onerror="this.src='https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80'">
+                    <div class="msc-body">
+                        <span class="msc-cat">${service.category}</span>
+                        <div class="msc-name">${service.name}</div>
+                        <div class="msc-price">${service.price || 'Договорная'}</div>
+                        <div class="msc-desc">${(service.description||'').substring(0,120)}</div>
+                        <div class="msc-btns">
+                            <button class="msc-btn-order" onclick="event.stopPropagation();openOrderModal('${service.name.replace(/'/g,"\\'")}')">Заказать</button>
+                            <button class="msc-btn-detail" onclick="event.stopPropagation();openDetailModal(${JSON.stringify(service).replace(/"/g,'&quot;')})">Подробнее</button>
+                        </div>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCategoryModal() {
+        document.getElementById('categoryModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function openDetailModal(item) {
+        document.getElementById('detailMedia').innerHTML = `<img src="${item.image || item.media || 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80'}" alt="${item.name}">`;
+        document.getElementById('detailCat').innerText = item.category || 'Услуга';
+        document.getElementById('detailName').innerText = item.name;
+        document.getElementById('detailDesc').innerText = item.description || '';
+        document.getElementById('detailOrderBtn').onclick = () => {
+            document.getElementById('detailModal').classList.remove('active');
+            openOrderModal(item.name);
+        };
+        document.getElementById('detailModal').classList.add('active');
+    }
+
+    document.getElementById('detailModalClose').onclick = () => {
+        document.getElementById('detailModal').classList.remove('active');
+    };
+
+    function openOrderModal(serviceName) {
+        if (serviceName) document.getElementById('orderServiceField').value = serviceName;
+        document.getElementById('orderModal').classList.add('active');
+    }
+
+    async function sendToTelegram(name, phone, service, comment) {
+        const text = `🏠 *Новая заявка РОСКОР*\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n🔧 Услуга: ${service}\n💬 Комментарий: ${comment}`;
+        try {
+            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: TG_CHAT, text, parse_mode: 'Markdown' })
+            });
+        } catch(e) { console.error('Telegram error:', e); }
+    }
+
+    async function submitOrderForm() {
+        const name = document.getElementById('orderName').value.trim();
+        const phone = document.getElementById('orderPhone').value.trim();
+        const service = document.getElementById('orderServiceField').value.trim();
+        const comment = document.getElementById('orderComment').value.trim();
+        if (!phone) { alert('Пожалуйста, введите номер телефона'); return; }
+        document.getElementById('orderModal').classList.remove('active');
+        await sendToTelegram(name || 'Не указано', phone, service || 'Не указано', comment || 'Нет');
+        showToast();
+    }
+
+    async function submitContactForm() {
+        const name = document.getElementById('cf-name').value.trim();
+        const phone = document.getElementById('cf-phone').value.trim();
+        const service = document.getElementById('cf-service').value;
+        if (!phone) { alert('Пожалуйста, введите номер телефона'); return; }
+        await sendToTelegram(name || 'Не указано', phone, service || 'Не указано', '');
+        document.getElementById('cf-name').value = '';
+        document.getElementById('cf-phone').value = '';
+        document.getElementById('cf-service').value = '';
+        showToast();
+    }
+
+    function showToast() {
+        const t = document.getElementById('toast');
+        t.classList.add('active');
+        setTimeout(() => t.classList.remove('active'), 3500);
+    }
+
+    // Close modals on overlay click
+    document.getElementById('categoryModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('categoryModal')) closeCategoryModal();
+    });
+    document.getElementById('detailModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('detailModal')) document.getElementById('detailModal').classList.remove('active');
+    });
+    document.getElementById('orderModal').addEventListener('click', e => {
+        if (e.target === document.getElementById('orderModal')) document.getElementById('orderModal').classList.remove('active');
+    });
+</script>
+</body>
+</html>
